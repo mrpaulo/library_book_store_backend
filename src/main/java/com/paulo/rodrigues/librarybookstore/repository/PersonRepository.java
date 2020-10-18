@@ -7,12 +7,15 @@ package com.paulo.rodrigues.librarybookstore.repository;
 
 import com.paulo.rodrigues.librarybookstore.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 
 /**
  *
  * @author paulo
  */
 
+@Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     public Person findByCpf(String cpf);

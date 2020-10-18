@@ -10,29 +10,32 @@ import com.paulo.rodrigues.librarybookstore.model.Person;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
 import java.util.Date;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  *
- * @author paulo
+ * @author paulo.rodrigues
  */
 @Service
+@Transactional
 public class PersonService {
-
+    
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
 
     public List<Person> findAll() {
         return personRepository.findAll();
-    }
+}
 
     public Person findById(Long personId) throws LibraryStoreBooksException {
-        Person person = personRepository.findOne(personId);
+        Person person = personRepository.findById(personId).get();
         checkPersonIsNull(personId, person);
 
         return person;
-    }
+}
 
     public Person findByCPF(String cpf) {
 

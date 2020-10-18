@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.paulo.rodrigues.librarybookstore.model;
 
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
@@ -19,6 +14,7 @@ import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +22,7 @@ import lombok.Setter;
 
 /**
  *
- * @author paulo
+ * @author paulo.rodrigues
  */
 @Entity
 @Table(indexes = {
@@ -47,7 +43,7 @@ public class Person implements Serializable {
     @Column(length = 100)
     private String email;
     @NotNull
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.DATE)
     private Date birthdate;
     @Column(length = 100)
     private String birthplace;
@@ -62,6 +58,9 @@ public class Person implements Serializable {
     private Date createAt;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date updateAt;
+
+    public Person() {
+    }
 
     public void personValidation() throws LibraryStoreBooksException {
         if (name.isEmpty()) {

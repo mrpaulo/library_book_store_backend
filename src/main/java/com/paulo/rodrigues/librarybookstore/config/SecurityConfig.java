@@ -12,7 +12,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
 import org.springframework.security.web.session.SessionManagementFilter;
+
 
 /**
  *
@@ -21,7 +23,7 @@ import org.springframework.security.web.session.SessionManagementFilter;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
+    @Autowired
     FilterAcesso filterAcesso() {
         FilterAcesso filter = new FilterAcesso();
         return filter;
@@ -41,6 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("teste").password("teste").roles("USER");
+        auth.inMemoryAuthentication().withUser("teste").password("{noop}teste").roles("USER");
     }
 }

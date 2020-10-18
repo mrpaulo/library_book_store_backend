@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,8 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
 
     @Autowired
-    PersonService personService;
-
+    private PersonService personService;
+   
     @GetMapping()
     public List<Person> getTodasPersons() {
         List <Person> peopleList = personService.findAll();
@@ -53,13 +53,13 @@ public class PersonController {
     }
 
     @PostMapping()
-    public Person criarPerson(@Valid @RequestBody Person person) throws LibraryStoreBooksException {
+    public Person criarPerson(@RequestBody Person person) throws LibraryStoreBooksException {
         Person savePerson = personService.save(person);
         return personService.findById(savePerson.getId());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable(value = "id") Long personId, @Valid @RequestBody Person personDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<Person> updatePerson(@PathVariable(value = "id") Long personId, @RequestBody Person personDetalhes) throws LibraryStoreBooksException {
 
         final Person updatePerson = personService.edit(personId, personDetalhes);
         return ResponseEntity.ok(updatePerson);
