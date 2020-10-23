@@ -16,8 +16,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -27,12 +29,15 @@ import lombok.Setter;
 @Entity
 @Table(indexes = {
     @Index(name = "idx_cpf", columnList = "cpf"),})
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
+
 public class Person implements Serializable {
-     @SequenceGenerator(name = "SEQ_PESSOA", allocationSize = 1, sequenceName = "pessoa_id_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PESSOA")
+     @SequenceGenerator(name = "SEQ_PERSON", allocationSize = 1, sequenceName = "person_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PERSON")
     @Id
     private long id;
     @Column(length = 100)
@@ -58,9 +63,6 @@ public class Person implements Serializable {
     private Date createAt;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date updateAt;
-
-    public Person() {
-    }
 
     public void personValidation() throws LibraryStoreBooksException {
         if (name.isEmpty()) {

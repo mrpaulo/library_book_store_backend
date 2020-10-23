@@ -9,6 +9,6 @@ package com.paulo.rodrigues.librarybookstore.model;
  *
  * @author paulo.rodrigues
  */
-class Publisher {
+public class Publisher extends Company{
     
 }

@@ -5,24 +5,35 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public class Language {
-    @SequenceGenerator(name = "SEQ_LANGUAGE", allocationSize = 1, sequenceName = "language_id_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_LANGUAGE")
+@Entity
+@Getter
+@Setter
+@Builder
+public class StateCountry implements Serializable {
+    @SequenceGenerator(name = "SEQ_STATE", allocationSize = 1, sequenceName = "state_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_STATE")
     @Id
     private long id;
-    
     @Column(length = 100)
     @NotNull
     private String name;
+    
+    @NotNull
+    private Country country;
 }

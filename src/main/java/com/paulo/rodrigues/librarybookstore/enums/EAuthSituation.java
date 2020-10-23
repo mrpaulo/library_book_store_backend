@@ -9,6 +9,6 @@ package com.paulo.rodrigues.librarybookstore.enums;
  *
  * @author paulo
  */
-public enum ESituacao {
+public enum EAuthSituation {
     AUTORIZADO, NAO_AUTORIZADO;
 }

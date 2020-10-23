@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.paulo.rodrigues.librarybookstore.enums;
+package com.paulo.rodrigues.librarybookstore.service;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public enum EBookCondition {
-    NEW,
-    USED,    
-    COLLECTABLE
+public class CompanyService {
+    
 }

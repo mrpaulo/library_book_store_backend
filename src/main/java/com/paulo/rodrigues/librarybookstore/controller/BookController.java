@@ -6,14 +6,14 @@
 package com.paulo.rodrigues.librarybookstore.controller;
 
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.model.Person;
-import com.paulo.rodrigues.librarybookstore.service.PersonService;
+import com.paulo.rodrigues.librarybookstore.model.Book;
+import com.paulo.rodrigues.librarybookstore.service.BookService;
+import com.paulo.rodrigues.librarybookstore.service.BookService;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,45 +32,44 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/people")
-public class PersonController {
-
+@RequestMapping("/api/v1/book")
+public class BookController {
+    
     @Autowired
-    private PersonService personService;
-   
+    private BookService bookService;
+    
     @GetMapping()
-    public List<Person> getAllPeople() {
-        List <Person> peopleList = personService.findAll();
+    public List<Book> getAllPeople() {
+        List <Book> peopleList = bookService.findAll();
         
-        return peopleList.stream().sorted(Comparator.comparing(Person::getName)).collect(Collectors.toList());
+        return peopleList.stream().sorted(Comparator.comparing(Book::getName)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getPersonById(@PathVariable(value = "id") Long personId) throws LibraryStoreBooksException {
-        Person person = personService.findById(personId);
+    public ResponseEntity<Book> getBookById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {
+        Book book = bookService.findById(bookId);
         
-        return ResponseEntity.ok().body(person);
+        return ResponseEntity.ok().body(book);
     }
 
     @PostMapping()
-    public Person createPerson(@RequestBody Person person) throws LibraryStoreBooksException {
-        Person savePerson = personService.save(person);
-        return personService.findById(savePerson.getId());
+    public Book createBook(@RequestBody Book book) throws LibraryStoreBooksException {
+        Book saveBook = bookService.save(book);
+        return bookService.findById(saveBook.getId());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable(value = "id") Long personId, @RequestBody Person personDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<Book> updateBook(@PathVariable(value = "id") Long bookId, @RequestBody Book bookDetalhes) throws LibraryStoreBooksException {
 
-        final Person updatePerson = personService.edit(personId, personDetalhes);
-        return ResponseEntity.ok(updatePerson);
+        final Book updateBook = bookService.edit(bookId, bookDetalhes);
+        return ResponseEntity.ok(updateBook);
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> deletePerson(@PathVariable(value = "id") Long personId) throws LibraryStoreBooksException {                
-        personService.excluir(personId);
+    public Map<String, Boolean> deleteBook(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {                
+        bookService.erase(bookId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
     }
-    
 }

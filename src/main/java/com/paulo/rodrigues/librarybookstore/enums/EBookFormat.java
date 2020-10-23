@@ -10,5 +10,8 @@ package com.paulo.rodrigues.librarybookstore.enums;
  * @author paulo.rodrigues
  */
 public enum EBookFormat {
-    
+    PRINTED_BOOK,
+    HARDCOVER,    
+    KINDLE_EDITION,
+    AUDIO_BOOK
 }

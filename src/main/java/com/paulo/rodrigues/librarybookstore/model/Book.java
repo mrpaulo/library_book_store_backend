@@ -5,7 +5,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
-import com.paulo.rodrigues.librarybookstore.enums.ECondition;
+import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import java.io.Serializable;
 import java.util.Date;
@@ -49,6 +49,7 @@ public class Book implements Serializable {
     @Column(length = 100)
     private String subtitle;
     private BookSubject subject;
+    private String edition;
     @Column(length = 500)
     private String review;
     private List<String> keywords;
@@ -60,6 +61,6 @@ public class Book implements Serializable {
     @Column(length = 100)
     private String link;
     private EBookFormat format;
-    private ECondition condition;
+    private EBookCondition condition;
 
 }
