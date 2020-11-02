@@ -5,6 +5,8 @@
  */
 package com.paulo.rodrigues.librarybookstore.controller;
 
+import com.paulo.rodrigues.librarybookstore.repository.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,5 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/company")
 public class CompanyController {
+    
+    @Autowired
+    public CompanyRepository companyRepository;
+    
     
 }

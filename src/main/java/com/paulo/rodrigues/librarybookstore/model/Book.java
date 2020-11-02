@@ -7,15 +7,20 @@ package com.paulo.rodrigues.librarybookstore.model;
 
 import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
+import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.isCPF;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -29,8 +34,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_title", columnList = "title"),
-    @Index(name = "idx_authors", columnList = "authors")
+    @Index(name = "idx_title", columnList = "title"),    
 })
 @Getter
 @Setter
@@ -45,6 +49,7 @@ public class Book implements Serializable {
     @NotNull
     private String title;
     @NotNull
+    @OneToMany(targetEntity=Author.class, mappedBy="books", fetch=FetchType.EAGER)
     private List<Author> authors;
     @Column(length = 100)
     private String subtitle;
@@ -52,7 +57,8 @@ public class Book implements Serializable {
     private String edition;
     @Column(length = 500)
     private String review;
-    private List<String> keywords;
+    
+    
     private Date publishDate;
     private Language language;
     private Double rating;
@@ -62,5 +68,25 @@ public class Book implements Serializable {
     private String link;
     private EBookFormat format;
     private EBookCondition condition;
+    
+    public void bookValidation() throws LibraryStoreBooksException {
+        if (FormatUtils.isEmpty(title)) {
+            throw new LibraryStoreBooksException("Título deve ser informado!");
+        }
+        if (title.length() > 100) {
+            throw new LibraryStoreBooksException("Título com tamanho maior que 100 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(subtitle) && subtitle.length() > 100) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 100 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(link) && link.length() > 100) {
+            throw new LibraryStoreBooksException("Link com tamanho maior que 100 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(review) && review.length() > 500) {
+            throw new LibraryStoreBooksException("Resumo com tamanho maior que 100 caracteres!");
+        }
+        
+
+    }
 
 }

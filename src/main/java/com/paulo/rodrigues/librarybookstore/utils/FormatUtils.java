@@ -5,7 +5,14 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
+import com.paulo.rodrigues.librarybookstore.filter.PageableFilter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Map;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -81,5 +88,78 @@ public class FormatUtils {
         } catch (InputMismatchException erro) {
             return (false);
         }
+    }
+    
+    public static PageRequest getPageRequest(PageableFilter filter) {
+        if(filter == null){
+            return null;
+        }
+        
+        if (filter.getCurrentPage() == 0) {
+            return null;
+        }
+        if (filter.getSortColumn() == null) {
+            filter.setSortColumn("");
+        }
+        if (filter.getSort() == null) {
+            filter.setSort("");
+        }
+
+        String[] colunas = filter.getSortColumn().split(",");
+        String[] ordens = filter.getSort().split(",");
+        List<Sort.Order> lsOrdens = new ArrayList<>();
+        for (int i = 0; i < colunas.length; i++) {
+            lsOrdens.add(new Sort.Order(Sort.Direction.fromString(ordens.length - 1 < i ? "" : ordens[i].trim()), colunas[i].trim()));
+
+        }
+        return PageRequest.of(filter.getCurrentPage() > 0 ? filter.getCurrentPage() - 1 : 0, filter.getRegisterByPage(), Sort.by(lsOrdens));
+    }
+    
+    /**
+     * Compara dois objetos, com tratamento especial para Null e Number
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean equals(Object a, Object b) {
+        if (a == null) {
+            return b == null;
+        } else if (b == null) {
+            return false;
+        } else if (a instanceof Number && b instanceof Number) {
+            return ((Number) a).doubleValue() == ((Number) b).doubleValue();
+        } else {
+            return a.equals(b);
+        }
+    }
+
+    public static boolean isEmpty(Map map) {
+        return map == null || map.isEmpty();
+
+    }
+
+    public static boolean isEmpty(Object[] array) {
+        return array == null || array.length == 0;
+    }
+
+    public static boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
+    public static boolean isEmpty(Collection list) {
+        return list == null || list.isEmpty();
+    }
+
+    public static boolean isEmpty(Long vlr) {
+        return vlr == null || vlr == 0;
+    }
+
+    public static boolean isEmpty(Integer vlr) {
+        return vlr == null || vlr == 0;
+    }
+
+    public static boolean isEmpty(Double vlr) {
+        return vlr == null || vlr == 0;
     }
 }
