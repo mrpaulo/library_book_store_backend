@@ -8,20 +8,28 @@ package com.paulo.rodrigues.librarybookstore.service;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
+import com.paulo.rodrigues.librarybookstore.model.Company;
 import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
 import java.util.List;
+import javax.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author paulo.rodrigues
  */
+@Service
+@Transactional
 public class BookService {
     
     @Autowired
     public BookRepository bookRepository;
+    
+    private ModelMapper modelMapper;
 
     public List<Book> findAll() {
         return bookRepository.findAll();
@@ -49,14 +57,15 @@ public class BookService {
 
     public Book save(Book book) throws LibraryStoreBooksException {
         book.bookValidation();
+        book.persistAt();
         
         return bookRepository.saveAndFlush(book);
     }
 
     public Book edit(Long bookId, Book bookDetail) throws LibraryStoreBooksException {
         Book bookToEdit = findById(bookId);
-        //TODO ver o mapeamento automatico
         
+        bookToEdit = modelMapper.map(bookDetail, Book.class);
         
         return save(bookToEdit);
     }

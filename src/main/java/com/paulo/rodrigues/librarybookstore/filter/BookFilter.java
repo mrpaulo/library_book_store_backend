@@ -8,7 +8,6 @@ package com.paulo.rodrigues.librarybookstore.filter;
 import com.paulo.rodrigues.librarybookstore.model.BookSubject;
 import java.util.Date;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 public class BookFilter extends PageableFilter {
 
     private String title;

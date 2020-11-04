@@ -67,7 +67,7 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     public Map<String, Boolean> deletePerson(@PathVariable(value = "id") Long personId) throws LibraryStoreBooksException {                
-        personService.excluir(personId);
+        personService.erase(personId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;

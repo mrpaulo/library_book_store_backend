@@ -23,6 +23,7 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,8 +35,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_title", columnList = "title"),    
-})
+    @Index(name = "idx_title", columnList = "title"),})
 @Getter
 @Setter
 @Builder
@@ -49,7 +49,7 @@ public class Book implements Serializable {
     @NotNull
     private String title;
     @NotNull
-    @OneToMany(targetEntity=Author.class, mappedBy="books", fetch=FetchType.EAGER)
+    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
     private List<Author> authors;
     @Column(length = 100)
     private String subtitle;
@@ -57,8 +57,7 @@ public class Book implements Serializable {
     private String edition;
     @Column(length = 500)
     private String review;
-    
-    
+
     private Date publishDate;
     private Language language;
     private Double rating;
@@ -68,7 +67,14 @@ public class Book implements Serializable {
     private String link;
     private EBookFormat format;
     private EBookCondition condition;
-    
+
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createAt;
+    private String createBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date updateAt;
+    private String updateBy;
+
     public void bookValidation() throws LibraryStoreBooksException {
         if (FormatUtils.isEmpty(title)) {
             throw new LibraryStoreBooksException("Título deve ser informado!");
@@ -83,10 +89,18 @@ public class Book implements Serializable {
             throw new LibraryStoreBooksException("Link com tamanho maior que 100 caracteres!");
         }
         if (!FormatUtils.isEmptyOrNull(review) && review.length() > 500) {
-            throw new LibraryStoreBooksException("Resumo com tamanho maior que 100 caracteres!");
+            throw new LibraryStoreBooksException("Resumo com tamanho maior que 500 caracteres!");
         }
-        
+    }
 
+    public void persistAt() {
+        if (updateAt == null) {
+            setCreateAt(new Date());
+            setCreateBy(FormatUtils.getCdUserLogged());
+        } else {
+            setUpdateAt(new Date());
+            setUpdateBy(FormatUtils.getCdUserLogged());
+        }
     }
 
 }

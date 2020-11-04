@@ -28,7 +28,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_name", columnList = "name"),
+    @Index(name = "idx_name_address", columnList = "name"),
 })
 @NoArgsConstructor
 @AllArgsConstructor

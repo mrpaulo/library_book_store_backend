@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.paulo.rodrigues.librarybookstore.model;
+package com.paulo.rodrigues.librarybookstore.filter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import com.paulo.rodrigues.librarybookstore.model.BookSubject;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,13 +16,15 @@ import lombok.Setter;
  *
  * @author paulo.rodrigues
  */
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Publisher extends Company {
+public class CompanyFilter extends PageableFilter {
 
-    @Column(length = 500)
-    private String description;
+    private String title;
+    private String author;
+    private String publisher;
+    private BookSubject subject;
+    private Date publishDate;
 }

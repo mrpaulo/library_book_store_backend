@@ -5,6 +5,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -27,15 +28,14 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_name", columnList = "name"),
+    @Index(name = "idx_name_language", columnList = "name"),
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@Embeddable
-public class Language {
+public class Language implements Serializable{
     @SequenceGenerator(name = "SEQ_LANGUAGE", allocationSize = 1, sequenceName = "language_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_LANGUAGE")
     @Id

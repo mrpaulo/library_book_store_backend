@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,15 +30,20 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_cpf", columnList = "cpf"),})
+    @Index(name = "idx_cpf", columnList = "cpf"),
+    @Index(name = "idx_name_person", columnList = "name")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-
+@Inheritance(
+        strategy = InheritanceType.JOINED
+)
 public class Person implements Serializable {
-     @SequenceGenerator(name = "SEQ_PERSON", allocationSize = 1, sequenceName = "person_id_seq")
+
+    @SequenceGenerator(name = "SEQ_PERSON", allocationSize = 1, sequenceName = "person_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PERSON")
     @Id
     private long id;
@@ -54,15 +61,17 @@ public class Person implements Serializable {
     private String birthplace;
     @Column(length = 100)
     private String nationality;
-    
+
     @Column(unique = true, length = 11)
     @NotNull
     private String cpf;
-    
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;
+    private String createBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date updateAt;
+    private String updateBy;
 
     public void personValidation() throws LibraryStoreBooksException {
         if (name.isEmpty()) {
@@ -95,6 +104,15 @@ public class Person implements Serializable {
         }
 
     }
-    
-}
 
+    public void persistAt() {
+        if (updateAt == null) {
+            setCreateAt(new Date());
+            setCreateBy(FormatUtils.getCdUserLogged());
+        } else {
+            setUpdateAt(new Date());
+            setUpdateBy(FormatUtils.getCdUserLogged());
+        }
+    }
+
+}
