@@ -6,14 +6,15 @@
 package com.paulo.rodrigues.librarybookstore.repository;
 
 import com.paulo.rodrigues.librarybookstore.model.Book;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Date;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
-
+public interface BookRepositoryCustom {
     
-    
+    Page<Book> findPageble(String title, String author, String publisher, Date startDate, Date finalDate, Pageable page);
 }

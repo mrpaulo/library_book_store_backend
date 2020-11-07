@@ -5,9 +5,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
-import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +24,6 @@ public class Author extends Person {
         
     private String description;
     
-    @ManyToMany
-    private List<Book> books;
+   
         
 }

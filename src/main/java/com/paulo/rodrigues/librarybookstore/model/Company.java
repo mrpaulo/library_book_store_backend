@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -51,14 +53,20 @@ public class Company implements Serializable {
     @Id
     private long id;
 
-    @Column(length = 100)
     @NotNull
+    @Column(length = 100)
     private String name;
 
-    @Column(unique = true, length = 14)
     @NotNull
+    @Column(unique = true, length = 14)
     private String cnpj;
-    private Address address;
+    
+    @OneToOne
+    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
+    private Address adress;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date createDate;
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;

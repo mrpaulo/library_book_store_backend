@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -47,23 +49,33 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PERSON")
     @Id
     private long id;
-    @Column(length = 100)
+    
     @NotNull
+    @Column(length = 100)
     private String name;
+    
     @Column(length = 1)
     private String sex;
+    
     @Column(length = 100)
     private String email;
+    
     @NotNull
     @Temporal(TemporalType.DATE)
     private Date birthdate;
+    
     @Column(length = 100)
     private String birthplace;
+    
     @Column(length = 100)
     private String nationality;
+    
+    @OneToOne
+    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
+    private Address adress;
 
-    @Column(unique = true, length = 11)
     @NotNull
+    @Column(unique = true, length = 11)
     private String cpf;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)

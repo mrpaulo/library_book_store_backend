@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -39,10 +41,13 @@ public class StateCountry implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_STATE")
     @Id
     private long id;
-    @Column(length = 100)
+    
     @NotNull
+    @Column(length = 100)
     private String name;
     
     @NotNull
+    @OneToOne
+    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID") 
     private Country country;
 }

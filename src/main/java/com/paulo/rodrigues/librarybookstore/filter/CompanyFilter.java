@@ -5,7 +5,6 @@
  */
 package com.paulo.rodrigues.librarybookstore.filter;
 
-import com.paulo.rodrigues.librarybookstore.model.BookSubject;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,9 +21,7 @@ import lombok.Setter;
 @Setter
 public class CompanyFilter extends PageableFilter {
 
-    private String title;
-    private String author;
-    private String publisher;
-    private BookSubject subject;
-    private Date publishDate;
+    private String name;
+    private String cnpj;    
+    private Date createDate;
 }

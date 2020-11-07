@@ -40,8 +40,8 @@ public class Country implements Serializable{
     @Id
     private long id;
     
-    @Column(length = 100)
     @NotNull
+    @Column(length = 100)
     private String name;
     
 }

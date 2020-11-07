@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -40,13 +42,20 @@ public class City implements Serializable{
     @Id
     private long id;
     
-    @Column(length = 100)
     @NotNull
+    @Column(length = 100)
     private String name;
-    
-    private String ibgeCode;
-    
+        
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "STATE_ID", referencedColumnName = "ID")
     private StateCountry state;
     
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID")    
     private Country country;
+    
+    @Column(length = 10)
+    private String ibgeCode;
 }

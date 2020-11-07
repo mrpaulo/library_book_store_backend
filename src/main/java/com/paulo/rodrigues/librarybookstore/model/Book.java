@@ -15,12 +15,16 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -45,28 +49,48 @@ public class Book implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BOOK")
     @Id
     private long id;
+    
+    @NotNull
     @Column(length = 100)
-    @NotNull
     private String title;
+    
     @NotNull
-    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
+    //@OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.LAZY)
+    @OneToMany
+    @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID")
     private List<Author> authors;
+    
+    @OneToOne
+    @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")
+    private Language language;
+    
+    @OneToOne
+    @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID")
+    private Publisher publisher;
+    
+    @OneToOne
+    @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID")
+    private BookSubject subject;
+    
     @Column(length = 100)
     private String subtitle;
-    private BookSubject subject;
-    private String edition;
+    
     @Column(length = 500)
     private String review;
-
-    private Date publishDate;
-    private Language language;
-    private Double rating;
-    private Publisher publisher;
-    private int length;
+    
     @Column(length = 100)
     private String link;
+    
+    @Enumerated(EnumType.STRING)
     private EBookFormat format;
+    
+    @Enumerated(EnumType.STRING)
     private EBookCondition condition;
+    
+    private int edition;
+    private Date publishDate;   
+    private Double rating;    
+    private int length;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;

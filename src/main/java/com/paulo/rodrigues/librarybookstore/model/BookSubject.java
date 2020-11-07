@@ -36,8 +36,8 @@ public class BookSubject implements Serializable {
     @Id
     private long id;
     
-    @Column(length = 100)
     @NotNull
+    @Column(length = 100)
     private String name;
     
     @Column(length = 300)
