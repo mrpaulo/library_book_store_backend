@@ -5,7 +5,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.controller;
 
-
+import com.paulo.rodrigues.librarybookstore.dto.CompanyDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.CompanyFilter;
 import com.paulo.rodrigues.librarybookstore.model.Company;
@@ -40,52 +40,47 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/company")
 public class CompanyController {
-    
+
     @Autowired
     private CompanyService companyService;
-    
+
     @GetMapping("/all")
-    public List<Company> getAll() {
-        List <Company> companysList = companyService.findAll();
-        
-        return companysList.stream().sorted(Comparator.comparing(Company::getName)).collect(Collectors.toList());
+    public List<CompanyDTO> getAll() {
+        List<CompanyDTO> companysList = companyService.findAll();
+
+        return companysList.stream().sorted(Comparator.comparing(CompanyDTO::getName)).collect(Collectors.toList());
     }
+
     @GetMapping()
-    public List<Company> getAllPageble(@RequestBody CompanyFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<CompanyDTO> getAllPageble(@RequestBody CompanyFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
-        
-        Page <Company> result = companyService.findPageble(filter, pageable);
-        
+        Page<Company> result = companyService.findPageble(filter, pageable);
         res.addHeader("Total-Count", String.valueOf(result.getTotalElements()));
-        
-        return result.getContent();
+
+        return companyService.toListDTO(result.getContent());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> getById(@PathVariable(value = "id") Long companyId) throws LibraryStoreBooksException {
-        Company company = companyService.findById(companyId);
-        
-        return ResponseEntity.ok().body(company);
+        return ResponseEntity.ok().body(companyService.findById(companyId));
     }
 
     @PostMapping()
-    public Company create(@RequestBody Company company) throws LibraryStoreBooksException {
-        Company saveCompany = companyService.save(company);
-        return companyService.findById(saveCompany.getId());
+    public CompanyDTO create(@RequestBody CompanyDTO company) throws LibraryStoreBooksException {
+        return companyService.create(company);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> update(@PathVariable(value = "id") Long companyId, @RequestBody Company companyDetalhes) throws LibraryStoreBooksException {
-
-        final Company updateCompany = companyService.edit(companyId, companyDetalhes);
-        return ResponseEntity.ok(updateCompany);
+    public ResponseEntity<CompanyDTO> update(@PathVariable(value = "id") Long companyId, @RequestBody CompanyDTO companyDetalhes) throws LibraryStoreBooksException {
+        return ResponseEntity.ok(companyService.edit(companyId, companyDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> delete(@PathVariable(value = "id") Long companyId) throws LibraryStoreBooksException {                
+    public Map<String, Boolean> delete(@PathVariable(value = "id") Long companyId) throws LibraryStoreBooksException {
         companyService.erase(companyId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
+
         return response;
     }
 }

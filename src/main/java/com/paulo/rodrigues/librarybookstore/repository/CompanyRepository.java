@@ -21,7 +21,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>{
     
     public Company findByCnpj (String cnpj);
 
-    @Query("SELECT new com.paulo.rodrigues.librarybookstore.model.Company(c) "
+    @Query("SELECT c "
             + " FROM Company c "
             + " WHERE (:id IS NULL OR :id = '' OR c.id = :id) "
             + " AND (:name IS NULL OR :name = '' OR c.name like CONCAT('%',:name,'%')) "
@@ -29,7 +29,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>{
             + " AND ((:startDate IS NULL AND :finalDate IS NULL) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
             + "")
     public Page<Company> findPageble(
-            @Param("id") Integer id,
+            @Param("id") Long id,
             @Param("name") String name,
             @Param("cnpj") String cnpj,                        
             @Param("startDate") Date startDate,

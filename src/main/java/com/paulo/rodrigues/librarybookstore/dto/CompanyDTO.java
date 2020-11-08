@@ -24,6 +24,6 @@ public class CompanyDTO {
     private long id;
     private String name;
     private String cnpj;
-    private String adress;
+    private AddressDTO adress;
     private Date createDate;
 }

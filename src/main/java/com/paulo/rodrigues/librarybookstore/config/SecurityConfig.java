@@ -6,6 +6,7 @@
 package com.paulo.rodrigues.librarybookstore.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,12 @@ import org.springframework.security.web.session.SessionManagementFilter;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${basic.user}")
+    private String userBasic;
+    
+    @Value("${basic.password}")
+    private String passBasic;
+    
     @Autowired
     FilterAcesso filterAcesso() {
         FilterAcesso filter = new FilterAcesso();
@@ -43,6 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("teste").password("{noop}teste").roles("USER");
+        auth.inMemoryAuthentication().withUser(userBasic).password(passBasic).roles("USER");
     }
 }

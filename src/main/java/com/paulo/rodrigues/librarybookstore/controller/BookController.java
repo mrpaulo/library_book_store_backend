@@ -5,10 +5,10 @@
  */
 package com.paulo.rodrigues.librarybookstore.controller;
 
+import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
-import com.paulo.rodrigues.librarybookstore.service.BookService;
 import com.paulo.rodrigues.librarybookstore.service.BookService;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.util.Comparator;
@@ -40,53 +40,47 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/book")
 public class BookController {
-    
+
     @Autowired
     private BookService bookService;
-    
+
     @GetMapping("/all")
-    public List<Book> getAll() {
-        List <Book> booksList = bookService.findAll();
-        
-        return booksList.stream().sorted(Comparator.comparing(Book::getTitle)).collect(Collectors.toList());
+    public List<BookDTO> getAll() {
+        List<BookDTO> booksList = bookService.findAll();
+
+        return booksList.stream().sorted(Comparator.comparing(BookDTO::getTitle)).collect(Collectors.toList());
     }
-    
+
     @GetMapping()
-    public List<Book> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
-        
-        Page <Book> result = bookService.findPageble(filter, pageable);
-        
+        Page<Book> result = bookService.findPageble(filter, pageable);
         res.addHeader("Total-Count", String.valueOf(result.getTotalElements()));
-        
-        return result.getContent();
+
+        return bookService.toListDTO(result.getContent());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {
-        Book book = bookService.findById(bookId);
-        
-        return ResponseEntity.ok().body(book);
+        return ResponseEntity.ok().body(bookService.findById(bookId));
     }
 
     @PostMapping()
-    public Book create(@RequestBody Book book) throws LibraryStoreBooksException {
-        Book saveBook = bookService.save(book);
-        return bookService.findById(saveBook.getId());
+    public BookDTO create(@RequestBody BookDTO dto) throws LibraryStoreBooksException {
+        return bookService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> update(@PathVariable(value = "id") Long bookId, @RequestBody Book bookDetalhes) throws LibraryStoreBooksException {
-
-        final Book updateBook = bookService.edit(bookId, bookDetalhes);
-        return ResponseEntity.ok(updateBook);
+    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDetalhes) throws LibraryStoreBooksException {
+        return ResponseEntity.ok(bookService.edit(bookId, bookDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> delete(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {                
+    public Map<String, Boolean> delete(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {
         bookService.erase(bookId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
+
         return response;
     }
 }

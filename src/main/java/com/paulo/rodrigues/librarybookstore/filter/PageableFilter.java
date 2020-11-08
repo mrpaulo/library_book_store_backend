@@ -6,6 +6,8 @@
 package com.paulo.rodrigues.librarybookstore.filter;
 
 import java.util.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,13 +25,17 @@ import lombok.Setter;
 @Builder
 public class PageableFilter {
     
-    private int currentPage = 1;
-    private int registerByPage = 10;
-    private String SortColumn;
-    private String sort = "asc";
+    private int currentPage;
+    private int registerByPage;
+    private String sortColumn;
+    private String sort;
     
-    private Integer id;
+    private Long id;
     private String name;
+    
+    @Temporal(TemporalType.DATE)
     private Date startDate;
+    
+    @Temporal(TemporalType.DATE)
     private Date finalDate;
 }

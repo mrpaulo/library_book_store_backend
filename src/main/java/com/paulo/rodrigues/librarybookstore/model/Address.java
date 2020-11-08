@@ -6,7 +6,10 @@
 package com.paulo.rodrigues.librarybookstore.model;
 
 import com.paulo.rodrigues.librarybookstore.enums.ETypePublicPlace;
+import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -78,4 +82,56 @@ public class Address implements Serializable {
     
     @Transient
     private String fmtAddress;
+    
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createAt;
+    private String createBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date updateAt;
+    private String updateBy;
+    
+    public String formatAddress() {
+        return "";
+    }
+
+    public void addressValidation() throws LibraryStoreBooksException{
+        if (FormatUtils.isEmpty(name)) {
+            throw new LibraryStoreBooksException("Logradouro deve ser informado!");
+        }
+        if (name.length() > 100) {
+            throw new LibraryStoreBooksException("Logradouro com tamanho maior que 100 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(number) && number.length() > 9) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 9 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(cep) && cep.length() > 8) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 8 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(zipCode) && zipCode.length() > 9) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 9 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(neighborhood) && neighborhood.length() > 100) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 100 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(coordination) && coordination.length() > 20) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 20 caracteres!");
+        }
+        if (!FormatUtils.isEmptyOrNull(referencialPoint) && referencialPoint.length() > 200) {
+            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 200 caracteres!");
+        }
+    }
+
+    public void persistAt() {
+        if (updateAt == null) {
+            setCreateAt(new Date());
+            setCreateBy(FormatUtils.getCdUserLogged());
+        } else {
+            setUpdateAt(new Date());
+            setUpdateBy(FormatUtils.getCdUserLogged());
+        }
+    }
+
+    public Address orElse(Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

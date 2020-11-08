@@ -5,13 +5,17 @@
  */
 package com.paulo.rodrigues.librarybookstore.service;
 
+import com.paulo.rodrigues.librarybookstore.dto.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.filter.PersonFilter;
+import com.paulo.rodrigues.librarybookstore.model.Address;
 import com.paulo.rodrigues.librarybookstore.model.Person;
+import com.paulo.rodrigues.librarybookstore.repository.AddressRepository;
+import com.paulo.rodrigues.librarybookstore.repository.CityRepository;
+import com.paulo.rodrigues.librarybookstore.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -28,30 +32,37 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class PersonService {
 
+    private ModelMapper modelMapper;
+    
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private AddressService addressService;
     
-    private ModelMapper modelMapper;
+    @Autowired
+    private CityRepository cityRepository;
+    
+    @Autowired
+    private CountryRepository countryRepository;
 
     public List<Person> findAll() {
         return personRepository.findAll();
     }
-    
+
     public Page<Person> findPageble(PersonFilter filter, Pageable pageable) {
         return personRepository.findPageble(
-                filter.getId(),                
+                filter.getId(),
                 filter.getName(),
                 filter.getCpf(),
-                filter.getSex(),
-                filter.getStartDate(),
-                filter.getFinalDate(),
+                filter.getSex(),                
                 pageable);
     }
 
     public Person findById(Long personId) throws LibraryStoreBooksException {
         Person person = personRepository.findById(personId).orElse(null);
-        
-        if(person == null) {
+
+        if (person == null) {
             throw new LibraryStoreBooksException("Pessoa não encontrada para o id: " + personId);
         }
 
@@ -59,8 +70,13 @@ public class PersonService {
     }
 
     public Person findByCPF(String cpf) {
-
         return personRepository.findByCpf(cpf);
+    }
+
+    public PersonDTO create(PersonDTO dto) throws LibraryStoreBooksException {
+        Person person = fromDTO(dto);
+
+        return toDTO(save(person));
     }
 
     public Person save(Person person) throws LibraryStoreBooksException {
@@ -70,26 +86,69 @@ public class PersonService {
         return personRepository.saveAndFlush(person);
     }
 
-    public Person edit(Long personId, Person personDetalhes) throws LibraryStoreBooksException {
-
+    public PersonDTO edit(Long personId, PersonDTO personDetalhes) throws LibraryStoreBooksException {
         Person personToEdit = findById(personId);
-//        personToEdit.setName(personDetalhes.getName());
-//        personToEdit.setSex(personDetalhes.getSex());
-//        personToEdit.setEmail(personDetalhes.getEmail());
-//        personToEdit.setBirthdate(personDetalhes.getBirthdate());
-//        personToEdit.setBirthplace(personDetalhes.getBirthplace());
-//        personToEdit.setNationality(personDetalhes.getNationality());
-//        personToEdit.setCpf(personDetalhes.getCpf());
-
         personToEdit = modelMapper.map(personDetalhes, Person.class);
-        
-        return save(personToEdit);
+
+        return toDTO(save(personToEdit));
     }
 
     public void erase(Long personId) throws LibraryStoreBooksException {
         Person person = findById(personId);
 
         personRepository.delete(person);
-    }    
+    }
+
+    public PersonDTO toDTO(Person person) {
+        if(person == null){
+            return null;
+        }
+        
+        return PersonDTO.builder()
+                .id(person.getId())
+                .name(person.getName())
+                .cpf(person.getCpf())
+                .sex(person.getSex())
+                .email(person.getEmail())
+                .adress(addressService.toDTO(person.getAdress()))
+                .birthdate(person.getBirthdate())
+                .birthCity(person.getBirthCity() != null ? person.getBirthCity().getName() : null)
+                .birthCountry(person.getBirthCountry() != null ? person.getBirthCountry().getName() : null )
+                .build();
+        
+    }
+
+    public Person fromDTO(PersonDTO dto) throws LibraryStoreBooksException {
+        if(dto == null){
+            return null;
+        }
+        
+        return Person.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .cpf(dto.getCpf())
+                .sex(dto.getSex())
+                .email(dto.getEmail())
+                .adress(dto.getAdress() != null ? addressService.findById(dto.getAdress().getId()) : null)
+                .birthdate(dto.getBirthdate())
+                .birthCity(cityRepository.getByName(dto.getBirthCity()))
+                .birthCountry(countryRepository.getByName(dto.getBirthCountry()))
+                .build();
+    }
+
+    public List<PersonDTO> toListDTO(List<Person> people) {
+        return people.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+    
+    private AddressDTO getAddressDTOFromModel (Address address) {
+        if(address == null){
+            return null;
+        }
+        
+        return AddressDTO.builder()
+                .id(address.getId())
+                .fmtAddress(address.formatAddress())
+                .build();
+    }
 
 }
