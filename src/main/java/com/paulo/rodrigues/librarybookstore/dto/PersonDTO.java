@@ -3,25 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.paulo.rodrigues.librarybookstore.filter;
+package com.paulo.rodrigues.librarybookstore.dto;
 
 import java.util.Date;
+
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  *
  * @author paulo.rodrigues
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-public class PersonFilter extends PageableFilter {
-    
+@Builder
+public class PersonDTO {
+    private long id;
+    private String name;
     private String cpf;
-    private String sex;
     private Date birthdate;
+    private String sex;
+    private String email;
+    private String birthCity;
+    private String birthCountry;
+    private String adress;  
+    private String description;
 }

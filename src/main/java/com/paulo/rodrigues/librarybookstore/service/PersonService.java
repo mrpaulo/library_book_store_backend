@@ -6,6 +6,8 @@
 package com.paulo.rodrigues.librarybookstore.service;
 
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
+import com.paulo.rodrigues.librarybookstore.filter.PersonFilter;
 import com.paulo.rodrigues.librarybookstore.model.Person;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
@@ -14,6 +16,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +35,17 @@ public class PersonService {
 
     public List<Person> findAll() {
         return personRepository.findAll();
+    }
+    
+    public Page<Person> findPageble(PersonFilter filter, Pageable pageable) {
+        return personRepository.findPageble(
+                filter.getId(),                
+                filter.getName(),
+                filter.getCpf(),
+                filter.getSex(),
+                filter.getStartDate(),
+                filter.getFinalDate(),
+                pageable);
     }
 
     public Person findById(Long personId) throws LibraryStoreBooksException {

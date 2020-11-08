@@ -9,7 +9,6 @@ import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.isCPF;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +16,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,8 +27,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -40,6 +40,8 @@ import lombok.Setter;
 @Entity
 @Table(indexes = {
     @Index(name = "idx_title", columnList = "title"),})
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -60,13 +62,14 @@ public class Book implements Serializable {
     @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID")
     private List<Author> authors;
     
-    @OneToOne
-    @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")
-    private Language language;
-    
+    @NotNull
     @OneToOne
     @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID")
     private Publisher publisher;
+    
+    @OneToOne
+    @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")
+    private Language language;
     
     @OneToOne
     @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID")
@@ -87,8 +90,10 @@ public class Book implements Serializable {
     @Enumerated(EnumType.STRING)
     private EBookCondition condition;
     
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date publishDate;
+    
     private int edition;
-    private Date publishDate;   
     private Double rating;    
     private int length;
 

@@ -10,7 +10,40 @@ package com.paulo.rodrigues.librarybookstore.enums;
  * @author paulo.rodrigues
  */
 public enum EBookCondition {
-    NEW,
-    USED,    
-    COLLECTABLE
+    USED(0, "Usado"),
+    NEW(1, "Novo"),
+    COLLECTABLE(2, "Colecionável");
+
+    int cod;
+    String description;
+
+    private EBookCondition(int cod, String description) {
+        this.cod = cod;
+        this.description = description;
+    }
+
+    public int getCod() {
+        return cod;
+    }
+
+    public void setCod(int cod) {
+        this.cod = cod;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public EBookCondition getBookConditionByCod(int cod) {
+        for (EBookCondition value : EBookCondition.values()) {
+            if (cod == value.getCod()) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

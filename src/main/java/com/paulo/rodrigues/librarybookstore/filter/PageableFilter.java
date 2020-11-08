@@ -28,6 +28,7 @@ public class PageableFilter {
     private String SortColumn;
     private String sort = "asc";
     
+    private Integer id;
     private String name;
     private Date startDate;
     private Date finalDate;

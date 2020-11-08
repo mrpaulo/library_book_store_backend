@@ -50,6 +50,7 @@ public class BookController {
         
         return booksList.stream().sorted(Comparator.comparing(Book::getTitle)).collect(Collectors.toList());
     }
+    
     @GetMapping()
     public List<Book> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);

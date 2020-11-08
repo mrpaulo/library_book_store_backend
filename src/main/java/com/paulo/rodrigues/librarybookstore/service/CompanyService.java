@@ -34,7 +34,13 @@ public class CompanyService {
     }
 
     public Page<Company> findPageble(CompanyFilter filter, Pageable pageable) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return companyRepository.findPageble(
+                filter.getId(),                
+                filter.getName(),
+                filter.getCnpj(),
+                filter.getStartDate(),
+                filter.getFinalDate(),
+                pageable);        
     }
 
     public Company findById(Long companyId) throws LibraryStoreBooksException {

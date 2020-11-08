@@ -14,6 +14,7 @@ import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -49,34 +50,36 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PERSON")
     @Id
     private long id;
-    
+
     @NotNull
     @Column(length = 100)
     private String name;
-    
-    @Column(length = 1)
-    private String sex;
-    
-    @Column(length = 100)
-    private String email;
+
+    @NotNull
+    @Column(unique = true, length = 11)
+    private String cpf;
     
     @NotNull
     @Temporal(TemporalType.DATE)
     private Date birthdate;
     
+    @Column(length = 1)
+    private String sex;
+
     @Column(length = 100)
-    private String birthplace;
-    
-    @Column(length = 100)
-    private String nationality;
-    
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "BIRTH_CITY_ID", referencedColumnName = "ID")
+    private City birthCity;
+
+    @ManyToOne
+    @JoinColumn(name = "BIRTH_COUNTRY_ID", referencedColumnName = "ID")
+    private Country birthCountry;
+
     @OneToOne
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
     private Address adress;
-
-    @NotNull
-    @Column(unique = true, length = 11)
-    private String cpf;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;
@@ -104,17 +107,10 @@ public class Person implements Serializable {
         }
         if (!FormatUtils.isEmptyOrNull(email) && email.length() > 100) {
             throw new LibraryStoreBooksException("E-mail com tamanho maior que 100 caracteres!");
-        }
-        if (!FormatUtils.isEmptyOrNull(nationality) && nationality.length() > 100) {
-            throw new LibraryStoreBooksException("Nacionalidade com tamanho maior que 100 caracteres!");
-        }
-        if (!FormatUtils.isEmptyOrNull(birthplace) && birthplace.length() > 100) {
-            throw new LibraryStoreBooksException("Naturalidade com tamanho maior que 100 caracteres!");
-        }
+        }       
         if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F")))) {
             throw new LibraryStoreBooksException("Somente aceito como sexo M ou F!");
         }
-
     }
 
     public void persistAt() {
