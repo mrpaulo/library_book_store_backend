@@ -26,9 +26,10 @@ import lombok.Setter;
 public class PageableFilter {
     
     private int currentPage;
-    private int registerByPage;
+    private int rowsPerPage;
     private String sortColumn;
     private String sort;
+    private int offset;
     
     private Long id;
     private String name;

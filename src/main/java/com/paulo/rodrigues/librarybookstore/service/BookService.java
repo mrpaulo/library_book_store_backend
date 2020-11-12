@@ -10,6 +10,7 @@ import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksExceptio
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
+import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -38,14 +39,8 @@ public class BookService {
         return toListDTO(books);
     }
 
-    public Page<Book> findPageble(BookFilter filter, Pageable pageable) {
-        return bookRepository.findPageble(
-                filter.getTitle(),
-                filter.getAuthor(),
-                filter.getPublisher(),
-                filter.getStartDate(),
-                filter.getFinalDate(),
-                pageable);
+    public PagedResult<BookDTO> findPageble(BookFilter filter) {
+        return bookRepository.findPageble(filter);
     }
 
     public Book findById(Long bookId) throws LibraryStoreBooksException {

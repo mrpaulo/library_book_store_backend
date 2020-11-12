@@ -5,10 +5,9 @@
  */
 package com.paulo.rodrigues.librarybookstore.repository;
 
-import com.paulo.rodrigues.librarybookstore.model.Book;
-import java.util.Date;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
+import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
+import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 
 /**
  *
@@ -16,5 +15,5 @@ import org.springframework.data.domain.Pageable;
  */
 public interface BookRepositoryCustom {
     
-    Page<Book> findPageble(String title, String author, String publisher, Date startDate, Date finalDate, Pageable page);
+    PagedResult<BookDTO> findPageble(BookFilter filter);
 }

@@ -11,6 +11,7 @@ import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.service.BookService;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/book")
+@RequestMapping("/api/v1/books")
 public class BookController {
 
     @Autowired
@@ -53,11 +54,11 @@ public class BookController {
 
     @GetMapping()
     public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
-        Pageable pageable = FormatUtils.getPageRequest(filter);
-        Page<Book> result = bookService.findPageble(filter, pageable);
-        res.addHeader("Total-Count", String.valueOf(result.getTotalElements()));
+        
+        PagedResult<BookDTO> result = bookService.findPageble(filter);
+        res.addHeader("Total-Count", String.valueOf(result.getTotalElementos()));
 
-        return bookService.toListDTO(result.getContent());
+        return result.getElementos();
     }
 
     @GetMapping("/{id}")
