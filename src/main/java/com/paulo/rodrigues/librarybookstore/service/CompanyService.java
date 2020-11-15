@@ -9,7 +9,9 @@ import com.paulo.rodrigues.librarybookstore.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.dto.CompanyDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.CompanyFilter;
+import com.paulo.rodrigues.librarybookstore.model.Address;
 import com.paulo.rodrigues.librarybookstore.model.Company;
+import com.paulo.rodrigues.librarybookstore.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.repository.AddressRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CompanyRepository;
 import java.util.ArrayList;
@@ -94,7 +96,7 @@ public class CompanyService {
                 .name(company.getName())
                 .cnpj(company.getCnpj())
                 .createDate(company.getCreateDate())
-                .adress(addressService.toDTO(company.getAdress()))
+                .address(addressService.toDTO(company.getAddress()))
                 .build();
                 
     }
@@ -103,11 +105,29 @@ public class CompanyService {
         return Company.builder()
                 .name(dto.getName())
                 .cnpj(dto.getCnpj())
-                .adress(dto.getAdress() != null ? addressService.findById(dto.getAdress().getId()) : null)
+                .createDate(dto.getCreateDate())
+                .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
                 .build();
     }
 
     public List<CompanyDTO> toListDTO(List<Company> companies) {
         return companies.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public CompanyDTO getCompanyDTOFromPublisher(Publisher publisher) {
+        return toDTO((Company) publisher);
+    }
+
+    public Publisher getPublisherFromDTO(CompanyDTO dto) throws LibraryStoreBooksException {
+        Publisher result = new Publisher();
+        
+        result.setId(dto.getId());
+        result.setName(dto.getName());
+        result.setCnpj(dto.getCnpj());
+        result.setDescription(dto.getDescription());
+        result.setCreateDate(dto.getCreateDate());
+        result.setAddress(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null);
+        
+        return result;
     }
 }

@@ -5,16 +5,15 @@
  */
 package com.paulo.rodrigues.librarybookstore.service;
 
-import com.paulo.rodrigues.librarybookstore.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.PersonFilter;
-import com.paulo.rodrigues.librarybookstore.model.Address;
+import com.paulo.rodrigues.librarybookstore.model.Author;
 import com.paulo.rodrigues.librarybookstore.model.Person;
-import com.paulo.rodrigues.librarybookstore.repository.AddressRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -33,16 +32,16 @@ import org.springframework.stereotype.Service;
 public class PersonService {
 
     private ModelMapper modelMapper;
-    
+
     @Autowired
     private PersonRepository personRepository;
 
     @Autowired
     private AddressService addressService;
-    
+
     @Autowired
     private CityRepository cityRepository;
-    
+
     @Autowired
     private CountryRepository countryRepository;
 
@@ -55,7 +54,7 @@ public class PersonService {
                 filter.getId(),
                 filter.getName(),
                 filter.getCpf(),
-                filter.getSex(),                
+                filter.getSex(),
                 pageable);
     }
 
@@ -100,55 +99,82 @@ public class PersonService {
     }
 
     public PersonDTO toDTO(Person person) {
-        if(person == null){
+        if (person == null) {
             return null;
         }
-        
+
         return PersonDTO.builder()
                 .id(person.getId())
                 .name(person.getName())
                 .cpf(person.getCpf())
                 .sex(person.getSex())
                 .email(person.getEmail())
-                .adress(addressService.toDTO(person.getAdress()))
+                .address(addressService.toDTO(person.getAddress()))
                 .birthdate(person.getBirthdate())
                 .birthCity(person.getBirthCity() != null ? person.getBirthCity().getName() : null)
-                .birthCountry(person.getBirthCountry() != null ? person.getBirthCountry().getName() : null )
+                .birthCountry(person.getBirthCountry() != null ? person.getBirthCountry().getName() : null)
                 .build();
-        
+
     }
 
     public Person fromDTO(PersonDTO dto) throws LibraryStoreBooksException {
-        if(dto == null){
+        if (dto == null) {
             return null;
         }
-        
+
         return Person.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .cpf(dto.getCpf())
                 .sex(dto.getSex())
                 .email(dto.getEmail())
-                .adress(dto.getAdress() != null ? addressService.findById(dto.getAdress().getId()) : null)
+                .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
                 .birthdate(dto.getBirthdate())
                 .birthCity(cityRepository.getByName(dto.getBirthCity()))
                 .birthCountry(countryRepository.getByName(dto.getBirthCountry()))
                 .build();
     }
 
-    public List<PersonDTO> toListDTO(List<Person> people) {
-        return people.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-    }
-    
-    private AddressDTO getAddressDTOFromModel (Address address) {
-        if(address == null){
+    public Author authorFromDTO(PersonDTO dto) throws LibraryStoreBooksException {
+        if (dto == null) {
             return null;
         }
         
-        return AddressDTO.builder()
-                .id(address.getId())
-                .fmtAddress(address.formatAddress())
-                .build();
+        Author result = new Author();
+        
+        result.setDescription(dto.getDescription());
+        result.setId(dto.getId());
+        result.setName(dto.getName());
+        result.setCpf(dto.getCpf());
+        result.setSex(dto.getSex());
+        result.setEmail(dto.getEmail());
+        result.setAddress(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null);
+        result.setBirthCity(cityRepository.getByName(dto.getBirthCity()));
+        result.setBirthdate(dto.getBirthdate());
+        result.setBirthCountry(countryRepository.getByName(dto.getBirthCountry()));
+        
+
+        return result;
+    }
+
+    public List<PersonDTO> toListDTO(List<Person> people) {
+        return people.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public List<PersonDTO> getListAuthorsDTO(List<Author> authors) {
+        return authors.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public List<Author> getListAuthorsbyListDTO(List<PersonDTO> listDTOs) throws LibraryStoreBooksException {
+        List<Author> result = new ArrayList<>();
+
+        if (!FormatUtils.isEmpty(listDTOs)) {
+            for (PersonDTO dto : listDTOs) {
+                result.add(authorFromDTO(dto));
+            }
+        }
+
+        return result;
     }
 
 }

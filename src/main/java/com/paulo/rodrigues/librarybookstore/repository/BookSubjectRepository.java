@@ -13,5 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author paulo.rodrigues
  */
 public interface BookSubjectRepository extends JpaRepository<BookSubject, Long> {
-    
+
+    public BookSubject findByName(String name);
 }

@@ -29,6 +29,6 @@ public class PersonDTO {
     private String email;
     private String birthCity;
     private String birthCountry;
-    private AddressDTO adress;  
+    private AddressDTO address;  
     private String description;
 }

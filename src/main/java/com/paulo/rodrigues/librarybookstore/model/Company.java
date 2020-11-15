@@ -63,7 +63,7 @@ public class Company implements Serializable {
     
     @OneToOne
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
-    private Address adress;
+    private Address address;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createDate;

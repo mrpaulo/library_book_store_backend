@@ -56,7 +56,7 @@ public class BookController {
     public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         
         PagedResult<BookDTO> result = bookService.findPageble(filter);
-        res.addHeader("Total-Count", String.valueOf(result.getTotalElementos()));
+        res.addHeader("Total-Count", String.valueOf(result != null ? result.getTotalElementos() : 0));
 
         return result.getElementos();
     }

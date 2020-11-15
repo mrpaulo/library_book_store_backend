@@ -6,18 +6,22 @@
 package com.paulo.rodrigues.librarybookstore.service;
 
 import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
+import com.paulo.rodrigues.librarybookstore.dto.CompanyDTO;
+import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
+import com.paulo.rodrigues.librarybookstore.model.Author;
 import com.paulo.rodrigues.librarybookstore.model.Book;
+import com.paulo.rodrigues.librarybookstore.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
+import com.paulo.rodrigues.librarybookstore.repository.BookSubjectRepository;
+import com.paulo.rodrigues.librarybookstore.repository.LanguageRepository;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,10 +32,22 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class BookService {
 
+    private ModelMapper modelMapper;
+
     @Autowired
     public BookRepository bookRepository;
 
-    private ModelMapper modelMapper;
+    @Autowired
+    private PersonService personService;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private LanguageRepository languageRepository;
+
+    @Autowired
+    private BookSubjectRepository bookSubjectRepository;
 
     public List<BookDTO> findAll() {
         List<Book> books = bookRepository.findAll();
@@ -79,14 +95,62 @@ public class BookService {
     }
 
     public BookDTO toDTO(Book book) {
-        return modelMapper.map(book, BookDTO.class);
+        return BookDTO.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .authors(getListAuthorsDTO(book.getAuthors()))
+                .language(book.getLanguage() != null ? book.getLanguage().getName() : null)
+                .publisher(getCompanyDTO(book.getPublisher()))
+                .subject(book.getSubject() != null ? book.getSubject().getName() : null)
+                .subtitle(book.getSubtitle())
+                .review(book.getReview())
+                .link(book.getLink())
+                .format(book.getFormat())
+                .condition(book.getCondition())
+                .edition(book.getEdition())
+                .publishDate(book.getPublishDate())
+                .rating(book.getRating())
+                .length(book.getLength())
+                .build();
     }
 
-    public Book fromDTO(BookDTO dto) {
-        return modelMapper.map(dto, Book.class);
+    public Book fromDTO(BookDTO dto) throws LibraryStoreBooksException {
+        return Book.builder()
+                .id(dto.getId())
+                .title(dto.getTitle())
+                .authors(getListAuthors(dto.getAuthors()))
+                .language(languageRepository.findByName(dto.getLanguage()))
+                .publisher(getPublisher(dto.getPublisher()))
+                .subject(bookSubjectRepository.findByName(dto.getSubject()))
+                .subtitle(dto.getSubtitle())
+                .review(dto.getReview())
+                .link(dto.getLink())
+                .format(dto.getFormat())
+                .condition(dto.getCondition())
+                .edition(dto.getEdition())
+                .publishDate(dto.getPublishDate())
+                .rating(dto.getRating())
+                .length(dto.getLength())
+                .build();
     }
 
     public List<BookDTO> toListDTO(List<Book> books) {
         return books.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    private List<PersonDTO> getListAuthorsDTO(List<Author> authors) {
+        return personService.getListAuthorsDTO(authors);
+    }
+
+    private List<Author> getListAuthors(List<PersonDTO> authors) throws LibraryStoreBooksException {
+        return personService.getListAuthorsbyListDTO(authors);
+    }
+
+    private CompanyDTO getCompanyDTO(Publisher publisher) {
+        return companyService.getCompanyDTOFromPublisher(publisher);
+    }
+
+    private Publisher getPublisher(CompanyDTO publisher) throws LibraryStoreBooksException {
+        return companyService.getPublisherFromDTO(publisher);
     }
 }

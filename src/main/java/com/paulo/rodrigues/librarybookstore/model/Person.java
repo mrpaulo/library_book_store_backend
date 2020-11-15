@@ -79,7 +79,7 @@ public class Person implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
-    private Address adress;
+    private Address address;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;

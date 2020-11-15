@@ -13,5 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author paulo.rodrigues
  */
 public interface LanguageRepository extends JpaRepository<Language, Long>{
-    
+
+    public Language findByName (String name);
 }

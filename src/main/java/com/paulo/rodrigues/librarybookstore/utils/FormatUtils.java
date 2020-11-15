@@ -116,7 +116,7 @@ public class FormatUtils {
             lsOrdens.add(new Sort.Order(Sort.Direction.fromString(ordens.length - 1 < i ? "" : ordens[i].trim()), colunas[i].trim()));
 
         }
-        return PageRequest.of(filter.getCurrentPage() > 0 ? filter.getCurrentPage() - 1 : 0, filter.getRegisterByPage(), Sort.by(lsOrdens));
+        return PageRequest.of(filter.getCurrentPage() > 0 ? filter.getCurrentPage() - 1 : 0, filter.getRowsPerPage(), Sort.by(lsOrdens));
     }
 
     /**
