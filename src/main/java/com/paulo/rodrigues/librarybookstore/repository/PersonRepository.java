@@ -31,11 +31,14 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             + " AND (:name IS NULL OR :name = '' OR p.name like CONCAT('%',:name,'%')) "
             + " AND (:cpf IS NULL OR :cpf = '' OR p.cpf LIKE CONCAT('%',:cpf,'%')) "
             + " AND (:sex IS NULL OR :sex = '' OR p.sex = :sex) "
+            + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (p.birthdate BETWEEN :startDate AND :finalDate)) "
             + "")
     public Page<Person> findPageble(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("cpf") String cpf,            
             @Param("sex") String sex,
+            @Param("startDate") Date startDate,
+            @Param("finalDate") Date finalDate,
             Pageable page);
 }

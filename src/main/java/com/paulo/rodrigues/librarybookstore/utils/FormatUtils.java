@@ -293,5 +293,27 @@ public class FormatUtils {
             return (false);
         }
     }
+    
+    public static boolean isDigitos(String texto) {
+        if (texto == null) {
+            return false;
+        }
+
+        for (int i = 0; i < texto.length(); i++) {
+            if (!Character.isDigit(texto.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    public static String formatDoisZeros(long i) {
+        if (i < 10) {
+            return "0" + i;
+        } else {
+            return Long.toString(i);
+        }
+    }
 
 }

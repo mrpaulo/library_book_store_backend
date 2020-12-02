@@ -16,6 +16,7 @@ import com.paulo.rodrigues.librarybookstore.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.repository.BookSubjectRepository;
 import com.paulo.rodrigues.librarybookstore.repository.LanguageRepository;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,10 @@ public class BookService {
 
     public BookDTO create(BookDTO dto) throws LibraryStoreBooksException {
         Book book = fromDTO(dto);
-        return toDTO(save(book));
+        book = save(book);
+        saveBookAuthor(book, dto);
+        
+        return toDTO(book);
     }
 
     public Book save(Book book) throws LibraryStoreBooksException {
@@ -152,5 +156,19 @@ public class BookService {
 
     private Publisher getPublisher(CompanyDTO publisher) throws LibraryStoreBooksException {
         return companyService.getPublisherFromDTO(publisher);
+    }
+
+    private void saveBookAuthor(Book book, BookDTO dto) throws LibraryStoreBooksException {
+        List<PersonDTO> authors = dto.getAuthors();
+        
+        if(!FormatUtils.isEmpty(authors)){
+            for (PersonDTO author : authors) {
+                personService.saveBookAuthor(book, author);
+            }
+        }
+    }
+    
+    public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
+        return bookRepository.getListAuthorsByBookId(bookId);
     }
 }

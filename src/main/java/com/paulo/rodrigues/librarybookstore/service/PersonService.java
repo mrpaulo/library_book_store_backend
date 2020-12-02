@@ -9,12 +9,15 @@ import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.PersonFilter;
 import com.paulo.rodrigues.librarybookstore.model.Author;
+import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.model.Person;
+import com.paulo.rodrigues.librarybookstore.repository.AuthorRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -35,6 +38,9 @@ public class PersonService {
 
     @Autowired
     private PersonRepository personRepository;
+    
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Autowired
     private AddressService addressService;
@@ -55,6 +61,8 @@ public class PersonService {
                 filter.getName(),
                 filter.getCpf(),
                 filter.getSex(),
+                filter.getStartDate(),
+                filter.getFinalDate(),
                 pageable);
     }
 
@@ -140,18 +148,24 @@ public class PersonService {
             return null;
         }
         
+        Author author = authorRepository.findById(dto.getId()).orElse(null);        
+        if (author == null) {
+            return null;
+        }
+        Person person = findById(dto.getId());
+        
         Author result = new Author();
         
-        result.setDescription(dto.getDescription());
+        result.setDescription(author.getDescription());
         result.setId(dto.getId());
-        result.setName(dto.getName());
-        result.setCpf(dto.getCpf());
-        result.setSex(dto.getSex());
-        result.setEmail(dto.getEmail());
-        result.setAddress(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null);
-        result.setBirthCity(cityRepository.getByName(dto.getBirthCity()));
-        result.setBirthdate(dto.getBirthdate());
-        result.setBirthCountry(countryRepository.getByName(dto.getBirthCountry()));
+        result.setName(person.getName());
+        result.setCpf(person.getCpf());
+        result.setSex(person.getSex());
+        result.setEmail(person.getEmail());
+        result.setAddress(person.getAddress() != null ? addressService.findById(person.getAddress().getId()) : null);
+        result.setBirthCity(person.getBirthCity() != null ? cityRepository.getByName(person.getBirthCity().getName()) : null);
+        result.setBirthdate(person.getBirthdate());
+        result.setBirthCountry(person.getBirthCountry() != null ? countryRepository.getByName(person.getBirthCountry().getName()) : null);
         
 
         return result;
@@ -176,5 +190,14 @@ public class PersonService {
 
         return result;
     }
+
+    void saveBookAuthor(Book book, PersonDTO dto) throws LibraryStoreBooksException {
+        Author author = authorFromDTO(dto);
+        
+        author.setBooks(Arrays.asList(book));
+        authorRepository.saveAndFlush(author);
+    }
+    
+    
 
 }

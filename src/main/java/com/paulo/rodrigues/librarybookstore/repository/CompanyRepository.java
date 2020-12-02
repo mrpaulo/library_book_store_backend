@@ -23,10 +23,11 @@ public interface CompanyRepository extends JpaRepository<Company, Long>{
 
     @Query("SELECT c "
             + " FROM Company c "
-            + " WHERE (:id IS NULL OR :id = '' OR c.id = :id) "
-            + " AND (:name IS NULL OR :name = '' OR c.name like CONCAT('%',:name,'%')) "
+            + " WHERE (:id IS NULL OR c.id = :id) "
+            + " AND (:name IS NULL OR :name = '' OR c.name LIKE CONCAT('%',:name,'%')) "
             + " AND (:cnpj IS NULL OR :cnpj = '' OR c.cnpj LIKE CONCAT('%',:cnpj,'%')) "
-            + " AND ((:startDate IS NULL AND :finalDate IS NULL) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
+//            + " AND ((:startDate IS NULL AND :finalDate IS NULL) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
+            + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
             + "")
     public Page<Company> findPageble(
             @Param("id") Long id,

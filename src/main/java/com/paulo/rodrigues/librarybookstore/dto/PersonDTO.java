@@ -5,6 +5,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.dto;
 
+import com.paulo.rodrigues.librarybookstore.model.Person;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -31,4 +32,26 @@ public class PersonDTO {
     private String birthCountry;
     private AddressDTO address;  
     private String description;
+
+    public PersonDTO(long id, String name, String cpf, Date birthdate, String sex, String email, String description) {
+        this.id = id;
+        this.name = name;
+        this.cpf = cpf;
+        this.birthdate = birthdate;
+        this.sex = sex;
+        this.email = email;
+        this.description = description;
+    }
+    
+    public PersonDTO(Person p) {
+        this.id = p.getId();
+        this.name = p.getName();
+        this.cpf = p.getCpf();
+        this.birthdate = p.getBirthdate();
+        this.sex = p.getSex();
+        this.email = p.getEmail();
+        
+    }
+    
+    
 }
