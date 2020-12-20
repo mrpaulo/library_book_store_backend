@@ -19,6 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>13</java.version>
+        <test-environment.version>1.0</test-environment.version>
     </properties>
     
     <dependencies>
@@ -89,6 +90,21 @@
             <artifactId>modelmapper</artifactId>
             <version>2.3.7</version>
         </dependency>
+        
+        <!-- Test Environment -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Fim Test Environment -->
 
     </dependencies>
     <build>
