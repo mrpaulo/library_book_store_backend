@@ -22,7 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author paulo.rodrigues
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = H2RepositoryConfigTest.class)
+@ContextConfiguration(classes = BaseIntegrationTestCase.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class BaseIntegrationTestCase {
