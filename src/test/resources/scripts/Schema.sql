@@ -1,6 +1,6 @@
  CREATE TABLE address 
  (
-    id bigint, 
+    id bigint PRIMARY KEY NOT NULL,  
     cep character varying(8),
     coordination character varying(20),
     create_at timestamp without time zone,
@@ -18,7 +18,7 @@
 
  CREATE TABLE author 
  (
-    id bigint NOT NULL,
+    id bigint PRIMARY KEY NOT NULL,  
     description character varying(255),
     books_id bigint
  );
@@ -53,14 +53,14 @@
 
  CREATE TABLE book_subject 
  (
-    id bigint not null,
+    id bigint PRIMARY KEY NOT NULL,  
     description character varying(300),
     name character varying(100)
  );
 
  CREATE TABLE city 
  (
-    id bigint not null,
+    id bigint PRIMARY KEY NOT NULL,  
     ibge_code character varying(10),
     name character varying(100),
     country_id bigint,
@@ -69,7 +69,7 @@
 
  CREATE TABLE company 
  (
-    id bigint NOT NULL,
+    id bigint PRIMARY KEY NOT NULL,  
     cnpj character varying(14),
     create_at timestamp without time zone,
     create_by character varying(255),
@@ -82,19 +82,19 @@
 
  CREATE TABLE country 
  (
-    id bigint not null,
+    id bigint PRIMARY KEY NOT NULL,  
     name character varying(100)
  );
 
  CREATE TABLE language 
  (
-    id bigint not null,
+    id bigint PRIMARY KEY NOT NULL,  
     name character varying(100)
  );
 
  CREATE TABLE person 
  (
-    id bigint NOT NULL,
+    id bigint PRIMARY KEY NOT NULL,  
     birthdate date,
     cpf character varying(11),
     create_at timestamp without time zone,
@@ -109,15 +109,11 @@
     birth_country_id bigint
  );
 
- CREATE TABLE publisher 
- (
-    id bigint NOT NULL,
-    description character varying(500),
- );
+ 
 
  CREATE TABLE state_country 
  (
-    id bigint not null,
+    id bigint PRIMARY KEY NOT NULL,  
     name character varying(100),
     country_id bigint
  );

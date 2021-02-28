@@ -10,7 +10,6 @@ import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksExceptio
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.service.BookService;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,8 +19,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
