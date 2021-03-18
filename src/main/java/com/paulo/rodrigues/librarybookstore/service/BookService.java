@@ -17,6 +17,7 @@ import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.repository.BookSubjectRepository;
 import com.paulo.rodrigues.librarybookstore.repository.LanguageRepository;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +35,23 @@ import org.springframework.stereotype.Service;
 public class BookService {
 
     private ModelMapper modelMapper;
+    private final BookRepository bookRepository;
+    private final PersonService personService;
+    private final CompanyService companyService;
+    private final LanguageRepository languageRepository;
+    private final BookSubjectRepository bookSubjectRepository;
 
-    @Autowired
-    public BookRepository bookRepository;
-
-    @Autowired
-    private PersonService personService;
-
-    @Autowired
-    private CompanyService companyService;
-
-    @Autowired
-    private LanguageRepository languageRepository;
-
-    @Autowired
-    private BookSubjectRepository bookSubjectRepository;
+    public BookService(@Autowired BookRepository bookRepository,
+            @Autowired PersonService personService,
+            @Autowired CompanyService companyService,
+            @Autowired LanguageRepository languageRepository,
+            @Autowired BookSubjectRepository bookSubjectRepository) {
+        this.bookRepository = bookRepository;
+        this.personService = personService;
+        this.companyService = companyService;
+        this.languageRepository = languageRepository;
+        this.bookSubjectRepository = bookSubjectRepository;
+    }
 
     public List<BookDTO> findAll() {
         List<Book> books = bookRepository.findAll();
@@ -64,7 +67,7 @@ public class BookService {
         Book book = bookRepository.findById(bookId).orElse(null);
 
         if (book == null) {
-            throw new LibraryStoreBooksException("Livro não encontrado");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
 
         return book;
@@ -74,7 +77,7 @@ public class BookService {
         Book book = fromDTO(dto);
         book = save(book);
         saveBookAuthor(book, dto);
-        
+
         return toDTO(book);
     }
 
@@ -160,14 +163,14 @@ public class BookService {
 
     private void saveBookAuthor(Book book, BookDTO dto) throws LibraryStoreBooksException {
         List<PersonDTO> authors = dto.getAuthors();
-        
-        if(!FormatUtils.isEmpty(authors)){
+
+        if (!FormatUtils.isEmpty(authors)) {
             for (PersonDTO author : authors) {
                 personService.saveBookAuthor(book, author);
             }
         }
     }
-    
+
     public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
         return bookRepository.getListAuthorsByBookId(bookId);
     }

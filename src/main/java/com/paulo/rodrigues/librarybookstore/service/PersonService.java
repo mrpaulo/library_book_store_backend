@@ -16,6 +16,7 @@ import com.paulo.rodrigues.librarybookstore.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +71,7 @@ public class PersonService {
         Person person = personRepository.findById(personId).orElse(null);
 
         if (person == null) {
-            throw new LibraryStoreBooksException("Pessoa não encontrada para o id: " + personId);
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_NOT_FOUND") + " ID: " + personId);
         }
 
         return person;

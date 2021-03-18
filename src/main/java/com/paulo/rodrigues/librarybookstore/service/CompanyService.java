@@ -14,6 +14,7 @@ import com.paulo.rodrigues.librarybookstore.model.Company;
 import com.paulo.rodrigues.librarybookstore.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.repository.AddressRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CompanyRepository;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -57,7 +58,7 @@ public class CompanyService {
         Company company = companyRepository.findById(companyId).orElse(null);
 
         if (company == null) {
-            throw new LibraryStoreBooksException("Empresa não localizada para o id: " + companyId);
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("COMPANY_NOT_FOUND") + " ID: " + companyId);
         }
 
         return company;

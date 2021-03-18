@@ -9,6 +9,7 @@ import com.paulo.rodrigues.librarybookstore.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.model.Address;
 import com.paulo.rodrigues.librarybookstore.repository.AddressRepository;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +24,21 @@ import org.springframework.stereotype.Service;
 public class AddressService {
 
     private ModelMapper modelMapper;
-    
+
     @Autowired
     private AddressRepository addressRepository;
-    
+
     public Address findById(Long addressId) throws LibraryStoreBooksException {
         Address address = addressRepository.findById(addressId).orElse(null);
 
         if (address == null) {
-            throw new LibraryStoreBooksException("Endereço não localizado para o id: " + addressId);
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
         }
 
         return address;
     }
 
-    public AddressDTO create(Address address) throws LibraryStoreBooksException {       
+    public AddressDTO create(Address address) throws LibraryStoreBooksException {
         return toDTO(save(address));
     }
 
@@ -61,16 +62,16 @@ public class AddressService {
 
         addressRepository.delete(addressToDelete);
     }
-    
-    public AddressDTO toDTO (Address address) {
-        if(address == null){
+
+    public AddressDTO toDTO(Address address) {
+        if (address == null) {
             return null;
         }
-        
+
         return AddressDTO.builder()
                 .id(address.getId())
                 .fmtAddress(address.formatAddress())
                 .build();
-    }    
-    
+    }
+
 }

@@ -42,6 +42,7 @@ public class JPAHibernateTest {
             try {
                 File script = new File(getClass().getResource("/scripts/BookEnvironment.sql").getFile());
                 RunScript.execute(connection, new FileReader(script));
+                System.out.println("################Lido ");
             } catch (FileNotFoundException e) {
                 throw new RuntimeException("could not initialize with script");
             }           

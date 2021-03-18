@@ -1,9 +1,13 @@
-INSERT INTO language (id, name) 
-VALUES (1, 'Portugues');
 
+DELETE FROM book_subject;
 INSERT INTO book_subject (id, description, name) 
 VALUES (1, 'Romance', 'Romance');
 
+DELETE FROM language;
+INSERT INTO language (id, name) 
+VALUES (1, 'Portugues');
+
+DELETE FROM book;
 INSERT INTO book 
     (id,
     condition,
@@ -25,6 +29,7 @@ VALUES
 (3,'NEW', 1,'PRINTED_BOOK', 250, 'HTTPS://WWW.GOOGLE.COM', '2020-01-30', 4.8, 'Um livro bom 3', 'Uma viagem pelo conhecimento', 'Conheça Ti 3', 1, 3, 1);
 
 
+DELETE FROM author_books;
 INSERT INTO author_books
 (author_id, books_id) 
 VALUES
