@@ -31,6 +31,8 @@ import lombok.Setter;
 @Builder
 public class BookSubject implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     @SequenceGenerator(name = "SEQ_SUBJECT", allocationSize = 1, sequenceName = "subject_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SUBJECT")
     @Id

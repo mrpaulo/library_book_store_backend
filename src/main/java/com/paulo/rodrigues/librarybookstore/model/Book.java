@@ -8,7 +8,9 @@ package com.paulo.rodrigues.librarybookstore.model;
 import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -47,53 +49,55 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Book implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     @SequenceGenerator(name = "SEQ_BOOK", allocationSize = 1, sequenceName = "book_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BOOK")
     @Id
     private long id;
-    
+
     @NotNull
-    @Column(length = 100)
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String title;
-    
+
     @NotNull
-    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.LAZY)        
+    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.LAZY)
     private List<Author> authors;
-    
+
     @NotNull
     @OneToOne
     @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID")
     private Publisher publisher;
-    
+
     @OneToOne
     @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")
     private Language language;
-    
+
     @OneToOne
     @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID")
     private BookSubject subject;
-    
-    @Column(length = 100)
+
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String subtitle;
-    
-    @Column(length = 500)
+
+    @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
     private String review;
-    
-    @Column(length = 100)
+
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String link;
-    
+
     @Enumerated(EnumType.STRING)
     private EBookFormat format;
-    
+
     @Enumerated(EnumType.STRING)
     private EBookCondition condition;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date publishDate;
-    
+
     private int edition;
-    private Double rating;    
+    private Double rating;
     private int length;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -105,19 +109,20 @@ public class Book implements Serializable {
 
     public void bookValidation() throws LibraryStoreBooksException {
         if (FormatUtils.isEmpty(title)) {
-            throw new LibraryStoreBooksException("Título deve ser informado!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_TITLE_NOT_INFORMED"));
         }
-        if (title.length() > 100) {
-            throw new LibraryStoreBooksException("Título com tamanho maior que 100 caracteres!");
+        if (title.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_TITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
-        if (!FormatUtils.isEmptyOrNull(subtitle) && subtitle.length() > 100) {
-            throw new LibraryStoreBooksException("Subtítulo com tamanho maior que 100 caracteres!");
+        if (!FormatUtils.isEmptyOrNull(subtitle) && subtitle.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_SUBTITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
-        if (!FormatUtils.isEmptyOrNull(link) && link.length() > 100) {
-            throw new LibraryStoreBooksException("Link com tamanho maior que 100 caracteres!");
+        if (!FormatUtils.isEmptyOrNull(link) && link.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
-        if (!FormatUtils.isEmptyOrNull(review) && review.length() > 500) {
-            throw new LibraryStoreBooksException("Resumo com tamanho maior que 500 caracteres!");
+        if (!FormatUtils.isEmptyOrNull(review) && review.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_REVIEW_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
+
         }
     }
 

@@ -7,7 +7,6 @@ package com.paulo.rodrigues.librarybookstore.model;
 
 import java.io.Serializable;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,19 +27,21 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_name_language", columnList = "name"),
-})
+    @Index(name = "idx_name_language", columnList = "name"),})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Language implements Serializable{
+public class Language implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @SequenceGenerator(name = "SEQ_LANGUAGE", allocationSize = 1, sequenceName = "language_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_LANGUAGE")
     @Id
     private long id;
-    
+
     @NotNull
     @Column(length = 100)
     private String name;

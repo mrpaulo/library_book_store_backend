@@ -23,11 +23,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Author extends Person {
-        
+
+    private static final long serialVersionUID = 1L;
+
     private String description;
-    
+
     @ManyToMany
     private List<Book> books;
-   
-        
+
 }

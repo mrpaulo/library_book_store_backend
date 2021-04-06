@@ -37,6 +37,9 @@ import lombok.Setter;
 @Setter
 @Builder
 public class StateCountry implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     @SequenceGenerator(name = "SEQ_STATE", allocationSize = 1, sequenceName = "state_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_STATE")
     @Id

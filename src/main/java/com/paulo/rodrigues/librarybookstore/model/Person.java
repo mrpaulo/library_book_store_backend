@@ -1,8 +1,10 @@
 package com.paulo.rodrigues.librarybookstore.model;
 
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.isCPF;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -45,6 +47,8 @@ import lombok.Setter;
         strategy = InheritanceType.JOINED
 )
 public class Person implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     @SequenceGenerator(name = "SEQ_PERSON", allocationSize = 1, sequenceName = "person_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PERSON")
@@ -52,11 +56,11 @@ public class Person implements Serializable {
     private long id;
 
     @NotNull
-    @Column(length = 100)
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String name;
 
     @NotNull
-    @Column(unique = true, length = 11)
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_CPF)
     private String cpf;
     
     @NotNull
@@ -66,7 +70,7 @@ public class Person implements Serializable {
     @Column(length = 1)
     private String sex;
 
-    @Column(length = 100)
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String email;
 
     @ManyToOne
@@ -89,27 +93,30 @@ public class Person implements Serializable {
     private String updateBy;
 
     public void personValidation() throws LibraryStoreBooksException {
-        if (name.isEmpty()) {
-            throw new LibraryStoreBooksException("Nome deve ser informado!");
+        if (FormatUtils.isEmpty(name)) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_NAME_NOT_INFORMED"));
         }
+        if (name.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }          
         String nuCpf = FormatUtils.removeFormatCPF(cpf);
         if (nuCpf.isEmpty()) {
-            throw new LibraryStoreBooksException("CPF deve ser informado!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_CPF_NOT_INFORMED"));
         }
         if (!isCPF(nuCpf)) {
-            throw new LibraryStoreBooksException("CPF inválido!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_CPF_INVALID"));
         }
         if (birthdate == null) {
-            throw new LibraryStoreBooksException("Data de nascimento inválida, não foi informada ou formato diferente de aaaa-mm-dd!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_BIRTHDATE_NOT_INFORMED"));
         }
         if (birthdate.after(new Date())) {
-            throw new LibraryStoreBooksException("Data de nascimento inválida, posterior a hoje!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_BIRTHDATE_INVALID"));
         }
-        if (!FormatUtils.isEmptyOrNull(email) && email.length() > 100) {
-            throw new LibraryStoreBooksException("E-mail com tamanho maior que 100 caracteres!");
+        if (!FormatUtils.isEmptyOrNull(email) && email.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_EMAIL_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }       
         if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F")))) {
-            throw new LibraryStoreBooksException("Somente aceito como sexo M ou F!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_SEX_INVALID"));
         }
     }
 

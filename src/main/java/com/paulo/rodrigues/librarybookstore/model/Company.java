@@ -6,7 +6,9 @@
 package com.paulo.rodrigues.librarybookstore.model;
 
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
@@ -47,6 +49,8 @@ import lombok.Setter;
         strategy = InheritanceType.JOINED
 )
 public class Company implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     @SequenceGenerator(name = "SEQ_COMPANY", allocationSize = 1, sequenceName = "company_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_COMPANY")
@@ -54,11 +58,11 @@ public class Company implements Serializable {
     private long id;
 
     @NotNull
-    @Column(length = 100)
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String name;
 
     @NotNull
-    @Column(unique = true, length = 14)
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_CNPJ)
     private String cnpj;
     
     @OneToOne
@@ -76,15 +80,18 @@ public class Company implements Serializable {
     private String updateBy;
 
     public void companyValidation() throws LibraryStoreBooksException {
-        if (name.isEmpty()) {
-            throw new LibraryStoreBooksException("Nome deve ser informado!");
+        if (FormatUtils.isEmpty(name)) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("COMPANY_NAME_NOT_INFORMED"));
         }
+        if (name.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("COMPANY_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }        
         String nuCnpj = FormatUtils.desformatCnpj(cnpj);
         if (nuCnpj.isEmpty()) {
-            throw new LibraryStoreBooksException("CNPJ deve ser informado!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("COMPANY_CNPJ_NOT_INFORMED"));
         }
         if (!FormatUtils.isCNPJ(nuCnpj)) {
-            throw new LibraryStoreBooksException("CNPJ inválido!");
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("COMPANY_CNPJ_INVALID"));
         }
     }
     
