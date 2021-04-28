@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2021 paulo.rodrigues
+ * Profile: <https://github.com/mrpaulo>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
@@ -37,7 +49,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
+ * {@code Book} class represents properties of book objects
+ * in the Library Book Store system.
+ * 
+ * <br>
+ * It's a entity on database and implements {@link java.io.Serializable Serializable} class.
+ * 
+ * <br>
+ * 
+ * @version 1
  * @author paulo.rodrigues
  */
 @Entity
@@ -107,6 +127,12 @@ public class Book implements Serializable {
     private Date updateAt;
     private String updateBy;
 
+    /**
+     * Validate a object with the basic requirements.
+     * 
+     * If something isn't right it
+     * @throws LibraryStoreBooksException 
+     */
     public void bookValidation() throws LibraryStoreBooksException {
         if (FormatUtils.isEmpty(title)) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_TITLE_NOT_INFORMED"));
