@@ -39,9 +39,9 @@ public class BookDTO {
     private long id;
     private String title;
     private List<PersonDTO> authors;
-    private String language;
+    private String languageName;
     private CompanyDTO publisher;
-    private String subject;
+    private String subjectName;
     private String subtitle;
     private String review;
     private String link;

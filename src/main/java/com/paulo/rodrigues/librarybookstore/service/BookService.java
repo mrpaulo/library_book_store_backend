@@ -24,6 +24,8 @@ import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksExceptio
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Author;
 import com.paulo.rodrigues.librarybookstore.model.Book;
+import com.paulo.rodrigues.librarybookstore.model.BookSubject;
+import com.paulo.rodrigues.librarybookstore.model.Language;
 import com.paulo.rodrigues.librarybookstore.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.repository.BookSubjectRepository;
@@ -57,12 +59,14 @@ public class BookService {
             @Autowired PersonService personService,
             @Autowired CompanyService companyService,
             @Autowired LanguageRepository languageRepository,
-            @Autowired BookSubjectRepository bookSubjectRepository) {
+            @Autowired BookSubjectRepository bookSubjectRepository,
+            @Autowired ModelMapper modelMapper) {
         this.bookRepository = bookRepository;
         this.personService = personService;
         this.companyService = companyService;
         this.languageRepository = languageRepository;
         this.bookSubjectRepository = bookSubjectRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<BookDTO> findAll() {
@@ -104,6 +108,9 @@ public class BookService {
         Book bookToEdit = findById(bookId);
 
         bookToEdit = modelMapper.map(bookDetail, Book.class);
+        bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
+        bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
+        bookToEdit.setPublisher(getPublisher(bookDetail.getPublisher()));
 
         return toDTO(save(bookToEdit));
     }
@@ -118,9 +125,9 @@ public class BookService {
                 .id(book.getId())
                 .title(book.getTitle())
                 .authors(getListAuthorsDTO(book.getAuthors()))
-                .language(book.getLanguage() != null ? book.getLanguage().getName() : null)
+                .languageName(book.getLanguage() != null ? book.getLanguage().getName() : null)
                 .publisher(getCompanyDTO(book.getPublisher()))
-                .subject(book.getSubject() != null ? book.getSubject().getName() : null)
+                .subjectName(book.getSubject() != null ? book.getSubject().getName() : null)
                 .subtitle(book.getSubtitle())
                 .review(book.getReview())
                 .link(book.getLink())
@@ -138,9 +145,9 @@ public class BookService {
                 .id(dto.getId())
                 .title(dto.getTitle())
                 .authors(getListAuthors(dto.getAuthors()))
-                .language(languageRepository.findByName(dto.getLanguage()))
+                .language(getLanguageFromName(dto.getLanguageName()))
                 .publisher(getPublisher(dto.getPublisher()))
-                .subject(bookSubjectRepository.findByName(dto.getSubject()))
+                .subject(getSubjectFromName(dto.getSubjectName()))
                 .subtitle(dto.getSubtitle())
                 .review(dto.getReview())
                 .link(dto.getLink())
@@ -185,5 +192,12 @@ public class BookService {
 
     public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
         return bookRepository.getListAuthorsByBookId(bookId);
+    }
+    
+    private BookSubject getSubjectFromName(String name) {
+        return bookSubjectRepository.findByName(name);
+    }
+    private Language getLanguageFromName(String name) {
+        return languageRepository.findByName(name);
     }
 }

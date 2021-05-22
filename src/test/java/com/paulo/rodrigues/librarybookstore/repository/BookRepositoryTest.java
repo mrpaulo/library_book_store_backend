@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -42,7 +43,7 @@ public class BookRepositoryTest extends JPAHibernateTest {
         
     @Autowired
     private BookRepository bookRepositoryMock;
-    
+    private ModelMapper modelMapper;
     private PersonService personServiceMock;
     private CompanyService companyServiceMock;
     private LanguageRepository languageRepositoryMock;
@@ -56,7 +57,7 @@ public class BookRepositoryTest extends JPAHibernateTest {
         languageRepositoryMock = Mockito.mock(LanguageRepository.class);
         bookSubjectRepositoryMock = Mockito.mock(BookSubjectRepository.class);
         
-        bookServiceMock = new BookService(bookRepositoryMock, personServiceMock, companyServiceMock, languageRepositoryMock, bookSubjectRepositoryMock);
+        bookServiceMock = new BookService(bookRepositoryMock, personServiceMock, companyServiceMock, languageRepositoryMock, bookSubjectRepositoryMock, modelMapper);
     }
     
     @Test

@@ -82,7 +82,7 @@ public class Book implements Serializable {
     private String title;
 
     @NotNull
-    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
     private List<Author> authors;
 
     @NotNull

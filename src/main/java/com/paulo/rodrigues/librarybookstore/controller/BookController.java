@@ -61,7 +61,7 @@ public class BookController {
         return booksList.stream().sorted(Comparator.comparing(BookDTO::getTitle)).collect(Collectors.toList());
     }
 
-    @GetMapping()
+    @PostMapping("/fetch")
     public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         
         PagedResult<BookDTO> result = bookService.findPageble(filter);
