@@ -17,9 +17,12 @@
  */
 package com.paulo.rodrigues.librarybookstore.service;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
 import com.paulo.rodrigues.librarybookstore.dto.CompanyDTO;
 import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
+import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
+import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Author;
@@ -34,7 +37,12 @@ import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,11 +201,38 @@ public class BookService {
     public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
         return bookRepository.getListAuthorsByBookId(bookId);
     }
-    
+
     private BookSubject getSubjectFromName(String name) {
         return bookSubjectRepository.findByName(name);
     }
+
     private Language getLanguageFromName(String name) {
         return languageRepository.findByName(name);
+    }
+
+    public List<BookSubject> getBookSubject() {
+        return bookSubjectRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(BookSubject::getName))
+                .collect(Collectors.toList());
+    }
+
+    public List<Map<String, String>> getEBookFormat() {
+        return Stream.of(EBookFormat.values()).map(temp -> {
+            Map<String, String> obj = new HashMap<>();
+            obj.put("value", temp.getName());
+            obj.put("label", temp.getDescription());
+            return obj;
+        }).collect(Collectors.toList());
+    }
+
+    @JsonGetter
+    public List<Map<String, String>> getEBookCondition() {
+        return Stream.of(EBookCondition.values()).map(temp -> {
+            Map<String, String> obj = new HashMap<>();
+            obj.put("value", temp.getName());
+            obj.put("label", temp.getDescription());
+            return obj;
+        }).collect(Collectors.toList());
     }
 }
