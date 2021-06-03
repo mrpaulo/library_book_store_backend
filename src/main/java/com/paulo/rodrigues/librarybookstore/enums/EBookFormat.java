@@ -23,16 +23,20 @@ package com.paulo.rodrigues.librarybookstore.enums;
  */
 public enum EBookFormat {
     PRINTED_BOOK(0, "Livro impresso"),
-    HARDCOVER(1, "Livro capa dura"),    
+    HARDCOVER(1, "Livro capa dura"),
     KINDLE_EDITION(2, "Kindle"),
     AUDIO_BOOK(3, "Audio livro");
-    
+
     int cod;
     String description;
 
     private EBookFormat(int cod, String description) {
         this.cod = cod;
         this.description = description;
+    }
+
+    public String getName() {
+        return this.name();
     }
 
     public int getCod() {
@@ -50,7 +54,7 @@ public enum EBookFormat {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public EBookFormat getBookCFormatByCod(int cod) {
         for (EBookFormat value : EBookFormat.values()) {
             if (cod == value.getCod()) {

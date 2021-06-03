@@ -18,9 +18,12 @@
 package com.paulo.rodrigues.librarybookstore.controller;
 
 import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
+import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
+import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
+import com.paulo.rodrigues.librarybookstore.model.BookSubject;
 import com.paulo.rodrigues.librarybookstore.service.BookService;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
@@ -92,5 +95,20 @@ public class BookController {
         response.put("deleted", Boolean.TRUE);
 
         return response;
+    }
+    
+    @GetMapping("/subjects")
+    public ResponseEntity<List<BookSubject>> getBookSubject() throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(bookService.getBookSubject());
+    }
+    
+    @GetMapping("/formats")
+    public ResponseEntity<List<Map<String, String>>> getEBookFormat() throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(bookService.getEBookFormat());
+    }
+    
+    @GetMapping("/conditions")
+    public ResponseEntity<List<Map<String, String>>> getEBookCondition() throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(bookService.getEBookCondition());
     }
 }

@@ -34,6 +34,10 @@ public enum EBookCondition {
         this.description = description;
     }
 
+    public String getName() {
+        return this.name();
+    }
+
     public int getCod() {
         return cod;
     }

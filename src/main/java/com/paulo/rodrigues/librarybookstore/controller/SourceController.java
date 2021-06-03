@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author paulo
+ * @author paulo.rodrigues
  */
 @RestController
 @CrossOrigin(origins = "*")
@@ -36,8 +36,8 @@ public class SourceController {
 	@GetMapping()
 	public Map<String, String> getSouce() {
 		Map<String, String> retorno = new HashMap<>();
-		retorno.put("Projeto frontend ReactJS", "https://github.com/mrpaulo/front_person_crud");
-		retorno.put("Projeto backend Java Spring Boot", "https://github.com/mrpaulo/PersonCRUD");
+		retorno.put("Projeto frontend ReactJS ", "https://github.com/mrpaulo/library_book_store_frontend");
+		retorno.put("Projeto backend Java Spring Boot ", "https://github.com/mrpaulo/library_book_store_backend");
 		
 		return retorno;
 	}
