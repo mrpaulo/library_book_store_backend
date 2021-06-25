@@ -72,6 +72,10 @@ public class CompanyService {
 
         return company;
     }
+    
+    public List<CompanyDTO> findByName(String name) {
+        return toListDTO(companyRepository.findByName(name));
+    }
 
     public CompanyDTO create(CompanyDTO dto) throws LibraryStoreBooksException {
         Company company = fromDTO(dto);
@@ -102,7 +106,7 @@ public class CompanyService {
     public CompanyDTO toDTO(Company company) {
         
         return CompanyDTO.builder()
-                .id(0)
+                .id(company.getId())
                 .name(company.getName())
                 .cnpj(company.getCnpj())
                 .createDate(company.getCreateDate())

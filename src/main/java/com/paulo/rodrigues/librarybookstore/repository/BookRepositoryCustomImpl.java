@@ -165,6 +165,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             sql.append(filter.getPublisher());
             sql.append(" IN (SELECT c.name FROM COMPANY c WHERE c.id = b.publisher_id ) ");
         }
+        if (!FormatUtils.isEmpty(filter.getSubjectName())) {
+            sql.append(" AND ");
+            sql.append(" b.subject_id ");
+            sql.append(" = (SELECT id FROM BOOK_SUBJECT WHERE name = '");
+            sql.append(filter.getSubjectName());
+            sql.append("') ");
+        }
         if (filter.getStartDate() != null && filter.getFinalDate() != null) {
             sql.append(" AND b.publish_date BETWEEN '");
             sql.append(DateUtils.getDataAnoMesDia(filter.getStartDate()));

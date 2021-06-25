@@ -18,12 +18,11 @@
 package com.paulo.rodrigues.librarybookstore.controller;
 
 import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
-import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
-import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.model.BookSubject;
+import com.paulo.rodrigues.librarybookstore.model.Language;
 import com.paulo.rodrigues.librarybookstore.service.BookService;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
@@ -77,7 +76,7 @@ public class BookController {
     public ResponseEntity<Book> getById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(bookService.findById(bookId));
     }
-
+    
     @PostMapping()
     public BookDTO create(@RequestBody BookDTO dto) throws LibraryStoreBooksException {
         return bookService.create(dto);
@@ -110,5 +109,10 @@ public class BookController {
     @GetMapping("/conditions")
     public ResponseEntity<List<Map<String, String>>> getEBookCondition() throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(bookService.getEBookCondition());
+    }
+    
+    @GetMapping("/languages")
+    public ResponseEntity<List<Language>> getLanguages() throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(bookService.getBookLanguage());
     }
 }

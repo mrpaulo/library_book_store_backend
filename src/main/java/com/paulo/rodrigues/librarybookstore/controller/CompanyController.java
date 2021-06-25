@@ -76,6 +76,11 @@ public class CompanyController {
     public ResponseEntity<Company> getById(@PathVariable(value = "id") Long companyId) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(companyService.findById(companyId));
     }
+    
+    @GetMapping("/fetch/{name}")
+    public ResponseEntity<List<CompanyDTO>> fetchByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(companyService.findByName(name));
+    }
 
     @PostMapping()
     public CompanyDTO create(@RequestBody CompanyDTO company) throws LibraryStoreBooksException {

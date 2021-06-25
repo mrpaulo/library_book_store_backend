@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.repository;
 
 import com.paulo.rodrigues.librarybookstore.model.Company;
 import java.util.Date;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +33,12 @@ import org.springframework.data.repository.query.Param;
 public interface CompanyRepository extends JpaRepository<Company, Long>{
     
     public Company findByCnpj (String cnpj);
+    
+    @Query("SELECT c "
+            + " FROM Company c "
+            + " WHERE (:name IS NULL OR :name = '' OR c.name LIKE CONCAT('%',:name,'%')) "
+            + "")
+    public List<Company> findByName (@Param("name") String name);
 
     @Query("SELECT c "
             + " FROM Company c "

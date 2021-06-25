@@ -216,6 +216,13 @@ public class BookService {
                 .sorted(Comparator.comparing(BookSubject::getName))
                 .collect(Collectors.toList());
     }
+    
+    public List<Language> getBookLanguage() {
+        return languageRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Language::getName))
+                .collect(Collectors.toList());
+    }
 
     public List<Map<String, String>> getEBookFormat() {
         return Stream.of(EBookFormat.values()).map(temp -> {
