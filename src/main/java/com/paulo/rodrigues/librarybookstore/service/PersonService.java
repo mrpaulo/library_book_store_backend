@@ -88,6 +88,10 @@ public class PersonService {
 
         return person;
     }
+    
+    public List<PersonDTO> findByName (String name) throws LibraryStoreBooksException {
+        return toListDTO(personRepository.findByName(name));
+    }
 
     public Person findByCPF(String cpf) {
         return personRepository.findByCpf(cpf);

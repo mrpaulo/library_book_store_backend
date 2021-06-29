@@ -89,10 +89,10 @@ public class BookService {
 
     public Book findById(Long bookId) throws LibraryStoreBooksException {
         Book book = bookRepository.findById(bookId).orElse(null);
-
         if (book == null) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
+        book.setAuthors(personService.getListAuthorsbyListDTO(bookRepository.getListAuthorsByBookId(bookId)));
 
         return book;
     }

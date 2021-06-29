@@ -77,6 +77,11 @@ public class PersonController {
     public ResponseEntity<Person> getById(@PathVariable(value = "id") Long personId) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(personService.findById(personId));
     }
+    
+    @GetMapping("/fetch/{name}")
+    public ResponseEntity<List<PersonDTO>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(personService.findByName(name));
+    }
 
     @PostMapping()
     public PersonDTO create(@RequestBody PersonDTO person) throws LibraryStoreBooksException {

@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.repository;
 
 import com.paulo.rodrigues.librarybookstore.model.Person;
 import java.util.Date;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,6 +37,12 @@ import org.springframework.stereotype.Repository;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     public Person findByCpf(String cpf);
+    
+    @Query("SELECT p "
+            + " FROM Person p "
+            + " WHERE (:name IS NULL OR :name = '' OR p.name like CONCAT('%',:name,'%')) "           
+            + "")
+    public List<Person> findByName(@Param("name") String name);
     
     @Query("SELECT p "
             + " FROM Person p "
