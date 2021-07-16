@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
+import com.paulo.rodrigues.librarybookstore.dto.CityDTO;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,4 +74,8 @@ public class City implements Serializable{
     
     @Column(length = 10)
     private String ibgeCode;
+    
+    public CityDTO toDTO(){
+        return CityDTO.builder().id(id).name(name).build();
+    }
 }

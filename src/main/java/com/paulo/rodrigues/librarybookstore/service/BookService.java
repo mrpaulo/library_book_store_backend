@@ -18,6 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.service;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.google.common.collect.Lists;
 import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
 import com.paulo.rodrigues.librarybookstore.dto.CompanyDTO;
 import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
@@ -39,6 +40,7 @@ import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -92,7 +94,7 @@ public class BookService {
         if (book == null) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
-        book.setAuthors(personService.getListAuthorsbyListDTO(bookRepository.getListAuthorsByBookId(bookId)));
+        book.setAuthors(new HashSet<>(personService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
 
         return book;
     }
@@ -116,6 +118,7 @@ public class BookService {
         Book bookToEdit = findById(bookId);
 
         bookToEdit = modelMapper.map(bookDetail, Book.class);
+        bookToEdit.setAuthors(personService.saveBookAuthorFromListBooksDTO(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
         bookToEdit.setPublisher(getPublisher(bookDetail.getPublisher()));
@@ -132,7 +135,7 @@ public class BookService {
         return BookDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
-                .authors(getListAuthorsDTO(book.getAuthors()))
+                .authors(getListAuthorsDTO(Lists.newArrayList(book.getAuthors())))
                 .languageName(book.getLanguage() != null ? book.getLanguage().getName() : null)
                 .publisher(getCompanyDTO(book.getPublisher()))
                 .subjectName(book.getSubject() != null ? book.getSubject().getName() : null)
@@ -152,7 +155,7 @@ public class BookService {
         return Book.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
-                .authors(getListAuthors(dto.getAuthors()))
+                .authors(new HashSet<>(getListAuthors(dto.getAuthors())))
                 .language(getLanguageFromName(dto.getLanguageName()))
                 .publisher(getPublisher(dto.getPublisher()))
                 .subject(getSubjectFromName(dto.getSubjectName()))
@@ -172,12 +175,21 @@ public class BookService {
         return books.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
+    public List<Book> fromListDTO(List<BookDTO> books) throws LibraryStoreBooksException {
+        List<Book> result = new ArrayList<>();
+
+        for (BookDTO book : books) {
+            result.add(fromDTO(book));
+        }
+        return result;
+    }
+
     private List<PersonDTO> getListAuthorsDTO(List<Author> authors) {
         return personService.getListAuthorsDTO(authors);
     }
 
     private List<Author> getListAuthors(List<PersonDTO> authors) throws LibraryStoreBooksException {
-        return personService.getListAuthorsbyListDTO(authors);
+        return personService.getListAuthorsByListDTO(authors);
     }
 
     private CompanyDTO getCompanyDTO(Publisher publisher) {
@@ -199,7 +211,7 @@ public class BookService {
     }
 
     public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
-        return bookRepository.getListAuthorsByBookId(bookId);
+        return bookRepository.getListAuthorsDTOByBookId(bookId);
     }
 
     private BookSubject getSubjectFromName(String name) {
@@ -216,7 +228,7 @@ public class BookService {
                 .sorted(Comparator.comparing(BookSubject::getName))
                 .collect(Collectors.toList());
     }
-    
+
     public List<Language> getBookLanguage() {
         return languageRepository.findAll()
                 .stream()
@@ -241,5 +253,9 @@ public class BookService {
             obj.put("label", temp.getDescription());
             return obj;
         }).collect(Collectors.toList());
+    }
+
+    List<Book> getBooksFromAuthor(String authorName) {
+        return bookRepository.getBooksFromAuthor(authorName);
     }
 }

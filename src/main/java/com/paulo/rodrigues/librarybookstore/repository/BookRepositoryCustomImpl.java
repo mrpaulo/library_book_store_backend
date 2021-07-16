@@ -24,8 +24,11 @@ import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
+import com.paulo.rodrigues.librarybookstore.model.Author;
+import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.model.BookSubject;
 import com.paulo.rodrigues.librarybookstore.model.Language;
+import com.paulo.rodrigues.librarybookstore.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.service.CompanyService;
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
@@ -33,7 +36,9 @@ import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -54,7 +59,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     @PersistenceContext
     EntityManager em;
-    
+
     @Autowired
     private CompanyService companyService;
 
@@ -95,7 +100,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             query.setFirstResult(filter.getOffset());
             query.setMaxResults(filter.getRowsPerPage());
 
-            List<BookDTO> list = buildListBooks(query.getResultList());
+            List<BookDTO> list = buildListBooksDTO(query.getResultList());
 
             Integer total = ((BigInteger) queryCount.getSingleResult()).intValue();
             Integer totalPaginas = 0;
@@ -156,14 +161,14 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             sql.append("%') ");
         }
         if (!FormatUtils.isEmpty(filter.getAuthor())) {
-            sql.append(" AND ");
+            sql.append(" AND '");
             sql.append(filter.getAuthor());
-            sql.append(" IN (SELECT p.name from PERSON p WHERE p.id = b.author_id) ");
+            sql.append("' IN (SELECT p.name from PERSON p INNER JOIN author_books ab ON p.id = ab.author_id WHERE ab.books_id = b.id)");
         }
         if (!FormatUtils.isEmpty(filter.getPublisher())) {
-            sql.append(" AND ");
+            sql.append(" AND '");
             sql.append(filter.getPublisher());
-            sql.append(" IN (SELECT c.name FROM COMPANY c WHERE c.id = b.publisher_id ) ");
+            sql.append("' IN (SELECT c.name FROM COMPANY c WHERE c.id = b.publisher_id ) ");
         }
         if (!FormatUtils.isEmpty(filter.getSubjectName())) {
             sql.append(" AND ");
@@ -183,7 +188,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         return sql;
     }
 
-    private List<BookDTO> buildListBooks(List<Object[]> resultList) {
+    private List<BookDTO> buildListBooksDTO(List<Object[]> resultList) {
         List<BookDTO> books = new ArrayList<>();
 
         resultList.forEach(b -> {
@@ -194,8 +199,41 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                                 .title((String) b[1])
                                 .subtitle(b[2] != null ? (String) b[2] : null)
                                 .languageName(getLanguageName(b[3]))
-                                .publisher(getPublisher(b[4]))
+                                .publisher(getCompanyDTO(b[4]))
                                 .subjectName(getSubjectName(b[5]))
+                                .review(b[6] != null ? (String) b[6] : null)
+                                .link(b[7] != null ? (String) b[7] : null)
+                                .format(b[8] != null ? EBookFormat.valueOf((String) b[8]) : null)
+                                .condition(b[9] != null ? EBookCondition.valueOf((String) b[9]) : null)
+                                .edition(b[10] != null ? (Integer) b[10] : null)
+                                .publishDate(b[11] != null ? (Date) b[11] : null)
+                                .rating(b[12] != null ? (Double) b[12] : null)
+                                .length((b[13] != null ? (Integer) b[13] : null))
+                                .authors(getListAuthorsDTOByBookId(((BigInteger) b[0]).longValue()))
+                                .build());
+            } catch (LibraryStoreBooksException ex) {
+                Logger.getLogger(BookRepositoryCustomImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        );
+
+        return books;
+
+    }
+
+    private List<Book> buildListBooks(List<Object[]> resultList) {
+        List<Book> books = new ArrayList<>();
+
+        resultList.forEach(b -> {
+            try {
+                books.add(
+                        Book.builder()
+                                .id(((BigInteger) b[0]).longValue())
+                                .title((String) b[1])
+                                .subtitle(b[2] != null ? (String) b[2] : null)
+                                .language(getLanguage(b[3]))
+                                .publisher(getPublisher(b[4]))
+                                .subject(getSubject(b[5]))
                                 .review(b[6] != null ? (String) b[6] : null)
                                 .link(b[7] != null ? (String) b[7] : null)
                                 .format(b[8] != null ? EBookFormat.valueOf((String) b[8]) : null)
@@ -217,7 +255,15 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     }
 
     @Override
-    public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
+    public List<PersonDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException {
+        return buildListAuthorsDTO(selectQueryAuthorsByBookId(bookId).getResultList());
+    }
+
+    private Set<Author> getListAuthorsByBookId(Long idBook) throws LibraryStoreBooksException {
+        return buildListAuthors(selectQueryAuthorsByBookId(idBook).getResultList());
+    }
+
+    private Query selectQueryAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
         try {
             StringBuilder sql = new StringBuilder();
 
@@ -236,15 +282,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             Query query = em.createNativeQuery(sql.toString());
             query.setParameter("bookId", bookId);
 
-            List<PersonDTO> result = buildListAuthors(query.getResultList());
-
-            return result;
+            return query;
         } catch (Exception e) {
             return null;
         }
     }
 
-    private List<PersonDTO> buildListAuthors(List<Object[]> resultList) {
+    private List<PersonDTO> buildListAuthorsDTO(List<Object[]> resultList) {
         List<PersonDTO> authors = new ArrayList<>();
 
         resultList.forEach(b -> {
@@ -265,7 +309,28 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     }
 
-    private CompanyDTO getPublisher(Object idObj) throws LibraryStoreBooksException {
+    private Set<Author> buildListAuthors(List<Object[]> resultList) {
+        Set<Author> authors = new HashSet<>();
+
+        resultList.forEach(b -> {
+            authors.add(
+                    new Author(
+                            (((BigInteger) b[0]).longValue()),
+                            ((String) b[1]),
+                            (b[2] != null ? (String) b[2] : null),
+                            (b[3] != null ? (Date) b[3] : null),
+                            (b[4] != null ? (String) b[4] : null),
+                            (b[5] != null ? (String) b[5] : null),
+                            (b[6] != null ? (String) b[6] : null)
+                    ));
+        }
+        );
+
+        return authors;
+
+    }
+
+    private CompanyDTO getCompanyDTO(Object idObj) throws LibraryStoreBooksException {
         if (idObj == null) {
             return null;
         }
@@ -274,18 +339,35 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         return id != null ? companyService.toDTO(companyService.findById(id)) : null;
     }
 
+    private Publisher getPublisher(Object idObj) throws LibraryStoreBooksException {
+        CompanyDTO companyDTO = getCompanyDTO(idObj);
+        return companyDTO != null ? companyService.getPublisherFromDTO(companyDTO) : null;
+    }
+
     private String getLanguageName(Object idObj) throws LibraryStoreBooksException {
+
+        Language language = getLanguage(idObj);
+
+        return language != null ? language.getName() : null;
+    }
+
+    private Language getLanguage(Object idObj) throws LibraryStoreBooksException {
         if (idObj == null) {
             return null;
         }
 
         Long id = ((BigInteger) idObj).longValue();
-        Language language = languageRepository.findById(id).orElse(null);
-
-        return language != null ? language.getName() : null;
+        return languageRepository.findById(id).orElse(null);
     }
 
     private String getSubjectName(Object idObj) throws LibraryStoreBooksException {
+
+        BookSubject subject = getSubject(idObj);
+
+        return subject != null ? subject.getName() : null;
+    }
+
+    private BookSubject getSubject(Object idObj) throws LibraryStoreBooksException {
         if (idObj == null) {
             return null;
         }
@@ -293,7 +375,25 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         Long id = ((BigInteger) idObj).longValue();
         BookSubject subject = bookSubjectRepository.findById(id).orElse(null);
 
-        return subject != null ? subject.getName() : null;
+        return subject != null ? subject : null;
+    }
+
+    @Override
+    public List<Book> getBooksFromAuthor(String authorName) {
+        try {
+
+            StringBuilder sql = new StringBuilder();
+            BookFilter filter = new BookFilter(null, authorName, null, null, null);
+            sql.append(getSqlQuery(filter));
+
+            Query query = em.createNativeQuery(sql.toString());
+
+            List<Book> list = buildListBooks(query.getResultList());
+
+            return list;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

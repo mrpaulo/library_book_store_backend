@@ -40,8 +40,8 @@ public class PersonDTO {
     private Date birthdate;
     private String sex;
     private String email;
-    private String birthCity;
-    private String birthCountry;
+    private CityDTO birthCity;
+    private CountryDTO birthCountry;
     private AddressDTO address;  
     private String description;
 

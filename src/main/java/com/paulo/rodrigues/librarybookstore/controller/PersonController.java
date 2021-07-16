@@ -58,10 +58,10 @@ public class PersonController {
     private PersonService personService;
 
     @GetMapping("/all")
-    public List<Person> getAll() {
-        List<Person> peopleList = personService.findAll();
+    public List<PersonDTO> getAll() {
+        List<PersonDTO> peopleList = personService.findAll();
 
-        return peopleList.stream().sorted(Comparator.comparing(Person::getName)).collect(Collectors.toList());
+        return peopleList.stream().sorted(Comparator.comparing(PersonDTO::getName)).collect(Collectors.toList());
     }
 
     @GetMapping()

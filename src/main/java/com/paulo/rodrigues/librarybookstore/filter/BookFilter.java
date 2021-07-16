@@ -17,7 +17,6 @@
  */
 package com.paulo.rodrigues.librarybookstore.filter;
 
-import com.paulo.rodrigues.librarybookstore.model.BookSubject;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

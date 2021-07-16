@@ -24,8 +24,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author paulo.rodrigues
  */
-public interface CityRepository extends JpaRepository<City, Long>{
-    
+public interface CityRepository extends JpaRepository<City, Long> {
+
     public City getByName(String name);
-    
+
+    public City getById(long id);
+
 }

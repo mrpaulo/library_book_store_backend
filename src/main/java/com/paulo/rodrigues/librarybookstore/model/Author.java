@@ -17,6 +17,8 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -36,11 +38,16 @@ import lombok.Setter;
 @Setter
 public class Author extends Person {
 
+    public Author(long id, String name, String cpf, Date birthday, String sex, String email, String description) {
+        super(id, name, cpf, birthday, sex, email);
+        this.description = description;
+    }
     private static final long serialVersionUID = 1L;
 
     private String description;
 
     @ManyToMany
+    @JsonBackReference
     private List<Book> books;
 
 }

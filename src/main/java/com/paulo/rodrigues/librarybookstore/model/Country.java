@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
+import com.paulo.rodrigues.librarybookstore.dto.CountryDTO;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,5 +59,9 @@ public class Country implements Serializable{
     @NotNull
     @Column(length = 100)
     private String name;
+    
+    public CountryDTO toDTO () {
+        return CountryDTO.builder().id(id).name(name).build();
+    }
     
 }

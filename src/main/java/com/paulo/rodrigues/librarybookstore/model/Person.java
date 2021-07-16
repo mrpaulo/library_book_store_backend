@@ -65,6 +65,15 @@ import lombok.Setter;
 )
 public class Person implements Serializable {
     
+    public Person(long id, String name, String cpf, Date birthday, String sex, String email) {
+        this.id = id;
+        this.name = name;
+        this.cpf = cpf;
+        this.birthdate = birthday;
+        this.sex = sex;
+        this.email = email;               
+    }
+    
     private static final long serialVersionUID = 1L;
 
     @SequenceGenerator(name = "SEQ_PERSON", allocationSize = 1, sequenceName = "person_id_seq")

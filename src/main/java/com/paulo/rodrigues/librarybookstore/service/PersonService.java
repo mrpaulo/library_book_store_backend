@@ -17,6 +17,9 @@
  */
 package com.paulo.rodrigues.librarybookstore.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
 import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.PersonFilter;
@@ -24,14 +27,16 @@ import com.paulo.rodrigues.librarybookstore.model.Author;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.model.Person;
 import com.paulo.rodrigues.librarybookstore.repository.AuthorRepository;
+import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.repository.PersonRepository;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +68,12 @@ public class PersonService {
 
     @Autowired
     private CountryRepository countryRepository;
+    
+    @Autowired 
+    private BookRepository bookRepository;
 
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    public List<PersonDTO> findAll() {
+        return toListDTO(personRepository.findAll());
     }
 
     public Page<Person> findPageble(PersonFilter filter, Pageable pageable) {
@@ -136,8 +144,8 @@ public class PersonService {
                 .email(person.getEmail())
                 .address(addressService.toDTO(person.getAddress()))
                 .birthdate(person.getBirthdate())
-                .birthCity(person.getBirthCity() != null ? person.getBirthCity().getName() : null)
-                .birthCountry(person.getBirthCountry() != null ? person.getBirthCountry().getName() : null)
+                .birthCity(person.getBirthCity() != null ? person.getBirthCity().toDTO() : null)
+                .birthCountry(person.getBirthCountry() != null ? person.getBirthCountry().toDTO() : null)
                 .build();
 
     }
@@ -155,8 +163,8 @@ public class PersonService {
                 .email(dto.getEmail())
                 .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
                 .birthdate(dto.getBirthdate())
-                .birthCity(cityRepository.getByName(dto.getBirthCity()))
-                .birthCountry(countryRepository.getByName(dto.getBirthCountry()))
+                .birthCity(dto.getBirthCity() != null ? cityRepository.getById(dto.getBirthCity().getId()) : null)
+                .birthCountry(dto.getBirthCountry() != null ? countryRepository.getById(dto.getBirthCountry().getId()) : null)
                 .build();
     }
 
@@ -196,7 +204,7 @@ public class PersonService {
         return authors.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public List<Author> getListAuthorsbyListDTO(List<PersonDTO> listDTOs) throws LibraryStoreBooksException {
+    public List<Author> getListAuthorsByListDTO(List<PersonDTO> listDTOs) throws LibraryStoreBooksException {
         List<Author> result = new ArrayList<>();
 
         if (!FormatUtils.isEmpty(listDTOs)) {
@@ -208,13 +216,23 @@ public class PersonService {
         return result;
     }
 
-    void saveBookAuthor(Book book, PersonDTO dto) throws LibraryStoreBooksException {
+    public Author saveBookAuthor(Book book, PersonDTO dto) throws LibraryStoreBooksException {
         Author author = authorFromDTO(dto);
         
-        author.setBooks(Arrays.asList(book));
+        Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthor(author.getName()));
+        booksFromAuthor.add(book);
+        
+        author.setBooks(Lists.newArrayList(booksFromAuthor));
         authorRepository.saveAndFlush(author);
+        return author;
     }
     
-    
+    public Set<Author> saveBookAuthorFromListBooksDTO(Book book, List<PersonDTO> authorsDTO) throws LibraryStoreBooksException {
+        Set<Author> authors = new HashSet<>();
+        for(PersonDTO author: authorsDTO){
+            authors.add(saveBookAuthor(book, author));
+        }
+        return authors;
+    }
 
 }

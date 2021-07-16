@@ -15,23 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.repository;
+package com.paulo.rodrigues.librarybookstore.dto;
 
-import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
-import com.paulo.rodrigues.librarybookstore.dto.PersonDTO;
-import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
-import com.paulo.rodrigues.librarybookstore.model.Book;
-import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public interface BookRepositoryCustom {
-    
-    PagedResult<BookDTO> findPageble(BookFilter filter);
-    List<PersonDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException;
-    List<Book> getBooksFromAuthor(String authorName);
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+public class CityDTO {
+    private long id;
+    private String name;
 }

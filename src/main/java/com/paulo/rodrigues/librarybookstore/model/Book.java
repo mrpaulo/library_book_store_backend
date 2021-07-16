@@ -26,6 +26,7 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -83,7 +84,7 @@ public class Book implements Serializable {
 
     @NotNull
     @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
-    private List<Author> authors;
+    private Set<Author> authors;
 
     @NotNull
     @OneToOne
