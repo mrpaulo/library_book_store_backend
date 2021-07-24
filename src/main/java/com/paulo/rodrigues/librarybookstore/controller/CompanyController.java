@@ -93,10 +93,10 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> delete(@PathVariable(value = "id") Long companyId) throws LibraryStoreBooksException {
+    public Map<String, Long> delete(@PathVariable(value = "id") Long companyId) throws LibraryStoreBooksException {
         companyService.erase(companyId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
+        Map<String, Long> response = new HashMap<>();
+        response.put("id", companyId);
 
         return response;
     }

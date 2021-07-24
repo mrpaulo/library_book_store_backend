@@ -34,4 +34,5 @@ public interface BookRepositoryCustom {
     PagedResult<BookDTO> findPageble(BookFilter filter);
     List<PersonDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException;
     List<Book> getBooksFromAuthor(String authorName);
+    boolean deleteBookAuthor (long authorId, long bookId);
 }

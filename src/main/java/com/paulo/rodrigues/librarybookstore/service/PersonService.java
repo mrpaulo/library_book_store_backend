@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -120,6 +121,9 @@ public class PersonService {
 
     public PersonDTO edit(Long personId, PersonDTO personDetalhes) throws LibraryStoreBooksException {
         Person personToEdit = findById(personId);
+       // modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.createTypeMap(PersonDTO.class, Person.class);
+        modelMapper.validate();
         personToEdit = modelMapper.map(personDetalhes, Person.class);
 
         return toDTO(save(personToEdit));

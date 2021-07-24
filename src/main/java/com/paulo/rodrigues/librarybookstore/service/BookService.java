@@ -128,6 +128,10 @@ public class BookService {
 
     public void erase(Long bookId) throws LibraryStoreBooksException {
         Book bookToErase = findById(bookId);
+        bookToErase.getAuthors().stream()
+                .forEach(author -> {
+                    bookRepository.deleteBookAuthor(author.getId(), bookToErase.getId());
+                });
         bookRepository.delete(bookToErase);
     }
 

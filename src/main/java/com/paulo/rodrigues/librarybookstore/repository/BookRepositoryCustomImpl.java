@@ -395,5 +395,25 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             return null;
         }
     }
+    
+    public boolean deleteBookAuthor (long authorId, long bookId){
+        try {
+
+            StringBuilder sql = new StringBuilder();
+            sql.append(" DELETE FROM author_books ");
+            sql.append("   WHERE author_id = :authorId ");
+             sql.append("  AND books_id = :bookId ");
+
+            Query query = em.createNativeQuery(sql.toString());
+            query.setParameter("authorId", authorId);
+            query.setParameter("bookId", bookId);           
+            
+
+            query.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 }
