@@ -106,8 +106,10 @@ public class PersonService {
         return personRepository.findByCpf(cpf);
     }
 
-    public PersonDTO create(PersonDTO dto) throws LibraryStoreBooksException {
-        Person person = fromDTO(dto);
+    public PersonDTO create(Person person) throws LibraryStoreBooksException {
+        if(person != null && person.getAddress() != null){
+            addressService.create(person.getAddress());
+        }
 
         return toDTO(save(person));
     }

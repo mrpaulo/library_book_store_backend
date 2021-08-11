@@ -18,6 +18,9 @@
 package com.paulo.rodrigues.librarybookstore.repository;
 
 import com.paulo.rodrigues.librarybookstore.model.City;
+import com.paulo.rodrigues.librarybookstore.model.Country;
+import com.paulo.rodrigues.librarybookstore.model.StateCountry;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -29,5 +32,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
     public City getByName(String name);
 
     public City getById(long id);
+
+    public List<City> findByCountryAndState(Country country, StateCountry state);
 
 }

@@ -20,8 +20,12 @@ package com.paulo.rodrigues.librarybookstore.controller;
 import com.paulo.rodrigues.librarybookstore.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.model.Address;
+import com.paulo.rodrigues.librarybookstore.model.City;
+import com.paulo.rodrigues.librarybookstore.model.Country;
+import com.paulo.rodrigues.librarybookstore.model.StateCountry;
 import com.paulo.rodrigues.librarybookstore.service.AddressService;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +73,25 @@ public class AddressController {
         response.put("deleted", Boolean.TRUE);
 
         return response;
+    }
+    
+    @GetMapping("/logradouros")
+    public ResponseEntity<List<Map<String, String>>> getETypePublicPlace() throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(addressService.getETypePublicPlace());
+    }
+    
+    @GetMapping("/{country}/{state}/cities")
+    public ResponseEntity<List<City>> getAllCities(@PathVariable(value = "country") Long country, @PathVariable(value = "state") Long state) throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(addressService.getAllCities(country, state));
+    }
+    
+    @GetMapping("/{country}/states")
+    public ResponseEntity<List<StateCountry>> getAllStates(@PathVariable(value = "country") Long country) throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(addressService.getAllStates(country));
+    }
+    
+    @GetMapping("/countries")
+    public ResponseEntity<List<Country>> getAllCountries() throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(addressService.getAllCountries());
     }
 }

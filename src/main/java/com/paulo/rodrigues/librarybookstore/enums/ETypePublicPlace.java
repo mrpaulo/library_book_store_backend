@@ -38,6 +38,10 @@ public enum ETypePublicPlace {
         this.description = description;
     }
 
+    public String getName() {
+        return this.name();
+    }
+    
     public int getCod() {
         return cod;
     }

@@ -84,7 +84,7 @@ public class PersonController {
     }
 
     @PostMapping()
-    public PersonDTO create(@RequestBody PersonDTO person) throws LibraryStoreBooksException {
+    public PersonDTO create(@RequestBody Person person) throws LibraryStoreBooksException {
         return personService.create(person);
     }
 
