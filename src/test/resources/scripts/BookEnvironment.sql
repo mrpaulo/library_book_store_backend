@@ -5,7 +5,9 @@ VALUES (1, 'Romance', 'Romance');
 
 DELETE FROM language;
 INSERT INTO language (id, name) 
-VALUES (1, 'Portugues');
+VALUES 
+(1, 'Portugues'),
+(2, 'English');
 
 DELETE FROM book;
 INSERT INTO book 

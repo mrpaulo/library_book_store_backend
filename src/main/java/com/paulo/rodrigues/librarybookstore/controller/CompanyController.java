@@ -83,7 +83,7 @@ public class CompanyController {
     }
 
     @PostMapping()
-    public CompanyDTO create(@RequestBody CompanyDTO company) throws LibraryStoreBooksException {
+    public CompanyDTO create(@RequestBody Company company) throws LibraryStoreBooksException {
         return companyService.create(company);
     }
 

@@ -77,8 +77,11 @@ public class CompanyService {
         return toListDTO(companyRepository.findByName(name));
     }
 
-    public CompanyDTO create(CompanyDTO dto) throws LibraryStoreBooksException {
-        Company company = fromDTO(dto);
+    public CompanyDTO create(Company company) throws LibraryStoreBooksException {
+        if(company != null && company.getAddress() != null){
+            addressService.create(company.getAddress());
+        }
+        
         return toDTO(save(company));
     }
 
