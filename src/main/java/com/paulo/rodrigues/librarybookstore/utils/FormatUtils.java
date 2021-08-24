@@ -17,7 +17,6 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
-import com.paulo.rodrigues.librarybookstore.filter.PageableFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InputMismatchException;

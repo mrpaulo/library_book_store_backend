@@ -17,13 +17,16 @@
  */
 package com.paulo.rodrigues.librarybookstore.repository;
 
+import com.paulo.rodrigues.librarybookstore.book.LanguageRepository;
+import com.paulo.rodrigues.librarybookstore.book.BookSubjectRepository;
+import com.paulo.rodrigues.librarybookstore.book.BookRepository;
 import com.paulo.rodrigues.librarybookstore.config.JPAHibernateTest;
-import com.paulo.rodrigues.librarybookstore.dto.BookDTO;
-import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
-import com.paulo.rodrigues.librarybookstore.model.Book;
-import com.paulo.rodrigues.librarybookstore.service.BookService;
-import com.paulo.rodrigues.librarybookstore.service.CompanyService;
-import com.paulo.rodrigues.librarybookstore.service.PersonService;
+import com.paulo.rodrigues.librarybookstore.book.BookDTO;
+import com.paulo.rodrigues.librarybookstore.book.BookFilter;
+import com.paulo.rodrigues.librarybookstore.book.Book;
+import com.paulo.rodrigues.librarybookstore.book.BookService;
+import com.paulo.rodrigues.librarybookstore.publisher.CompanyService;
+import com.paulo.rodrigues.librarybookstore.author.PersonService;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
