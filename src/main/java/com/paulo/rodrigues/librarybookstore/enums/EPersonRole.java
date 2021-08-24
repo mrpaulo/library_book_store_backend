@@ -15,15 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.repository;
-
-import com.paulo.rodrigues.librarybookstore.model.Author;
-import org.springframework.data.jpa.repository.JpaRepository;
+package com.paulo.rodrigues.librarybookstore.enums;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public interface AuthorRepository extends JpaRepository<Author, Long>{
-    
+public enum EPersonRole {
+    ADMIM,
+    AUTHOR,
+    USER;
 }

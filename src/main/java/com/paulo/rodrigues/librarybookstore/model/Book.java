@@ -25,7 +25,6 @@ import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -83,13 +82,13 @@ public class Book implements Serializable {
     private String title;
 
     @NotNull
-    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Person.class, mappedBy = "books", fetch = FetchType.EAGER)
     private Set<Author> authors;
 
     @NotNull
     @OneToOne
     @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID")
-    private Publisher publisher;
+    private Company publisher;
 
     @OneToOne
     @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")

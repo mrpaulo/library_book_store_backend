@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.model;
 
+import com.paulo.rodrigues.librarybookstore.enums.EPersonRole;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
@@ -26,6 +27,8 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -110,6 +113,9 @@ public class Person implements Serializable {
     @OneToOne
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
     private Address address;
+    
+    @Enumerated(EnumType.STRING)
+    private EPersonRole role;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;

@@ -15,28 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.model;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package com.paulo.rodrigues.librarybookstore.enums;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class Publisher extends Company {
+public enum ECompanyType {
+    PUBLISHER,
+    STORE;
     
-    private static final long serialVersionUID = 1L;
-    
-    @Column(length = 500)
-    private String description;
 }

@@ -24,11 +24,11 @@ import com.paulo.rodrigues.librarybookstore.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.exceptions.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.filter.BookFilter;
-import com.paulo.rodrigues.librarybookstore.model.Author;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.model.BookSubject;
+import com.paulo.rodrigues.librarybookstore.model.Company;
 import com.paulo.rodrigues.librarybookstore.model.Language;
-import com.paulo.rodrigues.librarybookstore.model.Publisher;
+import com.paulo.rodrigues.librarybookstore.model.Person;
 import com.paulo.rodrigues.librarybookstore.service.CompanyService;
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
@@ -259,7 +259,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         return buildListAuthorsDTO(selectQueryAuthorsByBookId(bookId).getResultList());
     }
 
-    private Set<Author> getListAuthorsByBookId(Long idBook) throws LibraryStoreBooksException {
+    private Set<Person> getListAuthorsByBookId(Long idBook) throws LibraryStoreBooksException {
         return buildListAuthors(selectQueryAuthorsByBookId(idBook).getResultList());
     }
 
@@ -309,20 +309,20 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     }
 
-    private Set<Author> buildListAuthors(List<Object[]> resultList) {
-        Set<Author> authors = new HashSet<>();
+    private Set<Person> buildListAuthors(List<Object[]> resultList) {
+        Set<Person> authors = new HashSet<>();
 
         resultList.forEach(b -> {
             authors.add(
-                    new Author(
-                            (((BigInteger) b[0]).longValue()),
-                            ((String) b[1]),
-                            (b[2] != null ? (String) b[2] : null),
-                            (b[3] != null ? (Date) b[3] : null),
-                            (b[4] != null ? (String) b[4] : null),
-                            (b[5] != null ? (String) b[5] : null),
-                            (b[6] != null ? (String) b[6] : null)
-                    ));
+                    Person.builder()
+                            .id(((BigInteger) b[0]).longValue())
+                            .name((String) b[1])
+                            .cpf(b[2] != null ? (String) b[2] : null)
+                            .birthdate(b[3] != null ? (Date) b[3] : null)
+                            .sex(b[4] != null ? (String) b[4] : null)
+                            .email(b[5] != null ? (String) b[5] : null)
+                            .build());
+                   
         }
         );
 
@@ -339,9 +339,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         return id != null ? companyService.toDTO(companyService.findById(id)) : null;
     }
 
-    private Publisher getPublisher(Object idObj) throws LibraryStoreBooksException {
+    private Company getPublisher(Object idObj) throws LibraryStoreBooksException {
         CompanyDTO companyDTO = getCompanyDTO(idObj);
-        return companyDTO != null ? companyService.getPublisherFromDTO(companyDTO) : null;
+        return companyDTO != null ? companyService.fromDTO(companyDTO) : null;
     }
 
     private String getLanguageName(Object idObj) throws LibraryStoreBooksException {

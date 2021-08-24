@@ -26,7 +26,6 @@ import com.paulo.rodrigues.librarybookstore.filter.PersonFilter;
 import com.paulo.rodrigues.librarybookstore.model.Author;
 import com.paulo.rodrigues.librarybookstore.model.Book;
 import com.paulo.rodrigues.librarybookstore.model.Person;
-import com.paulo.rodrigues.librarybookstore.repository.AuthorRepository;
 import com.paulo.rodrigues.librarybookstore.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.repository.CountryRepository;
@@ -57,10 +56,7 @@ public class PersonService {
 
     @Autowired
     private PersonRepository personRepository;
-    
-    @Autowired
-    private AuthorRepository authorRepository;
-
+      
     @Autowired
     private AddressService addressService;
 
@@ -174,33 +170,7 @@ public class PersonService {
                 .build();
     }
 
-    public Author authorFromDTO(PersonDTO dto) throws LibraryStoreBooksException {
-        if (dto == null) {
-            return null;
-        }
-        
-        Author author = authorRepository.findById(dto.getId()).orElse(null);        
-        if (author == null) {
-            return null;
-        }
-        Person person = findById(dto.getId());
-        
-        Author result = new Author();
-        
-        result.setDescription(author.getDescription());
-        result.setId(dto.getId());
-        result.setName(person.getName());
-        result.setCpf(person.getCpf());
-        result.setSex(person.getSex());
-        result.setEmail(person.getEmail());
-        result.setAddress(person.getAddress() != null ? addressService.findById(person.getAddress().getId()) : null);
-        result.setBirthCity(person.getBirthCity() != null ? cityRepository.getByName(person.getBirthCity().getName()) : null);
-        result.setBirthdate(person.getBirthdate());
-        result.setBirthCountry(person.getBirthCountry() != null ? countryRepository.getByName(person.getBirthCountry().getName()) : null);
-        
-
-        return result;
-    }
+    
 
     public List<PersonDTO> toListDTO(List<Person> people) {
         return people.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -222,8 +192,8 @@ public class PersonService {
         return result;
     }
 
-    public Author saveBookAuthor(Book book, PersonDTO dto) throws LibraryStoreBooksException {
-        Author author = authorFromDTO(dto);
+    public Person saveBookAuthor(Book book, PersonDTO dto) throws LibraryStoreBooksException {
+        Person author = authorFromDTO(dto);
         
         Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthor(author.getName()));
         booksFromAuthor.add(book);
@@ -233,8 +203,8 @@ public class PersonService {
         return author;
     }
     
-    public Set<Author> saveBookAuthorFromListBooksDTO(Book book, List<PersonDTO> authorsDTO) throws LibraryStoreBooksException {
-        Set<Author> authors = new HashSet<>();
+    public Set<Person> saveBookAuthorFromListBooksDTO(Book book, List<PersonDTO> authorsDTO) throws LibraryStoreBooksException {
+        Set<Person> authors = new HashSet<>();
         for(PersonDTO author: authorsDTO){
             authors.add(saveBookAuthor(book, author));
         }
