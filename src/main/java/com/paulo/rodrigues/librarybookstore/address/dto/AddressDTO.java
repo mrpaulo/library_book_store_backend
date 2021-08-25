@@ -15,15 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.dto;
 
-import com.paulo.rodrigues.librarybookstore.address.Address;
-import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public interface AddressRepository extends JpaRepository<Address, Long>{
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AddressDTO {
+    
+    private Long id;
+    private String fmtAddress;   
     
 }

@@ -18,7 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.author;
 
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.author.Person;
+import com.paulo.rodrigues.librarybookstore.author.Author;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,44 +49,44 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/people")
-public class PersonController {
+public class AuthorController {
 
     @Autowired
-    private PersonService personService;
+    private AuthorService personService;
 
     @GetMapping("/all")
-    public List<PersonDTO> getAll() {
-        List<PersonDTO> peopleList = personService.findAll();
+    public List<AuthorDTO> getAll() {
+        List<AuthorDTO> peopleList = personService.findAll();
 
-        return peopleList.stream().sorted(Comparator.comparing(PersonDTO::getName)).collect(Collectors.toList());
+        return peopleList.stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
     }
 
     @GetMapping()
-    public List<PersonDTO> getAllPageble(@RequestBody PersonFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<AuthorDTO> getAllPageble(@RequestBody AuthorFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
-        Page<Person> result = personService.findPageble(filter, pageable);
+        Page<Author> result = personService.findPageble(filter, pageable);
         res.addHeader("Total-Count", String.valueOf(result.getTotalElements()));
 
         return personService.toListDTO(result.getContent());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getById(@PathVariable(value = "id") Long personId) throws LibraryStoreBooksException {
+    public ResponseEntity<Author> getById(@PathVariable(value = "id") Long personId) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(personService.findById(personId));
     }
     
     @GetMapping("/fetch/{name}")
-    public ResponseEntity<List<PersonDTO>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+    public ResponseEntity<List<AuthorDTO>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(personService.findByName(name));
     }
 
     @PostMapping()
-    public PersonDTO create(@RequestBody Person person) throws LibraryStoreBooksException {
+    public AuthorDTO create(@RequestBody Author person) throws LibraryStoreBooksException {
         return personService.create(person);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonDTO> update(@PathVariable(value = "id") Long personId, @RequestBody PersonDTO personDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long personId, @RequestBody AuthorDTO personDetalhes) throws LibraryStoreBooksException {
         return ResponseEntity.ok(personService.edit(personId, personDetalhes));
     }
 

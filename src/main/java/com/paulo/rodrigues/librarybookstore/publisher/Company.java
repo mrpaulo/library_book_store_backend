@@ -17,7 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.publisher;
 
-import com.paulo.rodrigues.librarybookstore.address.Address;
+import com.paulo.rodrigues.librarybookstore.address.modal.Address;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;

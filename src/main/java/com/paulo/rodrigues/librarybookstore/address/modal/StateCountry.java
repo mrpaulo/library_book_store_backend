@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.modal;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -41,40 +41,28 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_name_city", columnList = "name"),
+    @Index(name = "idx_name_state", columnList = "name"),
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class City implements Serializable{
+public class StateCountry implements Serializable {
     
     private static final long serialVersionUID = 1L;
-
-    @SequenceGenerator(name = "SEQ_CITY", allocationSize = 1, sequenceName = "city_id_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CITY")
+    
+    @SequenceGenerator(name = "SEQ_STATE", allocationSize = 1, sequenceName = "state_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_STATE")
     @Id
     private long id;
     
     @NotNull
     @Column(length = 100)
     private String name;
-        
-    @NotNull
-    @OneToOne
-    @JoinColumn(name = "STATE_ID", referencedColumnName = "ID")
-    private StateCountry state;
     
     @NotNull
     @OneToOne
-    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID")    
+    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID") 
     private Country country;
-    
-    @Column(length = 10)
-    private String ibgeCode;
-    
-    public CityDTO toDTO(){
-        return CityDTO.builder().id(id).name(name).build();
-    }
 }

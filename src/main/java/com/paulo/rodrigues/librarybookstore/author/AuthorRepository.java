@@ -17,8 +17,8 @@
  */
 package com.paulo.rodrigues.librarybookstore.author;
 
-import com.paulo.rodrigues.librarybookstore.address.Address;
-import com.paulo.rodrigues.librarybookstore.author.Person;
+import com.paulo.rodrigues.librarybookstore.address.modal.Address;
+import com.paulo.rodrigues.librarybookstore.author.Author;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -36,28 +36,26 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-    public Person findByCpf(String cpf);
+    public Author findByCpf(String cpf);
     
     @Query("SELECT p "
-            + " FROM Person p "
+            + " FROM Author p "
             + " WHERE (:name IS NULL OR :name = '' OR p.name like CONCAT('%',:name,'%')) "           
             + "")
-    public List<Person> findByName(@Param("name") String name);
+    public List<Author> findByName(@Param("name") String name);
     
     @Query("SELECT p "
-            + " FROM Person p "
+            + " FROM Author p "
             + " WHERE (:id IS NULL OR p.id = :id) "
             + " AND (:name IS NULL OR :name = '' OR p.name like CONCAT('%',:name,'%')) "
-            + " AND (:cpf IS NULL OR :cpf = '' OR p.cpf LIKE CONCAT('%',:cpf,'%')) "
             + " AND (:sex IS NULL OR :sex = '' OR p.sex = :sex) "
             + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (p.birthdate BETWEEN :startDate AND :finalDate)) "
             + "")
-    public Page<Person> findPageble(
+    public Page<Author> findPageble(
             @Param("id") Long id,
-            @Param("name") String name,
-            @Param("cpf") String cpf,            
+            @Param("name") String name,                    
             @Param("sex") String sex,
             @Param("startDate") Date startDate,
             @Param("finalDate") Date finalDate,
@@ -65,7 +63,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Modifying
     @Query(value = "UPDATE "
-            + " person "
+            + " Author "
             + " SET  address_id = null"
             + " WHERE address_id = :addressId ",
             nativeQuery = true)

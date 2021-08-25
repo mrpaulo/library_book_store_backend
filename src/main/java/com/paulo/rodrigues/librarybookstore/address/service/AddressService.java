@@ -15,22 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.service;
 
-import com.paulo.rodrigues.librarybookstore.address.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.book.EBookFormat;
-import com.paulo.rodrigues.librarybookstore.address.ETypePublicPlace;
+import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
+import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.address.Address;
-import com.paulo.rodrigues.librarybookstore.address.City;
-import com.paulo.rodrigues.librarybookstore.address.Country;
-import com.paulo.rodrigues.librarybookstore.address.StateCountry;
-import com.paulo.rodrigues.librarybookstore.address.AddressRepository;
-import com.paulo.rodrigues.librarybookstore.address.CityRepository;
+import com.paulo.rodrigues.librarybookstore.address.modal.Address;
+import com.paulo.rodrigues.librarybookstore.address.modal.City;
+import com.paulo.rodrigues.librarybookstore.address.modal.Country;
+import com.paulo.rodrigues.librarybookstore.address.modal.StateCountry;
+import com.paulo.rodrigues.librarybookstore.address.repository.AddressRepository;
+import com.paulo.rodrigues.librarybookstore.address.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyRepository;
-import com.paulo.rodrigues.librarybookstore.address.CountryRepository;
-import com.paulo.rodrigues.librarybookstore.author.PersonRepository;
-import com.paulo.rodrigues.librarybookstore.address.StateCountryRepository;
+import com.paulo.rodrigues.librarybookstore.address.repository.CountryRepository;
+import com.paulo.rodrigues.librarybookstore.address.repository.StateCountryRepository;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +41,7 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.paulo.rodrigues.librarybookstore.author.AuthorRepository;
 
 /**
  *
@@ -65,7 +66,7 @@ public class AddressService {
     private CountryRepository countryRepository;
     
     @Autowired
-    private PersonRepository personRepository;
+    private AuthorRepository personRepository;
     
     @Autowired
     private CompanyRepository companyRepository;

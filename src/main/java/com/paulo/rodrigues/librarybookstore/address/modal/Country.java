@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.modal;
 
-import com.paulo.rodrigues.librarybookstore.address.Country;
+import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,8 +25,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -42,19 +40,19 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {
-    @Index(name = "idx_name_state", columnList = "name"),
+    @Index(name = "idx_name_country", columnList = "name"),
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class StateCountry implements Serializable {
+public class Country implements Serializable{
     
     private static final long serialVersionUID = 1L;
     
-    @SequenceGenerator(name = "SEQ_STATE", allocationSize = 1, sequenceName = "state_id_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_STATE")
+    @SequenceGenerator(name = "SEQ_COUNTRY", allocationSize = 1, sequenceName = "country_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_COUNTRY")
     @Id
     private long id;
     
@@ -62,8 +60,8 @@ public class StateCountry implements Serializable {
     @Column(length = 100)
     private String name;
     
-    @NotNull
-    @OneToOne
-    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID") 
-    private Country country;
+    public CountryDTO toDTO () {
+        return CountryDTO.builder().id(id).name(name).build();
+    }
+    
 }

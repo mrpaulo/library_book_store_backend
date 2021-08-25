@@ -15,24 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.author;
 
+import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AddressDTO {
+@Getter
+@Setter
+public class AuthorFilter extends PageableFilter {
     
-    private Long id;
-    private String fmtAddress;   
-    
+    private String sex;
 }

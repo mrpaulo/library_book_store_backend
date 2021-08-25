@@ -17,7 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.publisher;
 
-import com.paulo.rodrigues.librarybookstore.address.AddressService;
+import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.publisher.Company;
 import com.paulo.rodrigues.librarybookstore.model.Publisher;

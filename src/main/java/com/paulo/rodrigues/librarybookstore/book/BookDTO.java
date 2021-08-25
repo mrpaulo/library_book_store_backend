@@ -20,7 +20,7 @@ package com.paulo.rodrigues.librarybookstore.book;
 import com.paulo.rodrigues.librarybookstore.book.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.book.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyDTO;
-import com.paulo.rodrigues.librarybookstore.author.PersonDTO;
+import com.paulo.rodrigues.librarybookstore.author.AuthorDTO;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -40,7 +40,7 @@ public class BookDTO {
     
     private long id;
     private String title;
-    private List<PersonDTO> authors;
+    private List<AuthorDTO> authors;
     private String languageName;
     private CompanyDTO publisher;
     private String subjectName;

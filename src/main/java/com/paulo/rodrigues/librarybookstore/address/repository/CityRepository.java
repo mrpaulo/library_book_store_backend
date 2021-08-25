@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.paulo.rodrigues.librarybookstore.address.modal.City;
+import com.paulo.rodrigues.librarybookstore.address.modal.Country;
+import com.paulo.rodrigues.librarybookstore.address.modal.StateCountry;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
-public class CountryDTO {
-    private long id;
-    private String name;
+public interface CityRepository extends JpaRepository<City, Long> {
+
+    public City getByName(String name);
+
+    public City getById(long id);
+
+    public List<City> findByCountryAndState(Country country, StateCountry state);
+
 }

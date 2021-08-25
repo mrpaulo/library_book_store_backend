@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.Country;
-import com.paulo.rodrigues.librarybookstore.address.StateCountry;
+import com.paulo.rodrigues.librarybookstore.address.modal.Country;
+import com.paulo.rodrigues.librarybookstore.address.modal.StateCountry;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -20,7 +20,7 @@ package com.paulo.rodrigues.librarybookstore.book;
 import com.paulo.rodrigues.librarybookstore.book.BookRepositoryCustom;
 import com.paulo.rodrigues.librarybookstore.book.BookDTO;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyDTO;
-import com.paulo.rodrigues.librarybookstore.author.PersonDTO;
+import com.paulo.rodrigues.librarybookstore.author.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.book.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.book.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
@@ -29,7 +29,7 @@ import com.paulo.rodrigues.librarybookstore.book.Book;
 import com.paulo.rodrigues.librarybookstore.book.BookSubject;
 import com.paulo.rodrigues.librarybookstore.publisher.Company;
 import com.paulo.rodrigues.librarybookstore.book.Language;
-import com.paulo.rodrigues.librarybookstore.author.Person;
+import com.paulo.rodrigues.librarybookstore.author.Author;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyService;
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
@@ -256,11 +256,11 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     }
 
     @Override
-    public List<PersonDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException {
+    public List<AuthorDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException {
         return buildListAuthorsDTO(selectQueryAuthorsByBookId(bookId).getResultList());
     }
 
-    private Set<Person> getListAuthorsByBookId(Long idBook) throws LibraryStoreBooksException {
+    private Set<Author> getListAuthorsByBookId(Long idBook) throws LibraryStoreBooksException {
         return buildListAuthors(selectQueryAuthorsByBookId(idBook).getResultList());
     }
 
@@ -269,13 +269,12 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             StringBuilder sql = new StringBuilder();
 
             sql.append(" SELECT p.id  ");
-            sql.append(" , p.name  ");
-            sql.append(" , p.cpf ");
+            sql.append(" , p.name  ");            
             sql.append(" , p.birthdate ");
             sql.append(" , p.sex ");
             sql.append(" , p.email ");
             sql.append(" , a.description ");
-            sql.append(" FROM person p ");
+            sql.append(" FROM author p ");
             sql.append(" INNER JOIN author a ON a.id = p.id ");
             sql.append(" INNER JOIN author_books ab ON ab.author_id = a.id ");
             sql.append(" WHERE AB.books_id = :bookId ");
@@ -289,15 +288,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         }
     }
 
-    private List<PersonDTO> buildListAuthorsDTO(List<Object[]> resultList) {
-        List<PersonDTO> authors = new ArrayList<>();
+    private List<AuthorDTO> buildListAuthorsDTO(List<Object[]> resultList) {
+        List<AuthorDTO> authors = new ArrayList<>();
 
         resultList.forEach(b -> {
-            authors.add(
-                    PersonDTO.builder()
+            authors.add(AuthorDTO.builder()
                             .id(((BigInteger) b[0]).longValue())
-                            .name((String) b[1])
-                            .cpf(b[2] != null ? (String) b[2] : null)
+                            .name((String) b[1])                            
                             .birthdate(b[3] != null ? (Date) b[3] : null)
                             .sex(b[4] != null ? (String) b[4] : null)
                             .email(b[5] != null ? (String) b[5] : null)
@@ -310,15 +307,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     }
 
-    private Set<Person> buildListAuthors(List<Object[]> resultList) {
-        Set<Person> authors = new HashSet<>();
+    private Set<Author> buildListAuthors(List<Object[]> resultList) {
+        Set<Author> authors = new HashSet<>();
 
         resultList.forEach(b -> {
-            authors.add(
-                    Person.builder()
+            authors.add(Author.builder()
                             .id(((BigInteger) b[0]).longValue())
-                            .name((String) b[1])
-                            .cpf(b[2] != null ? (String) b[2] : null)
+                            .name((String) b[1])                            
                             .birthdate(b[3] != null ? (Date) b[3] : null)
                             .sex(b[4] != null ? (String) b[4] : null)
                             .email(b[5] != null ? (String) b[5] : null)

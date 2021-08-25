@@ -15,13 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.controller;
 
+import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.address.Address;
-import com.paulo.rodrigues.librarybookstore.address.City;
-import com.paulo.rodrigues.librarybookstore.address.Country;
-import com.paulo.rodrigues.librarybookstore.address.StateCountry;
+import com.paulo.rodrigues.librarybookstore.address.modal.Address;
+import com.paulo.rodrigues.librarybookstore.address.modal.City;
+import com.paulo.rodrigues.librarybookstore.address.modal.Country;
+import com.paulo.rodrigues.librarybookstore.address.modal.StateCountry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -26,7 +26,7 @@ import com.paulo.rodrigues.librarybookstore.book.BookFilter;
 import com.paulo.rodrigues.librarybookstore.book.Book;
 import com.paulo.rodrigues.librarybookstore.book.BookService;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyService;
-import com.paulo.rodrigues.librarybookstore.author.PersonService;
+import com.paulo.rodrigues.librarybookstore.author.AuthorService;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -47,7 +47,7 @@ public class BookRepositoryTest extends JPAHibernateTest {
     @Autowired
     private BookRepository bookRepositoryMock;
     private ModelMapper modelMapper;
-    private PersonService personServiceMock;
+    private AuthorService personServiceMock;
     private CompanyService companyServiceMock;
     private LanguageRepository languageRepositoryMock;
     private BookSubjectRepository bookSubjectRepositoryMock;
@@ -55,7 +55,7 @@ public class BookRepositoryTest extends JPAHibernateTest {
         
     @Before
     public void setUp() {
-        personServiceMock = Mockito.mock(PersonService.class);
+        personServiceMock = Mockito.mock(AuthorService.class);
         companyServiceMock = Mockito.mock(CompanyService.class);
         languageRepositoryMock = Mockito.mock(LanguageRepository.class);
         bookSubjectRepositoryMock = Mockito.mock(BookSubjectRepository.class);

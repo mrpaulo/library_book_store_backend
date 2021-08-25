@@ -18,7 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.book;
 
 import com.paulo.rodrigues.librarybookstore.book.BookDTO;
-import com.paulo.rodrigues.librarybookstore.author.PersonDTO;
+import com.paulo.rodrigues.librarybookstore.author.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.book.BookFilter;
 import com.paulo.rodrigues.librarybookstore.book.Book;
@@ -32,7 +32,7 @@ import java.util.List;
 public interface BookRepositoryCustom {
     
     PagedResult<BookDTO> findPageble(BookFilter filter);
-    List<PersonDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException;
+    List<AuthorDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException;
     List<Book> getBooksFromAuthor(String authorName);
     boolean deleteBookAuthor (long authorId, long bookId);
 }

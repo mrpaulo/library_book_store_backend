@@ -17,10 +17,11 @@
  */
 package com.paulo.rodrigues.librarybookstore.author;
 
-import com.paulo.rodrigues.librarybookstore.address.CountryDTO;
-import com.paulo.rodrigues.librarybookstore.address.CityDTO;
-import com.paulo.rodrigues.librarybookstore.address.AddressDTO;
-import com.paulo.rodrigues.librarybookstore.author.Person;
+import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.StateDTO;
+import com.paulo.rodrigues.librarybookstore.author.Author;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -36,36 +37,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonDTO {
+public class AuthorDTO {
     private long id;
-    private String name;
-    private String cpf;
+    private String name;    
     private Date birthdate;
     private String sex;
     private String email;
     private CityDTO birthCity;
+    private StateDTO birthState;
     private CountryDTO birthCountry;
     private AddressDTO address;  
     private String description;
 
-    public PersonDTO(long id, String name, String cpf, Date birthdate, String sex, String email, String description) {
+    public AuthorDTO(long id, String name, Date birthdate, String sex, String email, String description) {
         this.id = id;
-        this.name = name;
-        this.cpf = cpf;
+        this.name = name;        
         this.birthdate = birthdate;
         this.sex = sex;
         this.email = email;
         this.description = description;
     }
     
-    public PersonDTO(Person p) {
+    public AuthorDTO(Author p) {
         this.id = p.getId();
-        this.name = p.getName();
-        this.cpf = p.getCpf();
+        this.name = p.getName();        
         this.birthdate = p.getBirthdate();
         this.sex = p.getSex();
-        this.email = p.getEmail();
-        
+        this.email = p.getEmail();        
     }
     
     

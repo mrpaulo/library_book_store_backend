@@ -15,19 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address;
+package com.paulo.rodrigues.librarybookstore.address.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.Country;
+import com.paulo.rodrigues.librarybookstore.address.modal.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public interface CountryRepository extends JpaRepository<Country, Long> {
-
-    public Country getByName(String name);
-
-    public Country getById(long id);
-
+public interface AddressRepository extends JpaRepository<Address, Long>{
+    
 }

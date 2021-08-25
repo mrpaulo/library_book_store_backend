@@ -17,7 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.publisher;
 
-import com.paulo.rodrigues.librarybookstore.address.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

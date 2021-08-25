@@ -22,7 +22,7 @@ import com.paulo.rodrigues.librarybookstore.book.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.author.Author;
 import com.paulo.rodrigues.librarybookstore.publisher.Company;
-import com.paulo.rodrigues.librarybookstore.author.Person;
+import com.paulo.rodrigues.librarybookstore.author.Author;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
@@ -85,7 +85,7 @@ public class Book implements Serializable {
     private String title;
 
     @NotNull
-    @OneToMany(targetEntity = Person.class, mappedBy = "books", fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
     private Set<Author> authors;
 
     @NotNull

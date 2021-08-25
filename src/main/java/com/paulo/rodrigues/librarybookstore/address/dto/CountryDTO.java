@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.author;
+package com.paulo.rodrigues.librarybookstore.address.dto;
 
-import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,8 +31,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PersonFilter extends PageableFilter {
-
-    private String cpf;
-    private String sex;
+@Builder
+public class CountryDTO {
+    private long id;
+    private String name;
 }

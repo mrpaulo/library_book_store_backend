@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.google.common.collect.Lists;
 import com.paulo.rodrigues.librarybookstore.book.BookDTO;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyDTO;
-import com.paulo.rodrigues.librarybookstore.author.PersonDTO;
+import com.paulo.rodrigues.librarybookstore.author.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.book.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.book.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
@@ -35,7 +35,8 @@ import com.paulo.rodrigues.librarybookstore.book.BookRepository;
 import com.paulo.rodrigues.librarybookstore.book.BookSubjectRepository;
 import com.paulo.rodrigues.librarybookstore.book.LanguageRepository;
 import com.paulo.rodrigues.librarybookstore.publisher.CompanyService;
-import com.paulo.rodrigues.librarybookstore.author.PersonService;
+import com.paulo.rodrigues.librarybookstore.author.AuthorService;
+import com.paulo.rodrigues.librarybookstore.publisher.Company;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
@@ -62,13 +63,13 @@ public class BookService {
 
     private ModelMapper modelMapper;
     private final BookRepository bookRepository;
-    private final PersonService personService;
+    private final AuthorService personService;
     private final CompanyService companyService;
     private final LanguageRepository languageRepository;
     private final BookSubjectRepository bookSubjectRepository;
 
     public BookService(@Autowired BookRepository bookRepository,
-            @Autowired PersonService personService,
+            @Autowired AuthorService personService,
             @Autowired CompanyService companyService,
             @Autowired LanguageRepository languageRepository,
             @Autowired BookSubjectRepository bookSubjectRepository,
@@ -190,33 +191,33 @@ public class BookService {
         return result;
     }
 
-    private List<PersonDTO> getListAuthorsDTO(List<Author> authors) {
+    private List<AuthorDTO> getListAuthorsDTO(List<Author> authors) {
         return personService.getListAuthorsDTO(authors);
     }
 
-    private List<Author> getListAuthors(List<PersonDTO> authors) throws LibraryStoreBooksException {
+    private List<Author> getListAuthors(List<AuthorDTO> authors) throws LibraryStoreBooksException {
         return personService.getListAuthorsByListDTO(authors);
     }
 
-    private CompanyDTO getCompanyDTO(Publisher publisher) {
+    private CompanyDTO getCompanyDTO(Company publisher) {
         return companyService.getCompanyDTOFromPublisher(publisher);
     }
 
-    private Publisher getPublisher(CompanyDTO publisher) throws LibraryStoreBooksException {
+    private Company getPublisher(CompanyDTO publisher) throws LibraryStoreBooksException {
         return companyService.getPublisherFromDTO(publisher);
     }
 
     private void saveBookAuthor(Book book, BookDTO dto) throws LibraryStoreBooksException {
-        List<PersonDTO> authors = dto.getAuthors();
+        List<AuthorDTO> authors = dto.getAuthors();
 
         if (!FormatUtils.isEmpty(authors)) {
-            for (PersonDTO author : authors) {
+            for (AuthorDTO author : authors) {
                 personService.saveBookAuthor(book, author);
             }
         }
     }
 
-    public List<PersonDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
+    public List<AuthorDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
         return bookRepository.getListAuthorsDTOByBookId(bookId);
     }
 

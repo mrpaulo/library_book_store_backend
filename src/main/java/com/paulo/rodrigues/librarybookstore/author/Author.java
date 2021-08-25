@@ -17,30 +17,24 @@
  */
 package com.paulo.rodrigues.librarybookstore.author;
 
-import com.paulo.rodrigues.librarybookstore.address.City;
-import com.paulo.rodrigues.librarybookstore.book.Book;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.paulo.rodrigues.librarybookstore.enums.EPersonRole;
+import com.paulo.rodrigues.librarybookstore.address.modal.Country;
+import com.paulo.rodrigues.librarybookstore.address.modal.Address;
+import com.paulo.rodrigues.librarybookstore.address.modal.City;
+import com.paulo.rodrigues.librarybookstore.book.Book;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.address.Address;
-import com.paulo.rodrigues.librarybookstore.address.Country;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.isCPF;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -52,9 +46,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  *
@@ -62,17 +55,13 @@ import lombok.Setter;
  */
 @Entity
 @Table(indexes = {    
-    @Index(name = "idx_name_author", columnList = "name")
+    @Index(name = "idx_name_person", columnList = "name")
 })
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
-@Inheritance(
-        strategy = InheritanceType.JOINED
-)
-public class Author implements Serializable{
+public class Author implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
@@ -119,7 +108,7 @@ public class Author implements Serializable{
     private Date updateAt;
     private String updateBy;
 
-    public void personValidation() throws LibraryStoreBooksException {
+    public void validation() throws LibraryStoreBooksException {
         if (FormatUtils.isEmpty(name)) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_NAME_NOT_INFORMED"));
         }
