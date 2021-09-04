@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address.repository;
+package com.paulo.rodrigues.librarybookstore.book.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.model.Country;
+import com.paulo.rodrigues.librarybookstore.book.model.Language;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -26,10 +26,7 @@ import org.springframework.stereotype.Repository;
  * @author paulo.rodrigues
  */
 @Repository
-public interface CountryRepository extends JpaRepository<Country, Long> {
+public interface LanguageRepository extends JpaRepository<Language, Long>{
 
-    public Country getByName(String name);
-
-    public Country getById(long id);
-
+    public Language findByName (String name);
 }

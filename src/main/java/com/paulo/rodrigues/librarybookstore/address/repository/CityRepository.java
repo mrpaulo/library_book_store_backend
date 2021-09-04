@@ -17,16 +17,18 @@
  */
 package com.paulo.rodrigues.librarybookstore.address.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.modal.City;
-import com.paulo.rodrigues.librarybookstore.address.modal.Country;
-import com.paulo.rodrigues.librarybookstore.address.modal.StateCountry;
+import com.paulo.rodrigues.librarybookstore.address.model.City;
+import com.paulo.rodrigues.librarybookstore.address.model.Country;
+import com.paulo.rodrigues.librarybookstore.address.model.StateCountry;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author paulo.rodrigues
  */
+@Repository
 public interface CityRepository extends JpaRepository<City, Long> {
 
     public City getByName(String name);

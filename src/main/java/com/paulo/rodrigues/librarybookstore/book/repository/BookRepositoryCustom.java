@@ -15,10 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address.repository;
+package com.paulo.rodrigues.librarybookstore.book.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.model.Country;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO;
+import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
+import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
+import com.paulo.rodrigues.librarybookstore.book.model.Book;
+import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,10 +31,10 @@ import org.springframework.stereotype.Repository;
  * @author paulo.rodrigues
  */
 @Repository
-public interface CountryRepository extends JpaRepository<Country, Long> {
-
-    public Country getByName(String name);
-
-    public Country getById(long id);
-
+public interface BookRepositoryCustom {
+    
+    PagedResult<BookDTO> findPageble(BookFilter filter);
+    List<AuthorDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException;
+    List<Book> getBooksFromAuthor(String authorName);
+    boolean deleteBookAuthor (long authorId, long bookId);
 }

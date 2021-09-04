@@ -17,13 +17,15 @@
  */
 package com.paulo.rodrigues.librarybookstore.address.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.modal.Address;
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author paulo.rodrigues
  */
+@Repository
 public interface AddressRepository extends JpaRepository<Address, Long>{
     
 }

@@ -18,17 +18,14 @@
 package com.paulo.rodrigues.librarybookstore.address.service;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
-import com.paulo.rodrigues.librarybookstore.book.EBookFormat;
-import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.address.modal.Address;
-import com.paulo.rodrigues.librarybookstore.address.modal.City;
-import com.paulo.rodrigues.librarybookstore.address.modal.Country;
-import com.paulo.rodrigues.librarybookstore.address.modal.StateCountry;
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
+import com.paulo.rodrigues.librarybookstore.address.model.City;
+import com.paulo.rodrigues.librarybookstore.address.model.Country;
+import com.paulo.rodrigues.librarybookstore.address.model.StateCountry;
 import com.paulo.rodrigues.librarybookstore.address.repository.AddressRepository;
 import com.paulo.rodrigues.librarybookstore.address.repository.CityRepository;
-import com.paulo.rodrigues.librarybookstore.publisher.CompanyRepository;
 import com.paulo.rodrigues.librarybookstore.address.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.address.repository.StateCountryRepository;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
@@ -41,7 +38,8 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.paulo.rodrigues.librarybookstore.author.AuthorRepository;
+import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
+import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository;
 
 /**
  *
@@ -69,7 +67,7 @@ public class AddressService {
     private AuthorRepository personRepository;
     
     @Autowired
-    private CompanyRepository companyRepository;
+    private PublisherRepository companyRepository;
 
     public Address findById(Long addressId) throws LibraryStoreBooksException {
         Address address = addressRepository.findById(addressId).orElse(null);

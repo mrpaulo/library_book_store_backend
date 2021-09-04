@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages="com.paulo.rodrigues.librarybookstore.repository")
+@EnableJpaRepositories(enableDefaultTransactions=false)
 @EnableAutoConfiguration
 public class LibraryBookStoreApplication {
 

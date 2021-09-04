@@ -15,21 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address.repository;
+package com.paulo.rodrigues.librarybookstore.publisher.dto;
 
-import com.paulo.rodrigues.librarybookstore.address.model.Country;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Repository
-public interface CountryRepository extends JpaRepository<Country, Long> {
-
-    public Country getByName(String name);
-
-    public Country getById(long id);
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class PublisherDTO {
+    
+    private long id;
+    private String name;
+    private String cnpj;
+    private AddressDTO address;
+    private Date createDate;
+    private String description; 
 }

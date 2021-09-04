@@ -15,21 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.address.repository;
+package com.paulo.rodrigues.librarybookstore.book.filter;
 
-import com.paulo.rodrigues.librarybookstore.address.model.Country;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Repository
-public interface CountryRepository extends JpaRepository<Country, Long> {
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class BookFilter extends PageableFilter {
 
-    public Country getByName(String name);
-
-    public Country getById(long id);
-
+    private String title;
+    private String author;
+    private String publisher;
+    private String subjectName;
+    private Date publishDate;
 }
