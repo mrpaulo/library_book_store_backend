@@ -69,7 +69,7 @@ public class PublisherService {
         Publisher publisher = publisherRepository.findById(publisherId).orElse(null);
 
         if (publisher == null) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("COMPANY_NOT_FOUND") + " ID: " + publisherId);
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " ID: " + publisherId);
         }
 
         return publisher;
@@ -96,8 +96,8 @@ public class PublisherService {
 
     public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws LibraryStoreBooksException {
         Publisher publisherToEdit = findById(publisherId);
-
-        publisherToEdit = modelMapper.map(publisherDetail, Publisher.class);
+        ModelMapper mapper = new ModelMapper();
+        publisherToEdit = mapper.map(publisherDetail, Publisher.class);
 
         return toDTO(save(publisherToEdit));
     }
@@ -116,6 +116,7 @@ public class PublisherService {
                 .cnpj(publisher.getCnpj())
                 .createDate(publisher.getCreateDate())
                 .address(addressService.toDTO(publisher.getAddress()))
+                .description(publisher.getDescription())
                 .build();
                 
     }

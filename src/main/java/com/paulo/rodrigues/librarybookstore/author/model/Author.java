@@ -29,6 +29,7 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -91,10 +92,11 @@ public class Author implements Serializable {
     @JoinColumn(name = "BIRTH_COUNTRY_ID", referencedColumnName = "ID")
     private Country birthCountry;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
     private Address address;
     
+    @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
     private String description;
 
     @ManyToMany
@@ -118,6 +120,9 @@ public class Author implements Serializable {
         if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F")))) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
         }
+        if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }  
     }
 
     public void persistAt() {

@@ -25,6 +25,7 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -78,12 +79,15 @@ public class Publisher implements Serializable {
     @Column(unique = true, length = ConstantsUtil.MAX_SIZE_CNPJ)
     private String cnpj;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
     private Address address;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createDate;
+    
+    @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
+    private String description;
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;
@@ -106,6 +110,9 @@ public class Publisher implements Serializable {
         if (!FormatUtils.isCNPJ(nuCnpj)) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_CNPJ_INVALID"));
         }
+         if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        } 
     }
     
     public void persistAt() {

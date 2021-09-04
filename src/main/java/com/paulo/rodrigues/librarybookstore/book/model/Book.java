@@ -17,10 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.book.model;
 
-import com.paulo.rodrigues.librarybookstore.book.enums.EBookCondition;
-import com.paulo.rodrigues.librarybookstore.book.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.book.enums.EBookCondition;

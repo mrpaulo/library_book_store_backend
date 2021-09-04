@@ -68,8 +68,8 @@ public class BookService {
 
     private ModelMapper modelMapper;
     private final BookRepository bookRepository;
-    private final AuthorService personService;
-    private final PublisherService companyService;
+    private final AuthorService authorService;
+    private final PublisherService publisherService;
     private final LanguageRepository languageRepository;
     private final BookSubjectRepository bookSubjectRepository;
 
@@ -80,8 +80,8 @@ public class BookService {
             @Autowired BookSubjectRepository bookSubjectRepository,
             @Autowired ModelMapper modelMapper) {
         this.bookRepository = bookRepository;
-        this.personService = personService;
-        this.companyService = companyService;
+        this.authorService = personService;
+        this.publisherService = companyService;
         this.languageRepository = languageRepository;
         this.bookSubjectRepository = bookSubjectRepository;
         this.modelMapper = modelMapper;
@@ -102,7 +102,7 @@ public class BookService {
         if (book == null) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
-        book.setAuthors(new HashSet<>(personService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
+        book.setAuthors(new HashSet<>(authorService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
 
         return book;
     }
@@ -126,7 +126,7 @@ public class BookService {
         Book bookToEdit = findById(bookId);
 
         bookToEdit = modelMapper.map(bookDetail, Book.class);
-        bookToEdit.setAuthors(personService.saveBookAuthorFromListBooksDTO(bookToEdit, bookDetail.getAuthors()));
+        bookToEdit.setAuthors(authorService.saveBookAuthorFromListBooksDTO(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
         bookToEdit.setPublisher(getPublisher(bookDetail.getPublisher()));
@@ -197,19 +197,19 @@ public class BookService {
     }
 
     private List<AuthorDTO> getListAuthorsDTO(List<Author> authors) {
-        return personService.getListAuthorsDTO(authors);
+        return authorService.getListAuthorsDTO(authors);
     }
 
     private List<Author> getListAuthors(List<AuthorDTO> authors) throws LibraryStoreBooksException {
-        return personService.getListAuthorsByListDTO(authors);
+        return authorService.getListAuthorsByListDTO(authors);
     }
 
     private PublisherDTO getCompanyDTO(Publisher publisher) {
-        return companyService.toDTO(publisher);
+        return publisherService.toDTO(publisher);
     }
 
     private Publisher getPublisher(PublisherDTO publisher) throws LibraryStoreBooksException {
-        return companyService.fromDTO(publisher);
+        return publisherService.findById(publisher.getId());
     }
 
     private void saveBookAuthor(Book book, BookDTO dto) throws LibraryStoreBooksException {
@@ -217,7 +217,7 @@ public class BookService {
 
         if (!FormatUtils.isEmpty(authors)) {
             for (AuthorDTO author : authors) {
-                personService.saveBookAuthor(book, author);
+                authorService.saveBookAuthor(book, author);
             }
         }
     }

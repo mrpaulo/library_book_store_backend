@@ -102,10 +102,6 @@ public class AuthorService {
         return toListDTO(authorRepository.findByName(name));
     }
 
-    public Author findByCPF(String cpf) {
-        return authorRepository.findByCpf(cpf);
-    }
-
     public AuthorDTO create(Author author) throws LibraryStoreBooksException {
         if(author != null && author.getAddress() != null){
             addressService.create(author.getAddress());
@@ -124,9 +120,10 @@ public class AuthorService {
     public AuthorDTO edit(Long authorId, AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
         Author authorToEdit = findById(authorId);
        // modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        modelMapper.createTypeMap(AuthorDTO.class, Author.class);
-        modelMapper.validate();
-        authorToEdit = modelMapper.map(authorDetalhes, Author.class);
+//        modelMapper.createTypeMap(AuthorDTO.class, Author.class);
+//        modelMapper.validate();
+        ModelMapper mapper = new ModelMapper();
+        authorToEdit = mapper.map(authorDetalhes, Author.class);
 
         return toDTO(save(authorToEdit));
     }
@@ -195,7 +192,7 @@ public class AuthorService {
     }
 
     public Author saveBookAuthor(Book book, AuthorDTO dto) throws LibraryStoreBooksException {
-        Author author = fromDTO(dto);
+        Author author = findById(dto.getId());
         
         Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthor(author.getName()));
         booksFromAuthor.add(book);

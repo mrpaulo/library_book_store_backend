@@ -163,12 +163,12 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         if (!FormatUtils.isEmpty(filter.getAuthor())) {
             sql.append(" AND '");
             sql.append(filter.getAuthor());
-            sql.append("' IN (SELECT p.name from PERSON p INNER JOIN author_books ab ON p.id = ab.author_id WHERE ab.books_id = b.id)");
+            sql.append("' IN (SELECT p.name from AUTHOR p INNER JOIN author_books ab ON p.id = ab.author_id WHERE ab.books_id = b.id)");
         }
         if (!FormatUtils.isEmpty(filter.getPublisher())) {
             sql.append(" AND '");
             sql.append(filter.getPublisher());
-            sql.append("' IN (SELECT c.name FROM COMPANY c WHERE c.id = b.publisher_id ) ");
+            sql.append("' IN (SELECT c.name FROM PUBLISHER c WHERE c.id = b.publisher_id ) ");
         }
         if (!FormatUtils.isEmpty(filter.getSubjectName())) {
             sql.append(" AND ");
@@ -294,10 +294,10 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             authors.add(AuthorDTO.builder()
                             .id(((BigInteger) b[0]).longValue())
                             .name((String) b[1])                            
-                            .birthdate(b[3] != null ? (Date) b[3] : null)
-                            .sex(b[4] != null ? (String) b[4] : null)
-                            .email(b[5] != null ? (String) b[5] : null)
-                            .description(b[6] != null ? (String) b[6] : null)
+                            .birthdate(b[2] != null ? (Date) b[2] : null)
+                            .sex(b[3] != null ? (String) b[3] : null)
+                            .email(b[4] != null ? (String) b[4] : null)
+                            .description(b[5] != null ? (String) b[5] : null)
                             .build());
         }
         );
@@ -313,9 +313,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             authors.add(Author.builder()
                             .id(((BigInteger) b[0]).longValue())
                             .name((String) b[1])                            
-                            .birthdate(b[3] != null ? (Date) b[3] : null)
-                            .sex(b[4] != null ? (String) b[4] : null)
-                            .email(b[5] != null ? (String) b[5] : null)
+                            .birthdate(b[2] != null ? (Date) b[2] : null)
+                            .sex(b[3] != null ? (String) b[3] : null)
+                            .email(b[4] != null ? (String) b[4] : null)
                             .build());
                    
         }
