@@ -96,9 +96,11 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             sqlCount.append(getSqlQuery(filter));
             sqlCount.append(") as a ");
             Query queryCount = em.createNativeQuery(sqlCount.toString());
+            queryCount = buildFilterParameter(queryCount, filter);
 
             query.setFirstResult(filter.getOffset());
             query.setMaxResults(filter.getRowsPerPage());
+            query = buildFilterParameter(query, filter);
 
             List<BookDTO> list = buildListBooksDTO(query.getResultList());
 
@@ -152,40 +154,52 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     private StringBuilder buildFilter(StringBuilder sql, BookFilter filter) {
 
         if (!FormatUtils.isEmpty(filter.getId())) {
-            sql.append(" AND b.id = ");
-            sql.append(filter.getId());
+            sql.append(" AND b.id = :bookId");            
         }
         if (!FormatUtils.isEmpty(filter.getTitle())) {
-            sql.append(" AND b.title like CONCAT('%");
-            sql.append(filter.getTitle());
-            sql.append("%') ");
+            sql.append(" AND LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')) ");            
         }
-        if (!FormatUtils.isEmpty(filter.getAuthor())) {
-            sql.append(" AND '");
-            sql.append(filter.getAuthor());
-            sql.append("' IN (SELECT p.name from AUTHOR p INNER JOIN author_books ab ON p.id = ab.author_id WHERE ab.books_id = b.id)");
+        if (!FormatUtils.isEmpty(filter.getAuthor())) {            
+            sql.append("AND LOWER(:authorName) IN ");
+            sql.append("(SELECT LOWER(p.name) FROM AUTHOR p "
+                    + "INNER JOIN author_books ab ON p.id = ab.author_id "
+                    + "WHERE ab.books_id = b.id)");
         }
-        if (!FormatUtils.isEmpty(filter.getPublisher())) {
-            sql.append(" AND '");
-            sql.append(filter.getPublisher());
-            sql.append("' IN (SELECT c.name FROM PUBLISHER c WHERE c.id = b.publisher_id ) ");
+        if (!FormatUtils.isEmpty(filter.getPublisher())) {            
+            sql.append("AND LOWER(pu.name) LIKE LOWER(CONCAT('%', :publisherName, '%')) ");            
         }
         if (!FormatUtils.isEmpty(filter.getSubjectName())) {
-            sql.append(" AND ");
-            sql.append(" b.subject_id ");
-            sql.append(" = (SELECT id FROM BOOK_SUBJECT WHERE name = '");
-            sql.append(filter.getSubjectName());
-            sql.append("') ");
+            sql.append(" AND b.subject_id =");
+            sql.append("(SELECT id FROM BOOK_SUBJECT WHERE LOWER(name) = LOWER(:subjectName)) ");           
         }
         if (filter.getStartDate() != null && filter.getFinalDate() != null) {
-            sql.append(" AND b.publish_date BETWEEN '");
-            sql.append(DateUtils.getDataAnoMesDia(filter.getStartDate()));
-            sql.append("' AND '");
-            sql.append(DateUtils.getDataAnoMesDia(filter.getFinalDate()));
-            sql.append("'");
-
+            sql.append(" AND b.publish_date BETWEEN :startDate AND :finalDate ");
         }
         return sql;
+    }
+
+    private Query buildFilterParameter(Query query, BookFilter filter) {
+
+        if (!FormatUtils.isEmpty(filter.getId())) {
+            query.setParameter("bookId", filter.getId());
+        }
+        if (!FormatUtils.isEmpty(filter.getTitle())) {
+            query.setParameter("title", filter.getTitle());
+        }
+        if (!FormatUtils.isEmpty(filter.getAuthor())) {
+            query.setParameter("authorName", filter.getAuthor());
+        }
+        if (!FormatUtils.isEmpty(filter.getPublisher())) {
+            query.setParameter("publisherName", filter.getPublisher());
+        }
+        if (!FormatUtils.isEmpty(filter.getSubjectName())) {
+            query.setParameter("subjectName", filter.getSubjectName());
+        }
+        if (filter.getStartDate() != null && filter.getFinalDate() != null) {
+           query.setParameter("startDate", filter.getStartDate());
+           query.setParameter("finalDate", filter.getFinalDate());
+        }
+        return query;
     }
 
     private List<BookDTO> buildListBooksDTO(List<Object[]> resultList) {
@@ -268,7 +282,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             StringBuilder sql = new StringBuilder();
 
             sql.append(" SELECT p.id  ");
-            sql.append(" , p.name  ");            
+            sql.append(" , p.name  ");
             sql.append(" , p.birthdate ");
             sql.append(" , p.sex ");
             sql.append(" , p.email ");
@@ -292,13 +306,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
         resultList.forEach(b -> {
             authors.add(AuthorDTO.builder()
-                            .id(((BigInteger) b[0]).longValue())
-                            .name((String) b[1])                            
-                            .birthdate(b[2] != null ? (Date) b[2] : null)
-                            .sex(b[3] != null ? (String) b[3] : null)
-                            .email(b[4] != null ? (String) b[4] : null)
-                            .description(b[5] != null ? (String) b[5] : null)
-                            .build());
+                    .id(((BigInteger) b[0]).longValue())
+                    .name((String) b[1])
+                    .birthdate(b[2] != null ? (Date) b[2] : null)
+                    .sex(b[3] != null ? (String) b[3] : null)
+                    .email(b[4] != null ? (String) b[4] : null)
+                    .description(b[5] != null ? (String) b[5] : null)
+                    .build());
         }
         );
 
@@ -311,13 +325,13 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
         resultList.forEach(b -> {
             authors.add(Author.builder()
-                            .id(((BigInteger) b[0]).longValue())
-                            .name((String) b[1])                            
-                            .birthdate(b[2] != null ? (Date) b[2] : null)
-                            .sex(b[3] != null ? (String) b[3] : null)
-                            .email(b[4] != null ? (String) b[4] : null)
-                            .build());
-                   
+                    .id(((BigInteger) b[0]).longValue())
+                    .name((String) b[1])
+                    .birthdate(b[2] != null ? (Date) b[2] : null)
+                    .sex(b[3] != null ? (String) b[3] : null)
+                    .email(b[4] != null ? (String) b[4] : null)
+                    .build());
+
         }
         );
 
@@ -390,19 +404,18 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             return null;
         }
     }
-    
-    public boolean deleteBookAuthor (long authorId, long bookId){
+
+    public boolean deleteBookAuthor(long authorId, long bookId) {
         try {
 
             StringBuilder sql = new StringBuilder();
             sql.append(" DELETE FROM author_books ");
             sql.append("   WHERE author_id = :authorId ");
-             sql.append("  AND books_id = :bookId ");
+            sql.append("  AND books_id = :bookId ");
 
             Query query = em.createNativeQuery(sql.toString());
             query.setParameter("authorId", authorId);
-            query.setParameter("bookId", bookId);           
-            
+            query.setParameter("bookId", bookId);
 
             query.executeUpdate();
             return true;

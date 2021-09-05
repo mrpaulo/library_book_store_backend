@@ -23,8 +23,6 @@ import com.paulo.rodrigues.librarybookstore.book.service.BookService;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.model.BookSubject;
-import com.paulo.rodrigues.librarybookstore.book.model.BookSubject;
-import com.paulo.rodrigues.librarybookstore.book.model.Language;
 import com.paulo.rodrigues.librarybookstore.book.model.Language;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
