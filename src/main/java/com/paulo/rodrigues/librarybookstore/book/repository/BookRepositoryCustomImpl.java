@@ -396,6 +396,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             sql.append(getSqlQuery(filter));
 
             Query query = em.createNativeQuery(sql.toString());
+            query = buildFilterParameter(query, filter);
 
             List<Book> list = buildListBooks(query.getResultList());
 

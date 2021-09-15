@@ -18,7 +18,6 @@
 package com.paulo.rodrigues.librarybookstore.publisher.repository;
 
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
-import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -40,14 +39,14 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long>{
     
     @Query("SELECT c "
             + " FROM Publisher c "
-            + " WHERE (:name IS NULL OR :name = '' OR c.name LIKE CONCAT('%',:name,'%')) "
+            + " WHERE (:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) "
             + "")
     public List<Publisher> findByName (@Param("name") String name);
 
     @Query("SELECT c "
             + " FROM Publisher c "
             + " WHERE (:id IS NULL OR c.id = :id) "
-            + " AND (:name IS NULL OR :name = '' OR c.name LIKE CONCAT('%',:name,'%')) "
+            + " AND (:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) "
             + " AND (:cnpj IS NULL OR :cnpj = '' OR c.cnpj LIKE CONCAT('%',:cnpj,'%')) "
 //            + " AND ((:startDate IS NULL AND :finalDate IS NULL) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
             + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (c.createDate BETWEEN :startDate AND :finalDate)) "

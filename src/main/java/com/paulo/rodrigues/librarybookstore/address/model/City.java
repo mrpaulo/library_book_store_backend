@@ -18,8 +18,6 @@
 package com.paulo.rodrigues.librarybookstore.address.model;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
-import com.paulo.rodrigues.librarybookstore.address.model.Country;
-import com.paulo.rodrigues.librarybookstore.address.model.StateCountry;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;

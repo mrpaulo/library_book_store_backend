@@ -18,7 +18,6 @@
 package com.paulo.rodrigues.librarybookstore.address.model;
 
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
-import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;

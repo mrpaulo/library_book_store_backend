@@ -18,15 +18,9 @@
 package com.paulo.rodrigues.librarybookstore.author.service;
 
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO;
-import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter;
-import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
-import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.address.repository.CityRepository;
 import com.paulo.rodrigues.librarybookstore.address.repository.CountryRepository;
@@ -41,12 +35,10 @@ import java.util.List;
 import java.util.Set;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
 
 /**
@@ -56,8 +48,6 @@ import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
 @Service
 @Transactional
 public class AuthorService {
-
-    private ModelMapper modelMapper;
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -92,7 +82,7 @@ public class AuthorService {
         Author author = authorRepository.findById(authorId).orElse(null);
 
         if (author == null) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PERSON_NOT_FOUND") + " ID: " + authorId);
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NOT_FOUND") + " ID: " + authorId);
         }
 
         return author;
@@ -118,10 +108,7 @@ public class AuthorService {
     }
 
     public AuthorDTO edit(Long authorId, AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
-        Author authorToEdit = findById(authorId);
-       // modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-//        modelMapper.createTypeMap(AuthorDTO.class, Author.class);
-//        modelMapper.validate();
+        Author authorToEdit = findById(authorId);       
         ModelMapper mapper = new ModelMapper();
         authorToEdit = mapper.map(authorDetalhes, Author.class);
 
@@ -197,7 +184,7 @@ public class AuthorService {
         Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthor(author.getName()));
         booksFromAuthor.add(book);
         
-        author.setBooks(Lists.newArrayList(booksFromAuthor));
+        author.setBooks(booksFromAuthor);
         authorRepository.saveAndFlush(author);
         return author;
     }

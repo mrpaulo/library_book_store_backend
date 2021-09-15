@@ -17,8 +17,6 @@
  */
 package com.paulo.rodrigues.librarybookstore.author.repository;
 
-import com.paulo.rodrigues.librarybookstore.address.model.Address;
-import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import java.util.Date;
 import java.util.List;
@@ -41,14 +39,14 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
         
     @Query("SELECT p "
             + " FROM Author p "
-            + " WHERE (:name IS NULL OR :name = '' OR p.name like CONCAT('%',:name,'%')) "           
+            + " WHERE (:name IS NULL OR :name = '' OR LOWER(p.name) like LOWER(CONCAT('%',:name,'%'))) "           
             + "")
     public List<Author> findByName(@Param("name") String name);
     
     @Query("SELECT p "
             + " FROM Author p "
             + " WHERE (:id IS NULL OR p.id = :id) "
-            + " AND (:name IS NULL OR :name = '' OR p.name like CONCAT('%',:name,'%')) "
+            + " AND (:name IS NULL OR :name = '' OR LOWER(p.name) like LOWER(CONCAT('%',:name,'%'))) "
             + " AND (:sex IS NULL OR :sex = '' OR p.sex = :sex) "
             + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (p.birthdate BETWEEN :startDate AND :finalDate)) "
             + "")

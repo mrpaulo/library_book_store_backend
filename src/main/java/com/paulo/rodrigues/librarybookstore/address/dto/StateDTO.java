@@ -17,10 +17,19 @@
  */
 package com.paulo.rodrigues.librarybookstore.address.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  *
  * @author paulo.rodrigues
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class StateDTO {
     private long id;
     private String name;

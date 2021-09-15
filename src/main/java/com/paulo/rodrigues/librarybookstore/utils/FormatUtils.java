@@ -114,10 +114,10 @@ public class FormatUtils {
             return null;
         }
         if (filter.getSortColumn() == null) {
-            filter.setSortColumn("");
+            filter.setSortColumn("createAt");
         }
         if (filter.getSort() == null) {
-            filter.setSort("");
+            filter.setSort("asc");
         }
 
         String[] colunas = filter.getSortColumn().split(",");
