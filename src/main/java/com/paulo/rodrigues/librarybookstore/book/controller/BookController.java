@@ -24,6 +24,7 @@ import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.model.BookSubject;
 import com.paulo.rodrigues.librarybookstore.book.model.Language;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -66,8 +67,8 @@ public class BookController {
     @PostMapping("/fetch")
     public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         
-        PagedResult<BookDTO> result = bookService.findPageble(filter);
-        res.addHeader("Total-Count", String.valueOf(result != null ? result.getTotalElementos() : 0));
+        PagedResult<BookDTO> result = bookService.findPageble(FormatUtils.setOffSet(filter));
+        res.addHeader("totalcount", String.valueOf(result != null ? result.getTotalElementos() : 0));
 
         return result.getElementos();
     }

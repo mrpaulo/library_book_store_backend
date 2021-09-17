@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
+import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InputMismatchException;
@@ -128,6 +129,11 @@ public class FormatUtils {
 
         }
         return PageRequest.of(filter.getCurrentPage() > 0 ? filter.getCurrentPage() - 1 : 0, filter.getRowsPerPage(), Sort.by(lsOrdens));
+    }
+    
+    public static BookFilter setOffSet(BookFilter filter) {
+         filter.setOffset(filter.getCurrentPage() * filter.getRowsPerPage());
+         return filter;
     }
 
     /**

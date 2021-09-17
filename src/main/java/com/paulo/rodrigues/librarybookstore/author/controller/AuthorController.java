@@ -71,7 +71,7 @@ public class AuthorController {
         Page<Author> result = authorService.findPageble(filter, pageable);
         res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
 
-        return authorService.toListDTO(result.getContent());
+        return authorService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

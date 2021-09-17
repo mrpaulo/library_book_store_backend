@@ -64,11 +64,11 @@ public class PublisherController {
         return publishersList.stream().sorted(Comparator.comparing(PublisherDTO::getName)).collect(Collectors.toList());
     }
 
-    @GetMapping()
+    @PostMapping("/fetch")
     public List<PublisherDTO> getAllPageble(@RequestBody PublisherFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
         Page<Publisher> result = publisherService.findPageble(filter, pageable);
-        res.addHeader("Total-Count", String.valueOf(result.getTotalElements()));
+        res.addHeader("totalcount", String.valueOf(result.getTotalElements()));
 
         return publisherService.toListDTO(result.getContent());
     }

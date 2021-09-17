@@ -107,7 +107,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             Integer total = ((BigInteger) queryCount.getSingleResult()).intValue();
             Integer totalPaginas = 0;
             if (total != null && total > 0) {
-                totalPaginas = (int) Math.ceil(total / filter.getRowsPerPage());
+                totalPaginas = (int) Math.ceil(total / filter.getRowsPerPage() == 0 ? 10 : filter.getRowsPerPage());
                 if (totalPaginas == 0) {
                     totalPaginas = 1;
                 }
