@@ -28,6 +28,8 @@ VALUES
 (19,'16715560000162', '2005-11-30', 'Editora Q', 2),
 (20,'09436964000151', '2005-11-30', 'Editora R', 2);
 
+ALTER SEQUENCE publisher_id_seq RESTART WITH 21;
+
 INSERT INTO publisher (id, description) 
 VALUES
 (1, 'Uma editora confiavel'),

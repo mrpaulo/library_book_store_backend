@@ -30,3 +30,4 @@ VALUES
 (22,'1979-11-30', 'Eliane Ferreira', 'maria@ferreira.com.br', 'F', 3, 1, 1, 'Uma autor legal3'),
 (23,'1979-11-30', 'Tereza Ferreira', 'maria@ferreira.com.br', 'F', 3, 1, 1, 'Uma autor legal3');
 
+ALTER SEQUENCE author_id_seq RESTART WITH 24;

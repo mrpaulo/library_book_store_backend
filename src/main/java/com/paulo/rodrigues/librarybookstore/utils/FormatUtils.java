@@ -132,7 +132,9 @@ public class FormatUtils {
     }
     
     public static BookFilter setOffSet(BookFilter filter) {
-         filter.setOffset(filter.getCurrentPage() * filter.getRowsPerPage());
+        if(filter.getCurrentPage() > 1){
+         filter.setOffset((filter.getCurrentPage()-1) * filter.getRowsPerPage());
+        }
          return filter;
     }
 
