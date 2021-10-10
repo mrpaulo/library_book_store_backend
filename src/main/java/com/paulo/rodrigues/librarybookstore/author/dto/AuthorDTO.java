@@ -22,7 +22,6 @@ import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.StateDTO;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
-import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
