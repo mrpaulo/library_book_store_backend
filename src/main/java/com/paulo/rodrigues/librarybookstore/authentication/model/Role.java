@@ -16,24 +16,36 @@
  */
 package com.paulo.rodrigues.librarybookstore.authentication.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  *
  * @author paulo.rodrigues
  */
+@Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Login {
+public class Role implements GrantedAuthority {
     
-    public static final String ROLE_ADMIN = "ADMIN";
-    public static final String ROLE_CLIENT = "CLIENT";
+    public Role(String name) {
+        this.name = name;
+    }
+    public Role() {
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String name;
+
+
+    @Override
+    public String getAuthority() {
+        return  this.name;
+    }
     
-    private String userName;
-    private String password;
 }

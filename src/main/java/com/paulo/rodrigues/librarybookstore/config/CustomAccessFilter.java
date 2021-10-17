@@ -26,6 +26,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import org.springframework.stereotype.Component;
 
@@ -34,7 +36,8 @@ import org.springframework.stereotype.Component;
  * @author paulo.rodrigues
  */
 @Component
-public class FilterAcesso implements Filter {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class CustomAccessFilter implements Filter {
 
     @Override
     public void init(FilterConfig fc) throws ServletException {

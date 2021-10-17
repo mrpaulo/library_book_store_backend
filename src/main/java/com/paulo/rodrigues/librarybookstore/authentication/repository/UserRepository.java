@@ -14,26 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.authentication.model;
+package com.paulo.rodrigues.librarybookstore.authentication.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.paulo.rodrigues.librarybookstore.authentication.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Login {
-    
-    public static final String ROLE_ADMIN = "ADMIN";
-    public static final String ROLE_CLIENT = "CLIENT";
-    
-    private String userName;
-    private String password;
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByEmail(String email);
 }
