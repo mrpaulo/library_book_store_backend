@@ -17,19 +17,21 @@
  */
 package com.paulo.rodrigues.librarybookstore.config;
 
+import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
 import com.paulo.rodrigues.librarybookstore.authentication.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.SessionManagementFilter;
@@ -41,6 +43,7 @@ import org.springframework.security.web.session.SessionManagementFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${basic.user}")
@@ -57,21 +60,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAccessFilter filter = new CustomAccessFilter();
         return filter;
     }
-
+//
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .addFilterBefore(accessFilter(), SessionManagementFilter.class)
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/api/**/authentiations/**").permitAll()
+//                .antMatchers("/source/**").permitAll()
+//                .antMatchers("/api/**/fetch").permitAll()
+//                .antMatchers("/api/**").permitAll()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .httpBasic();               
+//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+        http.anonymous().disable()
                 .addFilterBefore(accessFilter(), SessionManagementFilter.class)
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/**/authentiations/**").permitAll()
-                .antMatchers("/source/**").permitAll()
-                .antMatchers("/api/**/fetch").permitAll()
-                .antMatchers("/oauth/**").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatcher(request -> {
+                    String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
+                    return (auth != null && auth.startsWith("Basic"));
+                })
+                
+                .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .httpBasic();
     }
@@ -84,14 +101,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .inMemoryAuthentication()
-//                .withUser(userBasic)
-//                .password(passBasic)
-//                .roles(Login.ROLE_CLIENT);
-//    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .inMemoryAuthentication()
+                .withUser(userBasic)
+                .password(passBasic)
+                .roles(Login.ROLE_CLIENT);
+        
+        auth.userDetailsService(loginService);
+    }
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        

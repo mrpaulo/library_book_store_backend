@@ -19,9 +19,10 @@ package com.paulo.rodrigues.librarybookstore.authentication.controller;
 import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
 import com.paulo.rodrigues.librarybookstore.authentication.model.Token;
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
-import com.paulo.rodrigues.librarybookstore.authentication.repository.RoleRepository;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
 import java.util.UUID;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,14 +33,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,7 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/authentiations")
+@RequestMapping("/api/v1/authentications")
 public class authenticationController {
     
     @Autowired
@@ -59,28 +60,19 @@ public class authenticationController {
     @Autowired
     PasswordEncoder passwordEncoder;
     
-    @PostMapping()
-    public Token login(@RequestBody Login login) {
-        
-        String aString="JUST_A_TEST_STRING";
-        String token = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
-        Token response = new Token(login.getUserName(), token);
-        
-        return response;
-    }
+   @Resource(name = "tokenServices")
+    ConsumerTokenServices tokenServices;
     
-    @PostMapping("/valid")
-    public boolean isTokenValid(@RequestBody Token token) {
-        System.out.println("isTokenValid");
-        System.out.println(token);
-        
-        return true;
-    }
-    
-    @GetMapping("/{token}")
-    public boolean logout(@PathVariable(value = "token") String token) {
-        System.out.println("Logout");
-        System.out.println(token);
+    @GetMapping("/logout")
+    public boolean logout(HttpServletRequest request) {
+                
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null) {
+            String tokenValue = authHeader.replace("Bearer", "").trim();
+            System.out.println("Logout");
+            System.out.println(tokenValue);
+            tokenServices.revokeToken(tokenValue);
+        }
         
         return true;
     }
