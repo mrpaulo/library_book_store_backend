@@ -1,5 +1,6 @@
-    /*
+/*
  * Copyright (C) 2021 paulo.rodrigues
+ * Profile: <https://github.com/mrpaulo>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,27 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.authentication.model;
+package com.paulo.rodrigues.librarybookstore.authentication.filter;
 
+import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
+import java.util.Date;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Login {
-    
-    public static final String ROLE_ADMIN = "ADMIN";
-    public static final String ROLE_OPERATOR = "OPERATOR";
-    public static final String ROLE_CLIENT = "CLIENT";
-    
-    private String userName;
-    private String password;
+@Getter
+@Setter
+public class UserFilter extends PageableFilter {
+
+    private String cpf;    
+    private Date birthdate;
 }

@@ -40,6 +40,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
+import org.modelmapper.PropertyMap;
 
 /**
  *
@@ -110,6 +111,13 @@ public class AuthorService {
     public AuthorDTO edit(Long authorId, AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
         Author authorToEdit = findById(authorId);       
         ModelMapper mapper = new ModelMapper();
+   //     mapper.addMappings(m -> m.skip(Author::setCreateAt));
+        mapper.addMappings(new PropertyMap<AuthorDTO, Author>() {
+                @Override
+                protected void configure() {
+                    skip(destination.getCreateAt());
+                }
+            });
         authorToEdit = mapper.map(authorDetalhes, Author.class);
 
         return toDTO(save(authorToEdit));

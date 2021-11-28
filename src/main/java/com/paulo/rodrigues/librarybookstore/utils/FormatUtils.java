@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
+import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
@@ -32,8 +34,15 @@ import org.springframework.data.domain.Sort;
  */
 public class FormatUtils {
     
-    public static String getCdUserLogged() {
-        return "usuario";
+    public static String getUsernameLogged() {
+        String userName = "";
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                
+        if(user != null){
+           userName = user.getUsername();
+        }
+        
+        return userName;
     }
 
     public static boolean isEmptyOrNull(String value) {

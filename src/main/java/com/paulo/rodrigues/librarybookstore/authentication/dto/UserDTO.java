@@ -1,4 +1,4 @@
-    /*
+/*
  * Copyright (C) 2021 paulo.rodrigues
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,8 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.authentication.model;
+package com.paulo.rodrigues.librarybookstore.authentication.dto;
 
+import com.paulo.rodrigues.librarybookstore.authentication.model.Role;
+import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,12 +32,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Login {
+public class UserDTO {
     
-    public static final String ROLE_ADMIN = "ADMIN";
-    public static final String ROLE_OPERATOR = "OPERATOR";
-    public static final String ROLE_CLIENT = "CLIENT";
-    
-    private String userName;
-    private String password;
+    private long id;
+    private String name;    
+    private String username;    
+    private String cpf;    
+    private Date birthdate;
+    private String sex;
+    private String email;
+    private List<Role> roles;
 }

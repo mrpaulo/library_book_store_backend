@@ -157,10 +157,10 @@ public class Book implements Serializable {
     public void persistAt() {
         if (updateAt == null) {
             setCreateAt(new Date());
-            setCreateBy(FormatUtils.getCdUserLogged());
+            setCreateBy(FormatUtils.getUsernameLogged());
         } else {
             setUpdateAt(new Date());
-            setUpdateBy(FormatUtils.getCdUserLogged());
+            setUpdateBy(FormatUtils.getUsernameLogged());
         }
     }
 

@@ -17,10 +17,8 @@
 package com.paulo.rodrigues.librarybookstore.authentication.controller;
 
 import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
-import com.paulo.rodrigues.librarybookstore.authentication.model.Token;
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
-import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/authentications")
-public class authenticationController {
+public class AuthenticationController {
     
     @Autowired
     private UserRepository userRepository;

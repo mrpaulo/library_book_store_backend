@@ -17,12 +17,43 @@
 package com.paulo.rodrigues.librarybookstore.authentication.repository;
 
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
+import java.util.Date;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
  * @author paulo.rodrigues
  */
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByEmail(String email);
+    
+    public User findByEmail(String email);
+    
+    @Query("SELECT c "
+            + " FROM User c "
+            + " WHERE (:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) "
+            + "")
+    public List<User> findByName(String name);
+    
+    @Query("SELECT c "
+            + " FROM User c "
+            + " WHERE (:id IS NULL OR c.id = :id) "
+            + " AND (:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) "
+            + " AND (:cpf IS NULL OR :cpf = '' OR c.cpf LIKE CONCAT('%',:cpf,'%')) "
+            + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (c.birthdate BETWEEN :startDate AND :finalDate)) "
+            + "")
+    public Page<User> findPageble(
+            @Param("id") Long id,
+            @Param("name") String name,
+            @Param("cpf") String cpf,                        
+            @Param("startDate") Date startDate,
+            @Param("finalDate") Date finalDate,
+            Pageable page);   
+
+    public User findByUsername(String username);
+    
 }

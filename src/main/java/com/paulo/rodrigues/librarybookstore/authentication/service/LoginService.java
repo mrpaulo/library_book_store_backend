@@ -44,6 +44,9 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
         if (user == null) {
+            user = userRepository.findByUsername(username);
+        }
+        if (user == null) {
             throw new UsernameNotFoundException(String.format("Usuário não existe: ", username));
         }
         return new UserRepositoryUserDetails(user);
@@ -63,7 +66,7 @@ public class LoginService implements UserDetailsService {
         }
 
         @Override
-        public String getUsername() {
+        public String getUsername() {            
             return this.getEmail();
         }
 

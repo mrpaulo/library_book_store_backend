@@ -17,7 +17,14 @@
 package com.paulo.rodrigues.librarybookstore.authentication.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
+import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +34,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -36,17 +48,41 @@ import lombok.Data;
  */
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
 @Table(name="lbs_user")
 public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+        
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String name;
-    @Column(unique = true)
+   
+    @NotNull
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_NAME)
+    private String username;
+    
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_CPF)
+    private String cpf;
+    
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_NAME)
     private String email;
-    @JsonIgnore
+    
+//    @JsonIgnore
+    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String password;
+    
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
+    private Address address;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date birthdate;
+    
+    @Column(length = 1)
+    private String sex;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="user_role",
@@ -54,6 +90,13 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="role_id")
     )
     private List<Role> roles;
+    
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createAt;
+    private String createBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date updateAt;
+    private String updateBy;
 
     public User() {
     }
@@ -77,5 +120,29 @@ public class User {
         this.email = email;
         this.roles = roles;
         this.password = password;
+    }
+    
+
+    public void validation() throws LibraryStoreBooksException {
+        if (!FormatUtils.isEmptyOrNull(name) && name.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NAME_NOT_INFORMED"));
+        }                             
+        if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F") && !sex.equals("O")))) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
+        }
+        if (!FormatUtils.isEmptyOrNull(email) && email.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        } 
+    }
+
+    public void persistAt() {
+        if (updateAt == null) {
+            setCreateAt(new Date());
+            setCreateBy(FormatUtils.getUsernameLogged());
+        } else {
+            setUpdateAt(new Date());
+            setUpdateBy(FormatUtils.getUsernameLogged());
+        }
+        
     }
 }
