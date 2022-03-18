@@ -18,9 +18,12 @@ package com.paulo.rodrigues.librarybookstore.authentication.service;
 
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,12 +34,12 @@ import org.springframework.stereotype.Service;
  * @author paulo.rodrigues
  */
 @Service
-public class LoginService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public LoginService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -62,11 +65,21 @@ public class LoginService implements UserDetailsService {
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return getRoles();
+
+            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+            System.out.println("Roles");
+            System.out.println(getRoles());
+            getRoles().forEach(role -> {
+                grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+
+            });
+
+            return grantedAuthorities;
+
         }
 
         @Override
-        public String getUsername() {            
+        public String getUsername() {
             return this.getEmail();
         }
 
@@ -92,7 +105,7 @@ public class LoginService implements UserDetailsService {
 
         @Override
         public String getPassword() {
-            return  super.getPassword();
+            return super.getPassword();
         }
 
     }

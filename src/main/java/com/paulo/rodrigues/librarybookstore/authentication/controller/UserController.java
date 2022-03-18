@@ -104,7 +104,7 @@ public class UserController {
     }
 
     @GetMapping("/roles")
-    public ResponseEntity<List<Role>> getAllCountries() throws LibraryStoreBooksException {
+    public ResponseEntity<List<Role>> getAllRoles() throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(userService.getAllRoles());
     }
 }

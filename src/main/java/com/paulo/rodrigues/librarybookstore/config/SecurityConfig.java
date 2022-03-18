@@ -18,7 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.config;
 
 import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
-import com.paulo.rodrigues.librarybookstore.authentication.service.LoginService;
+import com.paulo.rodrigues.librarybookstore.authentication.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String passBasic;
 
     @Autowired
-    private LoginService loginService;
+    private CustomUserDetailsService loginService;
 
     @Autowired
     CustomAccessFilter accessFilter() {

@@ -32,16 +32,16 @@ public class MessageUtil {
 
     @Value("${app.language.default}")
     private static String appLanguage;
-    private static final Locale locale = new Locale(appLanguage);
+    private static final Locale locale = new Locale("pt");
     private static final ResourceBundle messagesRB = ResourceBundle.getBundle("resourcebundle.messages", locale);
     private static final String ERROR_MESSAGE_NOT_FOUND = "Error message not found";
 
     public static String getMessage(String... args) {
 
         if (args.length == 1) {
-            
+
             return getRB(args[0]);
-            
+
         } else if (args.length > 1) {
 
             List<String> params = new ArrayList<>();

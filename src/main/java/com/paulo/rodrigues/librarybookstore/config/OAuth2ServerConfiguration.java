@@ -16,7 +16,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.config;
 
-import com.paulo.rodrigues.librarybookstore.authentication.service.LoginService;
+import com.paulo.rodrigues.librarybookstore.authentication.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,7 +89,7 @@ public class OAuth2ServerConfiguration {
         private AuthenticationManager authenticationManager;
 
         @Autowired
-        private LoginService loginService;
+        private CustomUserDetailsService loginService;
 
         @Autowired
         private PasswordEncoder passwordEncoder;
