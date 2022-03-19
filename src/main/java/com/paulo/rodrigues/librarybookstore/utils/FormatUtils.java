@@ -17,7 +17,6 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
-import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 /**
  *
  * @author paulo.rodrigues
@@ -36,10 +35,11 @@ public class FormatUtils {
     
     public static String getUsernameLogged() {
         String userName = "";
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                 
-        if(user != null){
-           userName = user.getUsername();
+        if(auth != null){            
+           //get the email address 
+           userName = auth.getName();
         }
         
         return userName;

@@ -29,6 +29,7 @@ import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -118,9 +119,14 @@ public class UserService {
 
     public UserDTO edit(Long userId, UserDTO userDetail) throws LibraryStoreBooksException {
         User userToEdit = findById(userId);
+        //User volta com o pass null, encontrar forma de retornar não sobreescrever isso
         String pw = userToEdit.getPassword();
+        Date createAt = userToEdit.getCreateAt();
+        String createBy = userToEdit.getCreateBy();
         ModelMapper mapper = new ModelMapper();
         userToEdit = mapper.map(userDetail, User.class);
+        userToEdit.setCreateAt(createAt);
+        userToEdit.setCreateBy(createBy);
         userToEdit.setPassword(pw);
         
         return toDTO(save(userToEdit));

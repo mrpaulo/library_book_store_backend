@@ -20,7 +20,6 @@ package com.paulo.rodrigues.librarybookstore.publisher.service;
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
-import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
@@ -32,7 +31,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
-import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository;
 import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository;
 
 /**

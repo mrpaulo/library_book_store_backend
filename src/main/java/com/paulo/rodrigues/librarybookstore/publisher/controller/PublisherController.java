@@ -21,7 +21,6 @@ import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
-import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.publisher.service.PublisherService;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.util.Comparator;
