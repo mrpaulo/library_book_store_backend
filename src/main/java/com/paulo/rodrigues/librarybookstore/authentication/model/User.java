@@ -61,13 +61,13 @@ public class User {
     private String name;
    
     @NotNull
-    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_NAME)
+    @Column(unique = true, nullable=true, length = ConstantsUtil.MAX_SIZE_NAME)
     private String username;
     
-    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_CPF)
+    @Column(unique = true, nullable=true, length = ConstantsUtil.MAX_SIZE_CPF)
     private String cpf;
     
-    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_NAME)
+    @Column(unique = true, nullable=true, length = ConstantsUtil.MAX_SIZE_NAME)
     private String email;
     
 //    @JsonIgnore

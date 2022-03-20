@@ -96,10 +96,14 @@ public class UserService {
         }
 
         if (FormatUtils.isEmpty(user.getRoles())) {
-            Role role = new Role(Login.ROLE_CLIENT);
+            Role role = roleRepository.findByName(Login.ROLE_CLIENT);
+            if (role == null) {
+                role = new Role(Login.ROLE_CLIENT);
+                role = roleRepository.save(role);
+            }
 
             user.setRoles(Arrays.asList(role));
-        } 
+        }
 
         if (user.getAddress() != null) {
             addressService.create(user.getAddress());
@@ -128,7 +132,7 @@ public class UserService {
         userToEdit.setCreateAt(createAt);
         userToEdit.setCreateBy(createBy);
         userToEdit.setPassword(pw);
-        
+
         return toDTO(save(userToEdit));
     }
 
@@ -159,7 +163,6 @@ public class UserService {
                 .cpf(dto.getCpf())
                 .birthdate(dto.getBirthdate())
                 .email(dto.getEmail())
-                
                 // .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
                 .build();
     }
@@ -167,8 +170,8 @@ public class UserService {
     public List<UserDTO> toListDTO(List<User> users) {
         return users.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
-    
-    public List<Role> getAllRoles(){
+
+    public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 
