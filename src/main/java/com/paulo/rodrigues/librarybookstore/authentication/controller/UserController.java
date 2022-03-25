@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.authentication.controller;
 
+import com.paulo.rodrigues.librarybookstore.authentication.dto.UpdatePassword;
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UserDTO;
 import com.paulo.rodrigues.librarybookstore.authentication.filter.UserFilter;
 import com.paulo.rodrigues.librarybookstore.authentication.model.Role;
@@ -35,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -78,7 +80,7 @@ public class UserController {
     public ResponseEntity<User> getById(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(userService.findById(userId));
     }
-    
+
     @GetMapping("/fetch/{name}")
     public ResponseEntity<List<UserDTO>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(userService.findByName(name));
@@ -101,6 +103,13 @@ public class UserController {
         response.put("id", userId);
 
         return response;
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> changeUserPassword(@RequestBody UpdatePassword updatePassword) throws LibraryStoreBooksException {
+        userService.changeUserPassword(updatePassword);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Updated");
     }
 
     @GetMapping("/roles")

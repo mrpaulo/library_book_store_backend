@@ -17,6 +17,7 @@
 package com.paulo.rodrigues.librarybookstore.authentication.service;
 
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
+import com.paulo.rodrigues.librarybookstore.authentication.dto.UpdatePassword;
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UserDTO;
 import com.paulo.rodrigues.librarybookstore.authentication.filter.UserFilter;
 import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
@@ -60,6 +61,9 @@ public class UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
 
     public List<UserDTO> findAll() {
         return toListDTO(userRepository.findAll());
@@ -173,6 +177,21 @@ public class UserService {
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
+    }
+
+    public void changeUserPassword(UpdatePassword updatePassword) throws LibraryStoreBooksException {
+        User user = userRepository.findByEmail(FormatUtils.getUsernameLogged());
+
+        if (!checkIfValidOldPassword(user, updatePassword.getCurrentPassword())) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("INCORRECT_PASSWORD"));
+        }
+        user.setPassword(passwordEncoder.encode(updatePassword.getNewPassword()));
+        userRepository.save(user);
+
+    }
+
+    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+        return passwordEncoder.matches(oldPassword, user.getPassword());
     }
 
 }
