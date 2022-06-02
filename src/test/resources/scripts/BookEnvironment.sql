@@ -66,5 +66,5 @@ VALUES
 (44,'NEW', 1,'PRINTED_BOOK', 199, 'HTTPS://WWW.GOOGLE.COM', '2010-01-30', 4.6, 'Um livro bom 2', 'Harry Potter e a Pedra Filosofal', 'Conheça Ti 2', 1, 1, 1),
 (45,'NEW', 1,'PRINTED_BOOK', 250, 'HTTPS://WWW.GOOGLE.COM', '2020-01-30', 4.8, 'Um livro bom 3', 'Test', 'Conheça Ti 3', 1, 3, 1);
 
-ALTER SEQUENCE book_id_seq RESTART WITH 46;
+--ALTER SEQUENCE book_id_seq RESTART WITH 46;
 
