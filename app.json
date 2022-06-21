@@ -1,0 +1,8 @@
+{
+  "name": "library-book-store-b",
+  "buildpacks": [
+    {
+      "url": "heroku/gradle"
+    }
+  ]
+}
