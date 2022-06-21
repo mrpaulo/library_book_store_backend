@@ -7,7 +7,7 @@ values
 INSERT INTO state_country (country_id, id, name) 
 values 
 (1, 1, 'Santa Catarina'),
-(1, 2, 'Rio Grande'),
+(1, 2, 'Rio Grande do Sul'),
 (2, 3, 'California'),
 (2, 4, 'Florida'),
 (3, 5, 'Ontario'),
@@ -37,6 +37,6 @@ INSERT INTO address
     zip_code,
     city_id)
 VALUES
-(1,'88056-001', null,'AVENUE', 'Celso Ramos', 'Centro', '69', 'Frente mercado', null, 1),
-(2,'88056-011', null,'STREET', 'Corujas', 'Cachoeira do Bom Jesus', '269', 'Atrás  mercado', null, 1),
-(3,'88056-111', null,'ROD', 'SC401', 'Cachoeira do Bom Jesus', '369', 'Lado mercado', null, 1);
+(1,'88056001', null,'AVENUE', 'Celso Ramos', 'Centro', '69', 'Frente mercado', null, 1),
+(2,'88056011', null,'STREET', 'Corujas', 'Cachoeira do Bom Jesus', '269', 'Atrás  mercado', null, 1),
+(3,'88056111', null,'ROD', 'SC401', 'Cachoeira B. Jesus', '369', 'Lado mercado', null, 1);

@@ -17,50 +17,118 @@
  */
 package com.paulo.rodrigues.librarybookstore.config;
 
+import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
+import com.paulo.rodrigues.librarybookstore.authentication.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.SessionManagementFilter;
-
 
 /**
  *
  * @author paulo.rodiruges
  */
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${basic.user}")
     private String userBasic;
-    
+
     @Value("${basic.password}")
     private String passBasic;
-    
+
     @Autowired
-    FilterAcesso filterAcesso() {
-        FilterAcesso filter = new FilterAcesso();
+    private CustomUserDetailsService loginService;
+
+    @Autowired
+    CustomAccessFilter accessFilter() {
+        CustomAccessFilter filter = new CustomAccessFilter();
         return filter;
     }
-
+//
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .addFilterBefore(accessFilter(), SessionManagementFilter.class)
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/api/**/authentiations/**").permitAll()
+//                .antMatchers("/source/**").permitAll()
+//                .antMatchers("/api/**/fetch").permitAll()
+//                .antMatchers("/api/**").permitAll()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .httpBasic();               
+//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .addFilterBefore(filterAcesso(), SessionManagementFilter.class)
+        http.anonymous().disable()
+                .addFilterBefore(accessFilter(), SessionManagementFilter.class)
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/source/**").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll().anyRequest().authenticated()
-                .and().httpBasic();
+                .requestMatcher(request -> {
+                    String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
+                    return (auth != null && auth.startsWith("Basic"));
+                })
+                
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .httpBasic();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(loginService);
+        return provider;
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser(userBasic).password(passBasic).roles("USER");
+        auth
+                .inMemoryAuthentication()
+                .withUser(userBasic)
+                .password(passBasic)
+                .roles(Login.ROLE_CLIENT);
+        
+        auth.userDetailsService(loginService);
+    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        
+//        auth.userDetailsService(loginService);
+//    }
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+//        @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+//                     
+//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

@@ -17,7 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
-import com.paulo.rodrigues.librarybookstore.filter.PageableFilter;
+import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.InputMismatchException;
@@ -25,15 +25,24 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 /**
  *
  * @author paulo.rodrigues
  */
 public class FormatUtils {
     
-    public static String getCdUserLogged() {
-        return "usuario";
+    public static String getUsernameLogged() {
+        String userName = "";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                
+        if(auth != null){            
+           //get the email address 
+           userName = auth.getName();
+        }
+        
+        return userName;
     }
 
     public static boolean isEmptyOrNull(String value) {
@@ -115,10 +124,10 @@ public class FormatUtils {
             return null;
         }
         if (filter.getSortColumn() == null) {
-            filter.setSortColumn("");
+            filter.setSortColumn("createAt");
         }
         if (filter.getSort() == null) {
-            filter.setSort("");
+            filter.setSort("asc");
         }
 
         String[] colunas = filter.getSortColumn().split(",");
@@ -129,6 +138,13 @@ public class FormatUtils {
 
         }
         return PageRequest.of(filter.getCurrentPage() > 0 ? filter.getCurrentPage() - 1 : 0, filter.getRowsPerPage(), Sort.by(lsOrdens));
+    }
+    
+    public static BookFilter setOffSet(BookFilter filter) {
+        if(filter.getCurrentPage() > 1){
+         filter.setOffset((filter.getCurrentPage()-1) * filter.getRowsPerPage());
+        }
+         return filter;
     }
 
     /**
