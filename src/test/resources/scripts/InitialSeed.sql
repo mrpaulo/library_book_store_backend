@@ -154,7 +154,6 @@ VALUES
 
 ALTER SEQUENCE publisher_id_seq RESTART WITH 20;
 
-
 --Book
 INSERT INTO book_subject (id, description, name) 
 VALUES (1, 'Romance', 'Romance');
