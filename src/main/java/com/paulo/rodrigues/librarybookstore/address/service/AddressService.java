@@ -92,9 +92,11 @@ public class AddressService {
 
     public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException {
         Address addressToEdit = findById(addressId);
-
+        String createBy = addressToEdit.getCreateBy();
+        
         addressToEdit = modelMapper.map(addressDetail, Address.class);
-
+        addressToEdit.setCreateBy(createBy);
+        
         return toDTO(save(addressToEdit));
     }
 

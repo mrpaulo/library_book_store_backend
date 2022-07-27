@@ -41,6 +41,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
 import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
 
 /**
  *
@@ -108,18 +109,21 @@ public class AuthorService {
         return authorRepository.saveAndFlush(author);
     }
 
-    public AuthorDTO edit(Long authorId, AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
-        Author authorToEdit = findById(authorId);       
+    public AuthorDTO edit(Long authorId, AuthorDTO authorEdited) throws LibraryStoreBooksException {
+        Author authorToEdit = findById(authorId);
+        String createBy = authorToEdit.getCreateBy();
         ModelMapper mapper = new ModelMapper();
    //     mapper.addMappings(m -> m.skip(Author::setCreateAt));
-        mapper.addMappings(new PropertyMap<AuthorDTO, Author>() {
-                @Override
-                protected void configure() {
-                    skip(destination.getCreateAt());
-                }
-            });
-        authorToEdit = mapper.map(authorDetalhes, Author.class);
-
+   mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        mapper.addMappings(new PropertyMap<AuthorDTO, Author>() {
+//                @Override
+//                protected void configure() {
+//                    skip(destination.getCreateAt());
+//                }
+//            });
+        authorToEdit = mapper.map(authorEdited, Author.class);
+        authorToEdit.setCreateBy(createBy);
+        
         return toDTO(save(authorToEdit));
     }
 

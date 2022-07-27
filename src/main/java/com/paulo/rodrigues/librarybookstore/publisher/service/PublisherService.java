@@ -94,9 +94,11 @@ public class PublisherService {
 
     public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws LibraryStoreBooksException {
         Publisher publisherToEdit = findById(publisherId);
+        String createBy = publisherToEdit.getCreateBy();
         ModelMapper mapper = new ModelMapper();
         publisherToEdit = mapper.map(publisherDetail, Publisher.class);
-
+        publisherToEdit.setCreateBy(createBy);
+        
         return toDTO(save(publisherToEdit));
     }
 

@@ -138,7 +138,7 @@ public class Address implements Serializable {
     }
 
     public void persistAt() {
-        if (createAt == null) {
+        if (createBy == null) {
             setCreateAt(new Date());
             setCreateBy(FormatUtils.getUsernameLogged());
         } else {

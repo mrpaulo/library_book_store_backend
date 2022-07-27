@@ -118,13 +118,15 @@ public class BookService {
 
     public BookDTO edit(Long bookId, BookDTO bookDetail) throws LibraryStoreBooksException {
         Book bookToEdit = findById(bookId);
-
+        String createBy = bookToEdit.getCreateBy();
+        
         bookToEdit = modelMapper.map(bookDetail, Book.class);
         bookToEdit.setAuthors(authorService.saveBookAuthorFromListBooksDTO(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
         bookToEdit.setPublisher(getPublisher(bookDetail.getPublisher()));
-
+        bookToEdit.setCreateBy(createBy);
+        
         return toDTO(save(bookToEdit));
     }
 
