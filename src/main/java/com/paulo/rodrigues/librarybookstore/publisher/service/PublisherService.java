@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.publisher.service;
 
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
@@ -40,8 +41,6 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 @Service
 @Transactional
 public class PublisherService {
-
-    private ModelMapper modelMapper;    
     
     @Autowired
     PublisherRepository publisherRepository;
@@ -95,9 +94,15 @@ public class PublisherService {
     public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws LibraryStoreBooksException {
         Publisher publisherToEdit = findById(publisherId);
         String createBy = publisherToEdit.getCreateBy();
+        var createAt = publisherToEdit.getCreateAt();
+        Address address = publisherToEdit.getAddress();
+        
         ModelMapper mapper = new ModelMapper();
         publisherToEdit = mapper.map(publisherDetail, Publisher.class);
+        publisherToEdit.setAddress(address);
+        publisherToEdit.setCreateAt(createAt);
         publisherToEdit.setCreateBy(createBy);
+        
         
         return toDTO(save(publisherToEdit));
     }

@@ -17,6 +17,8 @@
  */
 package com.paulo.rodrigues.librarybookstore.address.dto;
 
+import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
+import com.paulo.rodrigues.librarybookstore.address.model.City;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +35,25 @@ import lombok.NoArgsConstructor;
 public class AddressDTO {
     
     private Long id;
+
+    private ETypePublicPlace logradouro;
+
+    private City city;
+
+    private String name;
+
+    private String number;
+
+    private String cep;
+
+    private String zipCode;
+
+    private String neighborhood;
+
+    private String coordination;
+
+    private String referencialPoint;
+
     private String fmtAddress;   
     
 }

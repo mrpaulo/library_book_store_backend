@@ -49,8 +49,6 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 @Transactional
 public class AddressService {
 
-    private ModelMapper modelMapper;
-
     @Autowired
     private AddressRepository addressRepository;
     
@@ -93,9 +91,12 @@ public class AddressService {
     public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException {
         Address addressToEdit = findById(addressId);
         String createBy = addressToEdit.getCreateBy();
+        var createAt = addressToEdit.getCreateAt();
         
+        ModelMapper modelMapper = new ModelMapper();
         addressToEdit = modelMapper.map(addressDetail, Address.class);
         addressToEdit.setCreateBy(createBy);
+        addressToEdit.setCreateAt(createAt);
         
         return toDTO(save(addressToEdit));
     }

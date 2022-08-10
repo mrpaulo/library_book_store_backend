@@ -65,7 +65,7 @@ public class PublisherController {
 
     @PostMapping("/fetch")
     public List<PublisherDTO> getAllPageble(@RequestBody PublisherFilter filter, HttpServletRequest req, HttpServletResponse res) {
-        Pageable pageable = FormatUtils.getPageRequest(filter);
+        Pageable pageable = FormatUtils.getPageRequest(filter);        
         Page<Publisher> result = publisherService.findPageble(filter, pageable);
         res.addHeader("totalcount", String.valueOf(result.getTotalElements()));
 
