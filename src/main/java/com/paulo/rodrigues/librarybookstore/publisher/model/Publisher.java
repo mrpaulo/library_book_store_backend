@@ -116,7 +116,7 @@ public class Publisher implements Serializable {
     }
     
     public void persistAt() {
-        if (createAt == null) {
+        if (createBy == null) {
             setCreateAt(new Date());
             setCreateBy(FormatUtils.getUsernameLogged());
         } else {

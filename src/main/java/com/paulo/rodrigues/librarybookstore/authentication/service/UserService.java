@@ -16,6 +16,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.authentication.service;
 
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UpdatePassword;
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UserDTO;
@@ -131,8 +132,11 @@ public class UserService {
         String pw = userToEdit.getPassword();
         Date createAt = userToEdit.getCreateAt();
         String createBy = userToEdit.getCreateBy();
+        Address address = userToEdit.getAddress();
+        
         ModelMapper mapper = new ModelMapper();
         userToEdit = mapper.map(userDetail, User.class);
+        userToEdit.setAddress(address);
         userToEdit.setCreateAt(createAt);
         userToEdit.setCreateBy(createBy);
         userToEdit.setPassword(pw);

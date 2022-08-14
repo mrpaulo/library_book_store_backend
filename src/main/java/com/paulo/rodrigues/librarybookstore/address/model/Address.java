@@ -138,7 +138,7 @@ public class Address implements Serializable {
     }
 
     public void persistAt() {
-        if (createAt == null) {
+        if (createBy == null) {
             setCreateAt(new Date());
             setCreateBy(FormatUtils.getUsernameLogged());
         } else {
@@ -147,7 +147,4 @@ public class Address implements Serializable {
         }
     }
 
-    public Address orElse(Object object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

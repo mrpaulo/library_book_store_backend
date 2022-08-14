@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.author.service;
 
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.google.common.collect.Sets;
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository;
@@ -40,7 +41,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
+import org.modelmapper.Condition;
 import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
 
 /**
  *
@@ -108,21 +111,22 @@ public class AuthorService {
         return authorRepository.saveAndFlush(author);
     }
 
-    public AuthorDTO edit(Long authorId, AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
-        Author authorToEdit = findById(authorId);       
+    public AuthorDTO edit(Long authorId, AuthorDTO authorEdited) throws LibraryStoreBooksException {
+        Author authorToEdit = findById(authorId);
+        String createBy = authorToEdit.getCreateBy();
+        var createAt = authorToEdit.getCreateAt();
+        Address address = authorToEdit.getAddress();
         ModelMapper mapper = new ModelMapper();
-   //     mapper.addMappings(m -> m.skip(Author::setCreateAt));
-        mapper.addMappings(new PropertyMap<AuthorDTO, Author>() {
-                @Override
-                protected void configure() {
-                    skip(destination.getCreateAt());
-                }
-            });
-        authorToEdit = mapper.map(authorDetalhes, Author.class);
-
+                    
+        authorToEdit = mapper.map(authorEdited, Author.class);
+        
+        authorToEdit.setAddress(address);        
+        authorToEdit.setCreateBy(createBy);
+        authorToEdit.setCreateAt(createAt);
+        
         return toDTO(save(authorToEdit));
     }
-
+ 
     public void erase(Long authorId) throws LibraryStoreBooksException {
         Author author = findById(authorId);
 
