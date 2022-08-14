@@ -87,9 +87,12 @@ INSERT INTO address
 VALUES
 (1,'88056001', null,'AVENUE', 'Celso Ramos', 'Centro', '69', 'Frente mercado', null, 1, 'InitialSeed.sql', NOW()),
 (2,'88056011', null,'STREET', 'Corujas', 'Cachoeira do Bom Jesus', '269', 'Atrás  mercado', null, 1, 'InitialSeed.sql', NOW()),
-(3,'88056111', null,'ROD', 'SC401', 'Cachoeira B. Jesus', '369', 'Lado mercado', null, 1, 'InitialSeed.sql', NOW());
+(3,'88056111', null,'ROD', 'SC401', 'Cachoeira B. Jesus', '369', 'Lado mercado', null, 1, 'InitialSeed.sql', NOW()),
+(4,'88056222', null,'STREET', 'Main', 'Downtown', '123', 'Next ', null, 5, 'InitialSeed.sql', NOW()),
+(5,'88056333', null,'STREET', 'First', 'Downtown', '456', '', null, 6, 'InitialSeed.sql', NOW()),
+(6,'88056444', null,'STREET', 'Second', 'Downtown', '789', 'Near', null, 7, 'InitialSeed.sql', NOW());
 
-ALTER SEQUENCE address_id_seq RESTART WITH 4;
+ALTER SEQUENCE address_id_seq RESTART WITH 7;
 
 --Author
 INSERT INTO author 
@@ -108,7 +111,6 @@ VALUES
 (1,'1989-01-30', 'João da Silva', 'joao@silva.com.br', 'M', 1, 1, 1, 'Uma autor legal', 'InitialSeed.sql', NOW()),
 (2,'1989-01-30', 'Pedro da Silva', 'joao@silva.com.br', 'M', 1, 1, 1, 'Uma autor legal', 'InitialSeed.sql', NOW()),
 (3,'1989-01-30', 'Luiz da Silva', 'joao@silva.com.br', 'M', 1, 1, 1, 'Uma autor legal', 'InitialSeed.sql', NOW()),
-(4,'1989-01-30', 'Marcelo da Silva', 'joao@silva.com.br', 'M', 1, 1, 1, 'Uma autor legal', 'InitialSeed.sql', NOW()),
 (4,'1989-01-30', 'João da Silva', 'joao@silva.com.br', 'M', 1, 1, 1, 'Uma autor legal', 'InitialSeed.sql', NOW()),
 (5,'1999-12-30', 'Pedro dos Santos', 'pedro@santos.com.br', 'M', 2, 1, 1, 'Uma autor legal 2', 'InitialSeed.sql', NOW()),
 (6,'1989-01-30', 'João dos Santos', 'joao@silva.com.br', 'M', 1, 1, 1, 'Uma autor legal', 'InitialSeed.sql', NOW()),
@@ -142,25 +144,25 @@ INSERT INTO publisher
     create_by,
     create_at)
 VALUES
-(1,'55650490000163', '1980-01-30', 'Editora A', 2, 'InitialSeed.sql', NOW()),
-(2,'09436964000151', '2015-11-30', 'Editora R', 2, 'InitialSeed.sql', NOW()),
-(3,'55447123000167', '1990-12-30', 'Empresa X', 2, 'InitialSeed.sql', NOW()),
-(4,'44496946000166', '2005-11-30', 'Editora B', 2, 'InitialSeed.sql', NOW()),
-(5,'32093261000190', '2005-11-30', 'Editora C', 2, 'InitialSeed.sql', NOW()),
+(1,'55650490000163', '1980-01-30', 'Editora A', 3, 'InitialSeed.sql', NOW()),
+(2,'09436964000151', '2015-11-30', 'Editora R', 4, 'InitialSeed.sql', NOW()),
+(3,'55447123000167', '1990-12-30', 'Empresa X', 5, 'InitialSeed.sql', NOW()),
+(4,'44496946000166', '2005-11-30', 'Editora B', 6, 'InitialSeed.sql', NOW()),
+(5,'32093261000190', '2005-11-30', 'Editora C', 1, 'InitialSeed.sql', NOW()),
 (6,'36910986000184', '2005-11-30', 'Editora D', 2, 'InitialSeed.sql', NOW()),
-(7,'41696768000129', '2005-11-30', 'Editora E', 2, 'InitialSeed.sql', NOW()),
-(8,'71178676000118', '2008-11-30', 'Editora F', 2, 'InitialSeed.sql', NOW()),
-(9,'17183657000134', '2008-11-30', 'Editora G', 2, 'InitialSeed.sql', NOW()),
-(10,'95071070000147', '2008-11-30', 'Editora H', 2, 'InitialSeed.sql', NOW()),
-(11,'73342143000155', '2020-11-30', 'Editora I', 2, 'InitialSeed.sql', NOW()),
-(12,'55247651000172', '2020-11-30', 'Editora J', 2, 'InitialSeed.sql', NOW()),
-(13,'26834704000153', '2020-11-30', 'Editora K', 2, 'InitialSeed.sql', NOW()),
+(7,'41696768000129', '2005-11-30', 'Editora E', 3, 'InitialSeed.sql', NOW()),
+(8,'71178676000118', '2008-11-30', 'Editora F', 4, 'InitialSeed.sql', NOW()),
+(9,'17183657000134', '2008-11-30', 'Editora G', 5, 'InitialSeed.sql', NOW()),
+(10,'95071070000147', '2008-11-30', 'Editora H', 6, 'InitialSeed.sql', NOW()),
+(11,'73342143000155', '2020-11-30', 'Editora I', 5, 'InitialSeed.sql', NOW()),
+(12,'55247651000172', '2020-11-30', 'Editora J', 4, 'InitialSeed.sql', NOW()),
+(13,'26834704000153', '2020-11-30', 'Editora K', 3, 'InitialSeed.sql', NOW()),
 (14,'31165807000108', '2020-11-30', 'Editora L', 2, 'InitialSeed.sql', NOW()),
-(15,'97883664000188', '2019-11-30', 'Editora M', 2, 'InitialSeed.sql', NOW()),
+(15,'97883664000188', '2019-11-30', 'Editora M', 1, 'InitialSeed.sql', NOW()),
 (16,'51927333000100', '2019-11-30', 'Editora N', 2, 'InitialSeed.sql', NOW()),
-(17,'84857725000190', '2019-11-30', 'Editora O', 2, 'InitialSeed.sql', NOW()),
-(18,'59190425000153', '2015-11-30', 'Editora P', 2, 'InitialSeed.sql', NOW()),
-(19,'16715560000162', '2015-11-30', 'Editora Q', 2, 'InitialSeed.sql', NOW());
+(17,'84857725000190', '2019-11-30', 'Editora O', 3, 'InitialSeed.sql', NOW()),
+(18,'59190425000153', '2015-11-30', 'Editora P', 4, 'InitialSeed.sql', NOW()),
+(19,'16715560000162', '2015-11-30', 'Editora Q', 5, 'InitialSeed.sql', NOW());
 
 ALTER SEQUENCE publisher_id_seq RESTART WITH 20;
 
@@ -238,9 +240,9 @@ insert into role (id, name) values
 (3, 'OPERATOR'),
 (2, 'CLIENT');
 
-insert into lbs_user (id, name, username, password, create_by, create_at) 
+insert into lbs_user (id, name, username, password, email, create_by, create_at) 
 values 
-(1, 'Paulo Rodrigues', 'paulo', '{noop}1', 'InitialSeed.sql', NOW());
+(1, 'Paulo Rodrigues', 'paulo', '{noop}1', 'teste@teste.com', 'InitialSeed.sql', NOW());
 
 insert into user_role (user_id, role_id) values
 (1,1);
