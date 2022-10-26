@@ -18,8 +18,13 @@
 package com.paulo.rodrigues.librarybookstore.address.repository;
 
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
+import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  *
@@ -27,5 +32,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long>{
-    
+
+    @Query("SELECT c "
+            + " FROM Address c "
+            + " WHERE (:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) "
+            + "")
+    public List<Address> findByName (@Param("name") String name);
 }

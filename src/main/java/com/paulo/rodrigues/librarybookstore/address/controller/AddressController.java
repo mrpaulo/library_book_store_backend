@@ -56,6 +56,11 @@ public class AddressController {
         return ResponseEntity.ok().body(addressService.findById(addressId));
     }
 
+    @GetMapping("/{name}/name")
+    public ResponseEntity<Address> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(addressService.findByName(name));
+    }
+
     @PostMapping()
     public AddressDTO create(@RequestBody Address address) throws LibraryStoreBooksException {
         return addressService.create(address);

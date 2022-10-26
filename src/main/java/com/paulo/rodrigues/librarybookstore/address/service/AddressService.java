@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.address.service;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.model.City;
@@ -97,7 +98,8 @@ public class AddressService {
         addressToEdit = modelMapper.map(addressDetail, Address.class);
         addressToEdit.setCreateBy(createBy);
         addressToEdit.setCreateAt(createAt);
-        
+        addressToEdit.setId(addressId);
+
         return toDTO(save(addressToEdit));
     }
 
@@ -148,5 +150,11 @@ public class AddressService {
             return null;
         }
         return cityRepository.findByCountryAndState(country, state);
+    }
+
+    public Address findByName(String name) {
+        List<Address> addressList = addressRepository.findByName(name);
+
+        return !FormatUtils.isEmpty(addressList) ? addressList.get(0) : null;
     }
 }
