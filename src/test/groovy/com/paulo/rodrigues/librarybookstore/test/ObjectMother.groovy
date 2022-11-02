@@ -124,8 +124,8 @@ class ObjectMother extends Specification {
                 cep: "123-123",
                 zipCode: "123-123",
                 city: buildCity(),
-                createBy: "Test",
-
+                coordination: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION),
+                referencialPoint: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT)
         ))
     }
 

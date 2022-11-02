@@ -106,8 +106,8 @@ class AddressServiceTest extends Specification {
         then:
         1 * service.addressRepository.saveAndFlush(address) >>
                 {
-                    arguments -> def updateAt = arguments.get(0).getUpdateAt()
-                        assert updateAt != null
+                    arguments -> def createAt = arguments.get(0).getCreateAt()
+                        assert createAt != null
                 } >> address
     }
 
