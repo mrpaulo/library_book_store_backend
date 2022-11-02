@@ -25,7 +25,7 @@ public class ConstantsUtil {
 
     public static final int MAX_SIZE_NAME = 100;
     public static final int MAX_SIZE_SHORT_TEXT = 200;
-    public static final int MAX_SIZE_LONG_TEXT = 500;
+    public static final int MAX_SIZE_LONG_TEXT = 255;
     
     public static final int MAX_SIZE_ADDRESS_NUMBER = 9;
     public static final int MAX_SIZE_ADDRESS_CEP = 8;

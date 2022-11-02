@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2022 paulo.rodrigues
  *
@@ -20,6 +19,8 @@
  *
  * @author paulo.rodrigues
  */
+package com.paulo.rodrigues.librarybookstore.test
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.paulo.rodrigues.librarybookstore.LibraryBookStoreApplication
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +29,6 @@ import org.springframework.boot.web.server.LocalServerPort
 import spock.lang.Specification
 import groovy.json.JsonSlurper
 import groovyx.net.http.RESTClient
-import org.spockframework.spring.SpringBean
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource

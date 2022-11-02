@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2022 paulo.rodrigues
  *
@@ -20,17 +19,19 @@
  *
  * @author paulo.rodrigues
  */
+package com.paulo.rodrigues.librarybookstore.test.address
 
+import com.paulo.rodrigues.librarybookstore.test.AbstractLBSSpecification
 import groovyx.net.http.HttpResponseException
 import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_OK
-import static ObjectMother.*
+import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
 
 @Stepwise
-class AddressControllerTest extends AbstractLBSSpecification {  
+class AddressControllerTest extends AbstractLBSSpecification {
     
     String baseAPI = "/api/v1/addresses"
     def idNotExist = 99999

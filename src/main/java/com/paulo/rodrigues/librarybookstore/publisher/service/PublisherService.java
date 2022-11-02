@@ -110,6 +110,10 @@ public class PublisherService {
     public void erase(Long publisherId) throws LibraryStoreBooksException {
         Publisher publisherToDelete = findById(publisherId);
 
+        if(publisherToDelete.getAddress() != null){
+            addressService.erase(publisherToDelete.getAddress().getId());
+        }
+
         publisherRepository.delete(publisherToDelete);
     }
 

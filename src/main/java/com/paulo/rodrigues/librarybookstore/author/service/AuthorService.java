@@ -130,6 +130,10 @@ public class AuthorService {
     public void erase(Long authorId) throws LibraryStoreBooksException {
         Author author = findById(authorId);
 
+        if(author.getAddress() != null){
+            addressService.erase(author.getAddress().getId());
+        }
+
         authorRepository.delete(author);
     }
 

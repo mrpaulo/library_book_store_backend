@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2022 paulo.rodrigues
  *
@@ -21,7 +20,7 @@
  * @author paulo.rodrigues
  */
 
-package address
+package com.paulo.rodrigues.librarybookstore.test.address
 
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace
 import com.paulo.rodrigues.librarybookstore.address.repository.AddressRepository
@@ -36,7 +35,7 @@ import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
 import spock.lang.Specification
 
-import static ObjectMother.*
+import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
 
 class AddressServiceTest extends Specification {
 
