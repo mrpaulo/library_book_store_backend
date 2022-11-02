@@ -95,7 +95,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "throw an Exception"
-        HttpResponseException e = thrown()
+        thrown(HttpResponseException)
 
         and:
         response == null
@@ -133,7 +133,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         )
 
         then: "throw an Exception"
-        HttpResponseException e = thrown()
+        thrown(HttpResponseException)
 
         and:
         response == null
@@ -162,7 +162,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "throw an Exception"
-        HttpResponseException e = thrown()
+        thrown(HttpResponseException)
 
         and:
         response == null
@@ -179,7 +179,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         and: "the response content is not null"
         response.responseData != null
     }
-    
+
     @Unroll
     def "Address - getAllStates - happy path"() {
         when: "a rest call is performed to get all states given a country with id 1"
@@ -191,19 +191,19 @@ class AddressControllerTest extends AbstractLBSSpecification {
         and: "the response content is not null"
         response.responseData != null
     }
-    
+
     @Unroll
     def "Address - getAllStates - should throw an exception given an invalid input"() {
         when: "a rest call is performed with an invalid abc input"
         def response = client.get(path : baseAPI + "/abc/states")
 
         then: "throw an Exception"
-        HttpResponseException e = thrown()
-        
+        thrown(HttpResponseException)
+
         and:
         response == null
     }
-    
+
     @Unroll
     def "Address - getAllCities - happy path"() {
         when: "a rest call is performed to get all cities given a country 1 and state 1"
@@ -215,19 +215,19 @@ class AddressControllerTest extends AbstractLBSSpecification {
         and: "the response content is not null"
         response.responseData != null
     }
-    
+
     @Unroll
     def "Address - getAllCities - should throw an exception given an invalid input"() {
         when: "a rest call is performed with an invalid abc input"
         def response = client.get(path : baseAPI + "1/abc/cities")
 
         then: "throw an Exception"
-        HttpResponseException e = thrown()
-        
+        thrown(HttpResponseException)
+
         and:
         response == null
     }
-    
+
     @Unroll
     def "Address - getETypePublicPlace - happy path"() {
         when: "a rest call is performed to get all types of public place enum"

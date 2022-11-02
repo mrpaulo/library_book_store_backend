@@ -33,6 +33,7 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.transaction.Transactional;
@@ -69,13 +70,20 @@ public class AddressService {
     private PublisherRepository companyRepository;
 
     public Address findById(Long addressId) throws LibraryStoreBooksException {
-        Address address = addressRepository.findById(addressId).orElse(null);
+        /*
+       Should be this, but I got a nullPointer on Address - findById - should throw an exception test
+          return addressRepository.findById(addressId)
+               .orElseThrow(
+                        () -> new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId)
+                );
+         */
+        Optional<Address> address = addressRepository.findById(addressId);
 
-        if (address == null) {
+        if (address == null || !address.isPresent()) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
         }
 
-        return address;
+        return address.get();
     }
 
     public AddressDTO create(Address address) throws LibraryStoreBooksException {
@@ -136,11 +144,9 @@ public class AddressService {
     }
      
     public List<StateCountry> getAllStates(Long countryId){
-        Country country = countryRepository.findById(countryId).orElse(null);
-        if(country == null){
-            return null;
-        }
-        return stateCountryRepository.findByCountry(country);
+        Optional<Country> country = countryRepository.findById(countryId);
+
+        return country.map(value -> stateCountryRepository.findByCountry(value)).orElse(null);
     }
     
     public List<City> getAllCities(Long countryId, Long stateId){

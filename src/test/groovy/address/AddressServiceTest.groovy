@@ -31,7 +31,10 @@ import com.paulo.rodrigues.librarybookstore.address.repository.StateCountryRepos
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository
 import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository
-import spock.lang.*
+import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
+import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
+import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
+import spock.lang.Specification
 
 import static ObjectMother.*
 
@@ -64,6 +67,21 @@ class AddressServiceTest extends Specification {
         response == address
     }
 
+    def "Address - findById - should throw an exception"() {
+        given:
+        def id = 1
+
+        when:
+        service.findById(id)
+
+        then:
+        def e = thrown(LibraryStoreBooksException)
+
+        and:
+        e.getMessage() != null
+        e.getMessage() == MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + id
+    }
+
     def "Address - create - happy path"() {
         given:
         def address = buildAddress()
@@ -92,6 +110,41 @@ class AddressServiceTest extends Specification {
                     arguments -> def updateAt = arguments.get(0).getUpdateAt()
                         assert updateAt != null
                 } >> address
+    }
+
+    def "Address - save validation - should throw an exception when name #scenario"() {
+        given:
+        def address = buildAddress(name: value)
+
+        when:
+        service.save(address)
+
+        then:
+        def e = thrown(LibraryStoreBooksException)
+        e.getMessage() == message
+
+        where:
+        scenario                    | value                                                | message
+        'is null'                   | null                                                 | MessageUtil.getMessage("ADDRESS_NAME_NOT_INFORMED")
+        'is bigger than max size'   | buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1)   | MessageUtil.getMessage("ADDRESS_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
+    }
+
+    def "Address - save validation - should throw an exception when #scenario"() {
+        when:
+        service.save(address)
+
+        then:
+        def e = thrown(LibraryStoreBooksException)
+        e.getMessage() == message
+
+        where:
+        scenario                                    | address                                                                                           | message
+        'number is bigger than max size'            | buildAddress(number: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_NUMBER + 1))                | MessageUtil.getMessage("ADDRESS_NUMBER_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_NUMBER + "")
+        'cep is bigger than max size'               | buildAddress(cep: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_CEP + 1))                      | MessageUtil.getMessage("ADDRESS_CEP_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_CEP + "")
+        'zipCode is bigger than max size'           | buildAddress(zipCode: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE + 1))              | MessageUtil.getMessage("ADDRESS_ZIPCODE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE + "")
+        'neighborhood is bigger than max size'      | buildAddress(neighborhood: buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1))                    | MessageUtil.getMessage("ADDRESS_NEIGHBORHOOD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
+        'coordination is bigger than max size'      | buildAddress(coordination: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + 1))    | MessageUtil.getMessage("ADDRESS_COORDINATION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + "")
+        'referencialPoint is bigger than max size'  | buildAddress(referencialPoint: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT + 1))          | MessageUtil.getMessage("ADDRESS_REFERENCIALPOINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + "")
     }
 
     def "Address - edit - happy path"() {
