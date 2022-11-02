@@ -135,16 +135,16 @@ public class AddressService {
         return countryRepository.findAll();
     }
      
-    public List<StateCountry> getAllStates(Long coutryId){
-        Country country = countryRepository.findById(coutryId).orElse(null);
+    public List<StateCountry> getAllStates(Long countryId){
+        Country country = countryRepository.findById(countryId).orElse(null);
         if(country == null){
             return null;
         }
         return stateCountryRepository.findByCountry(country);
     }
     
-    public List<City> getAllCities(Long coutryId, Long stateId){
-        Country country = countryRepository.findById(coutryId).orElse(null);
+    public List<City> getAllCities(Long countryId, Long stateId){
+        Country country = countryRepository.findById(countryId).orElse(null);
         StateCountry state = stateCountryRepository.findById(stateId).orElse(null);
         if(country == null || state == null){
             return null;

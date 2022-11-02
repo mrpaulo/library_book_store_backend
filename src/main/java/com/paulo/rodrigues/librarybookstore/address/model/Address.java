@@ -44,6 +44,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.codec.binary.StringUtils;
 
 /**
  *
@@ -107,7 +108,30 @@ public class Address implements Serializable {
     private String updateBy;
 
     public String formatAddress() {
-        return "";
+
+        String formattedAddress = "";
+        if (city != null) {
+            formattedAddress = city.getName();
+            if (city.getState() != null) {
+                formattedAddress = formattedAddress + " - " + city.getState().getName();
+
+                if (city.getState().getCountry() != null) {
+                    formattedAddress = formattedAddress + " - " + city.getState().getCountry().getName();
+                }
+            }
+        }
+
+        if(!FormatUtils.isEmpty(number)){
+            formattedAddress = number + ". " + formattedAddress;
+        }
+        if(!FormatUtils.isEmpty(name)){
+            formattedAddress = name + ", " + formattedAddress;
+        }
+        if(logradouro != null && !FormatUtils.isEmpty(logradouro.getDescription())){
+            formattedAddress = logradouro.getDescription() + " " + formattedAddress;
+        }
+
+        return formattedAddress;
     }
 
     public void addressValidation() throws LibraryStoreBooksException {
