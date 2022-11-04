@@ -155,7 +155,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
     }
 
     @Unroll
-    def "Author - getAllPageble - happy path"() {
+    def "Author - findPageable - happy path"() {
         given: "a author filter"
         def filter = buildAuthorFilter()
 

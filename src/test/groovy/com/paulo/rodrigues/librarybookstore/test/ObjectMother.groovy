@@ -35,6 +35,8 @@ import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter
 import com.paulo.rodrigues.librarybookstore.author.model.Author
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
 
 
@@ -64,6 +66,10 @@ class ObjectMother extends Specification {
 
     static buildPastDate () {
         return DateUtils.getDateEnFormat("2022-10-30T00:00:00.000+00:00")
+    }
+
+    static buildPageable () {
+        return PageRequest.of(1, 1);
     }
 
     /*
@@ -159,6 +165,14 @@ class ObjectMother extends Specification {
         ))
     }
 
+    static buildAuthors (props = null) {
+        applyProperties(props, Arrays.asList(buildAuthor()))
+    }
+
+    static buildAuthorsPage (props = null) {
+        applyProperties(props, new PageImpl<>(buildAuthors(), buildPageable (), 1l))
+    }
+
     static buildAuthor (props = null) {
         applyProperties(props, new Author(
                 id: 99,
@@ -171,6 +185,10 @@ class ObjectMother extends Specification {
                 address: buildAddress(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))
+    }
+
+    static buildAuthorsDTO (props = null) {
+        applyProperties(props, Arrays.asList(buildAuthorDTO()))
     }
 
     static buildAuthorDTO (props = null) {

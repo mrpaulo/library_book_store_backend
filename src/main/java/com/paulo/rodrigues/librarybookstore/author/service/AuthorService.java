@@ -30,10 +30,8 @@ import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +39,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository;
-import org.modelmapper.Condition;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.convention.MatchingStrategies;
 
 /**
  *
@@ -72,7 +67,7 @@ public class AuthorService {
         return toListDTO(authorRepository.findAll());
     }
 
-    public Page<Author> findPageble(AuthorFilter filter, Pageable pageable) {
+    public Page<Author> findPageable(AuthorFilter filter, Pageable pageable) {
         return authorRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
@@ -83,13 +78,13 @@ public class AuthorService {
     }
 
     public Author findById(Long authorId) throws LibraryStoreBooksException {
-        Author author = authorRepository.findById(authorId).orElse(null);
+        Optional<Author> author = authorRepository.findById(authorId);
 
-        if (author == null) {
+        if (author == null || !author.isPresent()) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NOT_FOUND") + " ID: " + authorId);
         }
 
-        return author;
+        return author.get();
     }
     
     public List<AuthorDTO> findByName (String name) throws LibraryStoreBooksException {

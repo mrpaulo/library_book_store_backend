@@ -121,7 +121,7 @@ public class Author implements Serializable {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
         }
         if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
         }  
     }
 

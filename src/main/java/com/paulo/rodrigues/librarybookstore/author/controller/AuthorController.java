@@ -65,9 +65,9 @@ public class AuthorController {
     }
 
     @PostMapping("/fetch")
-    public List<AuthorDTO> getAllPageble(@RequestBody AuthorFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<AuthorDTO> findPageable(@RequestBody AuthorFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
-        Page<Author> result = authorService.findPageble(filter, pageable);
+        Page<Author> result = authorService.findPageable(filter, pageable);
         res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
 
         return authorService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
