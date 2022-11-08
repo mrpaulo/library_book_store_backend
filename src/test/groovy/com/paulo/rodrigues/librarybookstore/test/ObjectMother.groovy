@@ -33,6 +33,9 @@ import com.paulo.rodrigues.librarybookstore.address.model.StateCountry
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter
 import com.paulo.rodrigues.librarybookstore.author.model.Author
+import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO
+import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter
+import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils
 import org.springframework.data.domain.PageImpl
@@ -200,6 +203,62 @@ class ObjectMother extends Specification {
                 email: "test@test.com",
                 birthCity: buildCityDTO(),
                 birthCountry: buildCountryDTO(),
+                address: buildAddressDTO(),
+                description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+        ))
+    }
+
+    /*
+    Publisher
+    */
+    static buildPublisherFilter (props = null) {
+        applyProperties(props, new PublisherFilter(
+                currentPage: 1,
+                rowsPerPage: 10,
+                sortColumn: 'name',
+                sort: 'asc',
+                offset: 0,
+                id: null,
+                name: "GroovySpockTest",
+                //startDate: buildPastDate(),
+                //finalDate: buildPastDate(),
+                cnpj: '',
+                //createDate: buildPastDate()
+
+        ))
+    }
+
+    static buildPublishers (props = null) {
+        applyProperties(props, Arrays.asList(buildPublisher()))
+    }
+
+    static buildPublishersPage (props = null) {
+        applyProperties(props, new PageImpl<>(buildPublishers(), buildPageable (), 1l))
+    }
+
+    static buildPublisher (props = null) {
+        applyProperties(props, new Publisher(
+                id: 99,
+                name: "GroovySpockTest",
+                //birthdate: buildPastDate(),
+                cnpj: "77072141000144",
+                //createDate: "test@test.com",
+                address: buildAddress(),
+                description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+        ))
+    }
+
+    static buildPublishersDTO (props = null) {
+        applyProperties(props, Arrays.asList(buildPublisherDTO()))
+    }
+
+    static buildPublisherDTO (props = null) {
+        applyProperties(props, new PublisherDTO(
+                id: 99,
+                name: "GroovySpockTest",
+                //birthdate: buildPastDate(),
+                cnpj: "77072141000144",
+                //createDate: "test@test.com",
                 address: buildAddressDTO(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))

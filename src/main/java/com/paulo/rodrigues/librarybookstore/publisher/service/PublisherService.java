@@ -26,6 +26,7 @@ import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,7 +53,7 @@ public class PublisherService {
         return toListDTO(publisherRepository.findAll());
     }
 
-    public Page<Publisher> findPageble(PublisherFilter filter, Pageable pageable) {
+    public Page<Publisher> findPageable(PublisherFilter filter, Pageable pageable) {
         return publisherRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
@@ -63,13 +64,13 @@ public class PublisherService {
     }
 
     public Publisher findById(Long publisherId) throws LibraryStoreBooksException {
-        Publisher publisher = publisherRepository.findById(publisherId).orElse(null);
+        Optional<Publisher> publisher = publisherRepository.findById(publisherId);
 
-        if (publisher == null) {
+        if (publisher == null || !publisher.isPresent()) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " ID: " + publisherId);
         }
 
-        return publisher;
+        return publisher.get();
     }
     
     public List<PublisherDTO> findByName(String name) {
@@ -102,7 +103,7 @@ public class PublisherService {
         publisherToEdit.setAddress(address);
         publisherToEdit.setCreateAt(createAt);
         publisherToEdit.setCreateBy(createBy);
-        
+        publisherToEdit.setId(publisherId);
         
         return toDTO(save(publisherToEdit));
     }
@@ -118,7 +119,11 @@ public class PublisherService {
     }
 
     public PublisherDTO toDTO(Publisher publisher) {
-        
+
+        if (publisher == null) {
+            return null;
+        }
+
         return PublisherDTO.builder()
                 .id(publisher.getId())
                 .name(publisher.getName())
@@ -131,6 +136,11 @@ public class PublisherService {
     }
 
     public Publisher fromDTO(PublisherDTO dto) throws LibraryStoreBooksException {
+
+        if (dto == null) {
+            return null;
+        }
+
         return Publisher.builder()
                 .name(dto.getName())
                 .cnpj(dto.getCnpj())
