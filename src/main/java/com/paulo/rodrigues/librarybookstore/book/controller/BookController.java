@@ -65,9 +65,9 @@ public class BookController {
     }
 
     @PostMapping("/fetch")
-    public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<BookDTO> findPageable(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         
-        PagedResult<BookDTO> result = bookService.findPageble(FormatUtils.setOffSet(filter));
+        PagedResult<BookDTO> result = bookService.findPageable(FormatUtils.setOffSet(filter));
         res.addHeader("totalcount", String.valueOf(result != null ? result.getTotalElementos() : 0));
 
         return result.getElementos();

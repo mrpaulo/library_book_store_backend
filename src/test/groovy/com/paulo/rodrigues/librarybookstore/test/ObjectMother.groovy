@@ -33,6 +33,13 @@ import com.paulo.rodrigues.librarybookstore.address.model.StateCountry
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter
 import com.paulo.rodrigues.librarybookstore.author.model.Author
+import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO
+import com.paulo.rodrigues.librarybookstore.book.enums.EBookCondition
+import com.paulo.rodrigues.librarybookstore.book.enums.EBookFormat
+import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter
+import com.paulo.rodrigues.librarybookstore.book.model.Book
+import com.paulo.rodrigues.librarybookstore.book.model.BookSubject
+import com.paulo.rodrigues.librarybookstore.book.model.Language
 import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher
@@ -74,6 +81,8 @@ class ObjectMother extends Specification {
     static buildPageable () {
         return PageRequest.of(1, 1);
     }
+
+    static genericId = 1
 
     /*
     Address
@@ -125,7 +134,7 @@ class ObjectMother extends Specification {
 
     static buildAddress (props = null) {
         applyProperties(props, new Address(
-                id: 99,
+                id: genericId,
                 logradouro: ETypePublicPlace.AVENUE,
                 name: "GroovySpockTest",
                 number: "123",
@@ -140,6 +149,7 @@ class ObjectMother extends Specification {
 
     static buildAddressDTO (props = null) {
         applyProperties(props, new AddressDTO(
+                id: 1,
                 logradouro: ETypePublicPlace.AVENUE,
                 name: "GroovySpockTest",
                 number: "321",
@@ -178,7 +188,7 @@ class ObjectMother extends Specification {
 
     static buildAuthor (props = null) {
         applyProperties(props, new Author(
-                id: 99,
+                id: genericId,
                 name: "GroovySpockTest",
                 //birthdate: buildPastDate(),
                 sex: "M",
@@ -196,7 +206,7 @@ class ObjectMother extends Specification {
 
     static buildAuthorDTO (props = null) {
         applyProperties(props, new AuthorDTO(
-                id: 99,
+                id: genericId,
                 name: "GroovySpockTest",
                 //birthdate: buildPastDate(),
                 sex: "M",
@@ -209,8 +219,96 @@ class ObjectMother extends Specification {
     }
 
     /*
-    Publisher
+    Book
     */
+    static buildBookFilter (props = null) {
+        applyProperties(props, new BookFilter(
+                currentPage: 1,
+                rowsPerPage: 10,
+                sortColumn: 'name',
+                sort: 'asc',
+                offset: 0,
+                id: null,
+                name: "GroovySpockTest",
+                //startDate: buildPastDate(),
+                //finalDate: buildPastDate(),
+                title: '',
+                author: '',
+                publisher: '',
+                subjectName: '',
+                //publishDate: buildPastDate()
+
+        ))
+    }
+
+    static buildBooks (props = null) {
+        applyProperties(props, Arrays.asList(buildBook()))
+    }
+
+    static buildBooksPage (props = null) {
+        applyProperties(props, new PageImpl<>(buildBooks(), buildPageable (), 1l))
+    }
+
+    static buildBook (props = null) {
+        applyProperties(props, new Book(
+                id: 7,
+                title: "GroovySpockTest",
+                authors: buildAuthors(),
+                publisher: buildPublisher(),
+                language: buildLanguage(),
+                subject: buildBookSubject(),
+                subtitle: '',
+                link: '',
+                format: EBookFormat.AUDIO_BOOK,
+                condition: EBookCondition.NEW,
+                //publishDate: "test@test.com",
+                length: 100,
+                edition: 1,
+                rating: 5.0,
+                review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+        ))
+    }
+
+    static buildBooksDTO (props = null) {
+        applyProperties(props, Arrays.asList(buildBookDTO()))
+    }
+
+    static buildBookDTO (props = null) {
+        applyProperties(props, new BookDTO(
+                id: 7,
+                title: "GroovySpockTest",
+                authors: buildAuthorsDTO(),
+                publisher: buildPublisherDTO(),
+                subtitle: '',
+                link: '',
+                format: EBookFormat.AUDIO_BOOK,
+                condition: EBookCondition.NEW,
+                //publishDate: "test@test.com",
+                length: 100,
+                edition: 1,
+                rating: 5.0,
+                review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+        ))
+    }
+
+    static buildLanguage (props = null) {
+        applyProperties(props, new Language(
+                id: 6,
+                name: "Português"
+        ))
+    }
+
+    static buildBookSubject (props = null) {
+        applyProperties(props, new BookSubject(
+                id: 6,
+                name: "Romance",
+                description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+        ))
+    }
+
+    /*
+   Publisher
+   */
     static buildPublisherFilter (props = null) {
         applyProperties(props, new PublisherFilter(
                 currentPage: 1,
@@ -238,7 +336,7 @@ class ObjectMother extends Specification {
 
     static buildPublisher (props = null) {
         applyProperties(props, new Publisher(
-                id: 99,
+                id: genericId,
                 name: "GroovySpockTest",
                 //birthdate: buildPastDate(),
                 cnpj: "77072141000144",
@@ -254,7 +352,7 @@ class ObjectMother extends Specification {
 
     static buildPublisherDTO (props = null) {
         applyProperties(props, new PublisherDTO(
-                id: 99,
+                id: genericId,
                 name: "GroovySpockTest",
                 //birthdate: buildPastDate(),
                 cnpj: "77072141000144",

@@ -87,7 +87,7 @@ public class BookService {
         return toListDTO(books);
     }
 
-    public PagedResult<BookDTO> findPageble(BookFilter filter) {
+    public PagedResult<BookDTO> findPageable(BookFilter filter) {
         return bookRepository.findPageble(filter);
     }
 
@@ -126,6 +126,7 @@ public class BookService {
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
         bookToEdit.setPublisher(getPublisher(bookDetail.getPublisher()));
         bookToEdit.setCreateBy(createBy);
+        bookToEdit.setId(bookId);
         
         return toDTO(save(bookToEdit));
     }
