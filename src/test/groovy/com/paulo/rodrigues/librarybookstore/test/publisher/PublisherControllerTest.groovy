@@ -39,6 +39,10 @@ class PublisherControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Publisher - create - happy path"() {
         given: "an publisher object"
+        def idToDelete = getIdCreatedFromTest()
+        if (idToDelete){
+            client.delete(path : baseAPI + "/" + idToDelete)
+        }
         def publisher = buildPublisher()
 
         when: "a rest call is performed to get an publisher by id"
@@ -218,7 +222,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def nameToSearch = buildPublisher().getName()
         def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
 
-        return response.responseData[0].id
+        return response.responseData.size > 0 ? response.responseData[0].id : null
     }
 }
 

@@ -52,7 +52,7 @@ public class AddressDTO {
 
     private String coordination;
 
-    private String referencialPoint;
+    private String referentialPoint;
 
     private String fmtAddress;   
     

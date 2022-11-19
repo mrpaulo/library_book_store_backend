@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,7 +75,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getById(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException {
+    public ResponseEntity<Author> getById(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(authorService.findById(authorId));
     }
     
@@ -89,12 +90,12 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDetalhes) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok(authorService.edit(authorId, authorDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Long> delete(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException {
+    public Map<String, Long> delete(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
         authorService.erase(authorId);
         Map<String, Long> response = new HashMap<>();
         response.put("id", authorId);

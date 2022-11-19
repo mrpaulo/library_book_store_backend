@@ -84,7 +84,7 @@ public class Publisher implements Serializable {
     private Address address;
     
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date createDate;
+    private Date foundationDate;
     
     @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
     private String description;

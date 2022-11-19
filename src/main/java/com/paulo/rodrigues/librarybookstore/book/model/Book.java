@@ -28,22 +28,10 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -83,20 +71,21 @@ public class Book implements Serializable {
     @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String title;
 
-    @NotNull
+    @NotNull(message = "Authors are required")
+    @Size(min = 1, message = "The Authors needs at least one item")
     @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
     private Set<Author> authors;
 
-    @NotNull
-    @OneToOne
+    @NotNull(message = "Publisher is required")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID")
     private Publisher publisher;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")
     private Language language;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID")
     private BookSubject subject;
 

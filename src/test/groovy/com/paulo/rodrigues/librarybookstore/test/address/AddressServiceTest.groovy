@@ -33,6 +33,7 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException
 import spock.lang.Specification
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
@@ -74,7 +75,7 @@ class AddressServiceTest extends Specification {
         service.findById(id)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(NotFoundException)
 
         and:
         e.getMessage() != null
@@ -143,7 +144,7 @@ class AddressServiceTest extends Specification {
         'zipCode is bigger than max size'           | buildAddress(zipCode: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE + 1))              | MessageUtil.getMessage("ADDRESS_ZIPCODE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE + "")
         'neighborhood is bigger than max size'      | buildAddress(neighborhood: buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1))                    | MessageUtil.getMessage("ADDRESS_NEIGHBORHOOD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
         'coordination is bigger than max size'      | buildAddress(coordination: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + 1))    | MessageUtil.getMessage("ADDRESS_COORDINATION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + "")
-        'referencialPoint is bigger than max size'  | buildAddress(referencialPoint: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT + 1))          | MessageUtil.getMessage("ADDRESS_REFERENCIALPOINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + "")
+        'referentialPoint is bigger than max size'  | buildAddress(referentialPoint: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT + 1))          | MessageUtil.getMessage("ADDRESS_REFERENTIAL_POINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + "")
     }
 
     def "Address - edit - happy path"() {

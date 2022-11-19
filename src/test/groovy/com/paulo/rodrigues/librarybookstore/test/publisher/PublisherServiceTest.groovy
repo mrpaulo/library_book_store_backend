@@ -23,12 +23,14 @@
 package com.paulo.rodrigues.librarybookstore.test.publisher
 
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService
+import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository
 import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository
 import com.paulo.rodrigues.librarybookstore.publisher.service.PublisherService
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException
 import spock.lang.Specification
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
@@ -41,6 +43,7 @@ class PublisherServiceTest extends Specification {
         service = new PublisherService()
         service.publisherRepository = Mock(PublisherRepository)
         service.addressService = Mock(AddressService)
+        service.bookRepository = Mock(BookRepository)
     }
 
     def "Publisher - findAll - happy path"() {
@@ -98,7 +101,7 @@ class PublisherServiceTest extends Specification {
         service.findById(id)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(NotFoundException)
 
         and:
         e.getMessage() != null
@@ -186,9 +189,10 @@ class PublisherServiceTest extends Specification {
         def publisher = buildPublisher()
         def id = 99
         service.publisherRepository.findById(id) >> Optional.of(publisher)
+        service.bookRepository.getBooksFromPublisherId(id) >> null
 
         when:
-        service.erase(id)
+        service.delete(id)
 
         then:
         1 * service.publisherRepository.delete(_)
@@ -208,7 +212,8 @@ class PublisherServiceTest extends Specification {
     def "Publisher - fromDTO - happy path"() {
         given:
         def publisher = buildPublisherDTO()
-        service.addressService.findById(_) >> buildAddress()
+        service.publisherRepository.findByCnpj(_) >> buildPublisher()
+        //service.addressService.getAddressFromDTO(_) >> buildAddress()
 
         when:
         def response = service.fromDTO(publisher)

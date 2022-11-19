@@ -35,5 +35,6 @@ import lombok.Setter;
 public class PublisherFilter extends PageableFilter {
 
     private String cnpj;    
-    private Date createDate;
+    private Date foundationDate;
 }
+

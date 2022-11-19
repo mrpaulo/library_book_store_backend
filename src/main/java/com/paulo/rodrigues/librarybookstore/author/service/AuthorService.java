@@ -23,8 +23,6 @@ import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository;
-import com.paulo.rodrigues.librarybookstore.address.repository.CityRepository;
-import com.paulo.rodrigues.librarybookstore.address.repository.CountryRepository;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter;
@@ -33,6 +31,8 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 
 import java.util.*;
 import javax.transaction.Transactional;
+
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,12 +54,6 @@ public class AuthorService {
     @Autowired
     private AddressService addressService;
 
-    @Autowired
-    private CityRepository cityRepository;
-
-    @Autowired
-    private CountryRepository countryRepository;
-    
     @Autowired 
     private BookRepository bookRepository;
 
@@ -77,11 +71,11 @@ public class AuthorService {
                 pageable);
     }
 
-    public Author findById(Long authorId) throws LibraryStoreBooksException {
+    public Author findById(Long authorId) throws NotFoundException {
         Optional<Author> author = authorRepository.findById(authorId);
 
         if (author == null || !author.isPresent()) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NOT_FOUND") + " ID: " + authorId);
+            throw new NotFoundException(MessageUtil.getMessage("AUTHOR_NOT_FOUND") + " ID: " + authorId);
         }
 
         return author.get();
@@ -106,7 +100,7 @@ public class AuthorService {
         return authorRepository.saveAndFlush(author);
     }
 
-    public AuthorDTO edit(Long authorId, AuthorDTO authorEdited) throws LibraryStoreBooksException {
+    public AuthorDTO edit(Long authorId, AuthorDTO authorEdited) throws LibraryStoreBooksException, NotFoundException {
         Author authorToEdit = findById(authorId);
         String createBy = authorToEdit.getCreateBy();
         var createAt = authorToEdit.getCreateAt();
@@ -122,7 +116,7 @@ public class AuthorService {
         return toDTO(save(authorToEdit));
     }
  
-    public void erase(Long authorId) throws LibraryStoreBooksException {
+    public void erase(Long authorId) throws LibraryStoreBooksException, NotFoundException {
         Author author = findById(authorId);
 
         if(author.getAddress() != null){
@@ -160,10 +154,10 @@ public class AuthorService {
                 .name(dto.getName())
                 .sex(dto.getSex())
                 .email(dto.getEmail())
-                .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
+                .address(addressService.getAddressFromDTO(dto.getAddress()))
                 .birthdate(dto.getBirthdate())
-                .birthCity(dto.getBirthCity() != null ? cityRepository.getById(dto.getBirthCity().getId()) : null)
-                .birthCountry(dto.getBirthCountry() != null ? countryRepository.getById(dto.getBirthCountry().getId()) : null)
+                .birthCity(addressService.getCityFromDTO(dto.getBirthCity()))
+                .birthCountry(addressService.getCountryFromDTO(dto.getBirthCountry()))
                 .build();
     }
 
@@ -189,12 +183,31 @@ public class AuthorService {
         return result;
     }
 
-    public Author saveBookAuthor(Book book, AuthorDTO dto) throws LibraryStoreBooksException {
-        Author author = findById(dto.getId());
-        
-        Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthor(author.getName()));
+    public Author saveBookAuthorDTO(Book book, AuthorDTO dto) throws LibraryStoreBooksException {
+        Author author = null;
+        try {
+            author = findById(dto.getId());
+        } catch (NotFoundException e) {
+            author = fromDTO(dto);
+            author = save(author);
+        }
+
+        if(author == null){
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("SOMETHING_UNEXPECTED_HAPPENED"));
+        }
+
+        Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthorName(author.getName()));
         booksFromAuthor.add(book);
         
+        author.setBooks(booksFromAuthor);
+        authorRepository.saveAndFlush(author);
+        return author;
+    }
+
+    public Author saveBookAuthor(Book book, Author author) {
+        Set<Book> booksFromAuthor = Sets.newHashSet(bookRepository.getBooksFromAuthorName(author.getName()));
+        booksFromAuthor.add(book);
+
         author.setBooks(booksFromAuthor);
         authorRepository.saveAndFlush(author);
         return author;
@@ -203,9 +216,22 @@ public class AuthorService {
     public Set<Author> saveBookAuthorFromListBooksDTO(Book book, List<AuthorDTO> authorsDTO) throws LibraryStoreBooksException {
         Set<Author> authors = new HashSet<>();
         for(AuthorDTO author: authorsDTO){
-            authors.add(saveBookAuthor(book, author));
+            authors.add(saveBookAuthorDTO(book, author));
         }
         return authors;
     }
 
+    public Set<Author> saveAuthors(Set<Author> authors) throws LibraryStoreBooksException {
+        Set<Author> authorsNew =  new HashSet<>();
+            if(!FormatUtils.isEmpty(authors)){
+                for (Author author: authors) {
+                    try {
+                        authorsNew.add(findById(author.getId()));
+                    } catch (NotFoundException e) {
+                        authorsNew.add(save(author));
+                    }
+                }
+            }
+        return authorsNew;
+    }
 }

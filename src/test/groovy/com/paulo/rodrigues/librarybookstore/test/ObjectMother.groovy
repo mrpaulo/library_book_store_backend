@@ -82,7 +82,7 @@ class ObjectMother extends Specification {
         return PageRequest.of(1, 1);
     }
 
-    static genericId = 1
+    static genericId = 99
 
     /*
     Address
@@ -143,13 +143,13 @@ class ObjectMother extends Specification {
                 zipCode: "123-123",
                 city: buildCity(),
                 coordination: buildRandomString(ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION),
-                referencialPoint: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT)
+                referentialPoint: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT)
         ))
     }
 
     static buildAddressDTO (props = null) {
         applyProperties(props, new AddressDTO(
-                id: 1,
+                id: genericId,
                 logradouro: ETypePublicPlace.AVENUE,
                 name: "GroovySpockTest",
                 number: "321",
@@ -251,7 +251,7 @@ class ObjectMother extends Specification {
 
     static buildBook (props = null) {
         applyProperties(props, new Book(
-                id: 7,
+                id: genericId,
                 title: "GroovySpockTest",
                 authors: buildAuthors(),
                 publisher: buildPublisher(),
@@ -275,7 +275,7 @@ class ObjectMother extends Specification {
 
     static buildBookDTO (props = null) {
         applyProperties(props, new BookDTO(
-                id: 7,
+                id: genericId,
                 title: "GroovySpockTest",
                 authors: buildAuthorsDTO(),
                 publisher: buildPublisherDTO(),
@@ -293,14 +293,14 @@ class ObjectMother extends Specification {
 
     static buildLanguage (props = null) {
         applyProperties(props, new Language(
-                id: 6,
+                id: 1,
                 name: "Português"
         ))
     }
 
     static buildBookSubject (props = null) {
         applyProperties(props, new BookSubject(
-                id: 6,
+                id: 1,
                 name: "Romance",
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))
@@ -309,6 +309,8 @@ class ObjectMother extends Specification {
     /*
    Publisher
    */
+    static cnpjToTest = '77072141000144'
+
     static buildPublisherFilter (props = null) {
         applyProperties(props, new PublisherFilter(
                 currentPage: 1,
@@ -321,7 +323,7 @@ class ObjectMother extends Specification {
                 //startDate: buildPastDate(),
                 //finalDate: buildPastDate(),
                 cnpj: '',
-                //createDate: buildPastDate()
+                //foundationDate: buildPastDate()
 
         ))
     }
@@ -338,9 +340,8 @@ class ObjectMother extends Specification {
         applyProperties(props, new Publisher(
                 id: genericId,
                 name: "GroovySpockTest",
-                //birthdate: buildPastDate(),
-                cnpj: "77072141000144",
-                //createDate: "test@test.com",
+                cnpj: cnpjToTest,
+                //foundationDate: "test@test.com",
                 address: buildAddress(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))
@@ -355,8 +356,8 @@ class ObjectMother extends Specification {
                 id: genericId,
                 name: "GroovySpockTest",
                 //birthdate: buildPastDate(),
-                cnpj: "77072141000144",
-                //createDate: "test@test.com",
+                cnpj: cnpjToTest,
+                //foundationDate: "test@test.com",
                 address: buildAddressDTO(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))

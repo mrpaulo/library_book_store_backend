@@ -22,8 +22,6 @@
 
 package com.paulo.rodrigues.librarybookstore.test.author
 
-import com.paulo.rodrigues.librarybookstore.address.repository.CityRepository
-import com.paulo.rodrigues.librarybookstore.address.repository.CountryRepository
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService
 import com.paulo.rodrigues.librarybookstore.author.service.AuthorService
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository
@@ -31,6 +29,7 @@ import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException
 import spock.lang.Specification
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
@@ -43,8 +42,6 @@ class AuthorServiceTest extends Specification {
         service = new AuthorService()
         service.authorRepository = Mock(AuthorRepository)
         service.addressService = Mock(AddressService)
-        service.cityRepository = Mock(CityRepository)
-        service.countryRepository = Mock(CountryRepository)
 
     }
 
@@ -103,7 +100,7 @@ class AuthorServiceTest extends Specification {
         service.findById(id)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(NotFoundException)
 
         and:
         e.getMessage() != null
@@ -214,8 +211,8 @@ class AuthorServiceTest extends Specification {
         given:
         def author = buildAuthorDTO()
         service.addressService.findById(_) >> buildAddress()
-        service.cityRepository.findById(_) >> buildCity()
-        service.countryRepository.findById(_) >> buildCountry()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
 
 
         when:

@@ -44,7 +44,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.codec.binary.StringUtils;
 
 /**
  *
@@ -95,7 +94,7 @@ public class Address implements Serializable {
     private String coordination;
 
     @Column(length = ConstantsUtil.MAX_SIZE_SHORT_TEXT)
-    private String referencialPoint;
+    private String referentialPoint;
 
     @Transient
     private String fmtAddress;
@@ -156,8 +155,8 @@ public class Address implements Serializable {
         if (!FormatUtils.isEmptyOrNull(coordination) && coordination.length() > ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_COORDINATION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + ""));
         }
-        if (!FormatUtils.isEmptyOrNull(referencialPoint) && referencialPoint.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_REFERENCIALPOINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
+        if (!FormatUtils.isEmptyOrNull(referentialPoint) && referentialPoint.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_REFERENTIAL_POINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
         }
     }
 

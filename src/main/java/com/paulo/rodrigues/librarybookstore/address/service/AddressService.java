@@ -18,6 +18,8 @@
 package com.paulo.rodrigues.librarybookstore.address.service;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
@@ -37,6 +39,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.transaction.Transactional;
+
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,7 +73,7 @@ public class AddressService {
     @Autowired
     private PublisherRepository companyRepository;
 
-    public Address findById(Long addressId) throws LibraryStoreBooksException {
+    public Address findById(Long addressId) throws NotFoundException {
         /*
        Should be this, but I got a nullPointer on Address - findById - should throw an exception test
           return addressRepository.findById(addressId)
@@ -80,7 +84,7 @@ public class AddressService {
         Optional<Address> address = addressRepository.findById(addressId);
 
         if (address == null || !address.isPresent()) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
+            throw new NotFoundException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
         }
 
         return address.get();
@@ -97,7 +101,7 @@ public class AddressService {
         return addressRepository.saveAndFlush(address);
     }
 
-    public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException {
+    public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException, NotFoundException {
         Address addressToEdit = findById(addressId);
         String createBy = addressToEdit.getCreateBy();
         var createAt = addressToEdit.getCreateAt();
@@ -111,7 +115,7 @@ public class AddressService {
         return toDTO(save(addressToEdit));
     }
 
-    public void erase(Long addressId) throws LibraryStoreBooksException {
+    public void erase(Long addressId) throws LibraryStoreBooksException, NotFoundException {
         Address addressToDelete = findById(addressId);
         
         personRepository.deleteAddressReference(addressId);
@@ -128,6 +132,30 @@ public class AddressService {
                 .id(address.getId())
                 .fmtAddress(address.formatAddress())
                 .build();
+    }
+
+    public Address getAddressFromDTO (AddressDTO dto) {
+        try {
+            return findById(dto.getId());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public City getCityFromDTO (CityDTO dto) {
+        try {
+            return cityRepository.findById(dto.getId()).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Country getCountryFromDTO (CountryDTO dto) {
+        try {
+            return countryRepository.findById(dto.getId()).get();
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     public List<Map<String, String>> getETypePublicPlace() {

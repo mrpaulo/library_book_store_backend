@@ -106,7 +106,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     def "Book - update - happy path"() {
         given: "an id and an book object"
         def idToEdit = getIdCreatedFromTest()
-        def book = buildBookDTO(review: "test2")
+        def book = buildBookDTO(id: idToEdit, review: "test2")
 
         when: "a rest call is performed to get an book by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,

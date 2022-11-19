@@ -15,29 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.publisher.dto;
+package com.paulo.rodrigues.librarybookstore.utils;
 
-import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
-import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PublisherDTO {
-    
-    private long id;
-    private String name;
-    private String cnpj;
-    private AddressDTO address;
-    private Date foundationDate;
-    private String description; 
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class NotFoundException extends Exception {
+
+    public NotFoundException(String message){
+        super(message);
+    }
 }
