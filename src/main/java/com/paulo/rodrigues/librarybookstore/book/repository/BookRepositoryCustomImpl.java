@@ -66,7 +66,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
     @Override
     @SuppressWarnings("unchecked")
-    public PagedResult<BookDTO> findPageble(BookFilter filter) {
+    public PagedResult<BookDTO> findPageable(BookFilter filter) {
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(getSqlQuery(filter));

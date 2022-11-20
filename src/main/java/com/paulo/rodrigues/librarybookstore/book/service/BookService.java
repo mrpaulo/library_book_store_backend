@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.book.service;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.google.common.collect.Lists;
+import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO;
 import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
@@ -81,17 +82,20 @@ public class BookService {
     }
 
     public PagedResult<BookDTO> findPageable(BookFilter filter) {
-        return bookRepository.findPageble(filter);
+        return bookRepository.findPageable(filter);
     }
 
     public Book findById(Long bookId) throws NotFoundException, LibraryStoreBooksException {
-        Book book = bookRepository.findById(bookId).orElse(null);
-        if (book == null) {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book == null || !book.isPresent()) {
             throw new NotFoundException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
-        book.setAuthors(new HashSet<>(authorService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
 
-        return book;
+
+        book.get().setAuthors(new HashSet<>(authorService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
+
+        return book.get();
     }
 
     public BookDTO create(BookDTO dto) throws LibraryStoreBooksException, NotFoundException {

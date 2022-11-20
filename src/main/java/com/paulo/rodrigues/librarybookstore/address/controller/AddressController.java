@@ -59,7 +59,7 @@ public class AddressController {
     }
 
     @GetMapping("/{name}/name")
-    public ResponseEntity<Address> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+    public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
         return ResponseEntity.ok().body(addressService.findByName(name));
     }
 

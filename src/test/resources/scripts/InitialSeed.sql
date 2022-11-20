@@ -233,12 +233,12 @@ INSERT INTO book
     create_by,
     create_at)
 VALUES
-(1,'NEW', 1,'HARDCOVER', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 2, 1, 1, 'InitialSeed.sql', NOW()),
-(2,'NEW', 2,'PRINTED_BOOK', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 2, 2, 1, 'InitialSeed.sql', NOW()),
-(3,'NEW', 1,'HARDCOVER', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 2, 3, 3, 'InitialSeed.sql', NOW()),
-(4,'NEW', 2,'HARDCOVER', 200, 'HTTPS://WWW.GOOGLE.COM', '2002-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 2, 4, 1, 'InitialSeed.sql', NOW()),
-(5,'USED', 1,'PRINTED_BOOK', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 2, 5, 1, 'InitialSeed.sql', NOW()),
-(6,'NEW', 2,'KINDLE_EDITION', 200, 'HTTPS://WWW.GOOGLE.COM', '2001-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 1, 6, 1, 'InitialSeed.sql', NOW()),
+(1,'NEW', 1,'HARDCOVER', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Clean Code', 'Conheça Ti', 2, 1, 1, 'InitialSeed.sql', NOW()),
+(2,'NEW', 2,'PRINTED_BOOK', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Domain Design Driven', 'Conheça Ti', 2, 2, 1, 'InitialSeed.sql', NOW()),
+(3,'NEW', 1,'HARDCOVER', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'Recursos Humanos', 'Conheça Ti', 2, 3, 3, 'InitialSeed.sql', NOW()),
+(4,'NEW', 2,'HARDCOVER', 200, 'HTTPS://WWW.GOOGLE.COM', '2002-01-30', 4.7, 'Um livro bom', 'Inteligencia Positiva', 'Conheça Ti', 2, 4, 1, 'InitialSeed.sql', NOW()),
+(5,'USED', 1,'PRINTED_BOOK', 200, 'HTTPS://WWW.GOOGLE.COM', '2000-01-30', 4.7, 'Um livro bom', 'A Arte da Sedução', 'Conheça Ti', 2, 5, 1, 'InitialSeed.sql', NOW()),
+(6,'NEW', 2,'KINDLE_EDITION', 200, 'HTTPS://WWW.GOOGLE.COM', '2001-01-30', 4.7, 'Um livro bom', 'O Livro da Economia', 'Conheça Ti', 1, 6, 1, 'InitialSeed.sql', NOW()),
 (7,'NEW', 1,'PRINTED_BOOK', 200, 'HTTPS://WWW.GOOGLE.COM', '2001-01-30', 4.7, 'Um livro bom', 'Don Quixote', 'Conheça Ti', 1, 7, 1, 'InitialSeed.sql', NOW()),
 (8,'USED', 1,'PRINTED_BOOK', 199, 'HTTPS://WWW.GOOGLE.COM', '2010-01-30', 4.6, 'Um livro bom 2', 'Um Conto de Duas Cidades', 'Conheça Ti 2', 1, 8, 1, 'InitialSeed.sql', NOW()),
 (9,'NEW', 1,'PRINTED_BOOK', 250, 'HTTPS://WWW.GOOGLE.COM', '2020-01-30', 4.8, 'Um livro bom 3', 'O alquimista', 'Conheça Ti 3', 1, 9, 1, 'InitialSeed.sql', NOW()),

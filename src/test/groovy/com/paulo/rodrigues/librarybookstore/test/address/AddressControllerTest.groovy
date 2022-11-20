@@ -245,7 +245,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def nameToSearch = buildAddress().getName()
         def response = client.get(path : baseAPI + "/" + nameToSearch + "/name")
 
-        return response.responseData.id
+        return response.responseData[0].id
     }
 }
 

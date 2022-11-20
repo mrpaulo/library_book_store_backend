@@ -45,6 +45,7 @@ import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils
+import com.paulo.rodrigues.librarybookstore.utils.PagedResult
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
@@ -246,7 +247,7 @@ class ObjectMother extends Specification {
     }
 
     static buildBooksPage (props = null) {
-        applyProperties(props, new PageImpl<>(buildBooks(), buildPageable (), 1l))
+        applyProperties(props, new PagedResult<>(buildBooks(), buildBooks().size(), 1l))
     }
 
     static buildBook (props = null) {

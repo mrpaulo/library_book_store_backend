@@ -186,9 +186,7 @@ public class AddressService {
         return cityRepository.findByCountryAndState(country, state);
     }
 
-    public Address findByName(String name) {
-        List<Address> addressList = addressRepository.findByName(name);
-
-        return !FormatUtils.isEmpty(addressList) ? addressList.get(0) : null;
+    public List<Address> findByName(String name) {
+        return addressRepository.findByName(name);
     }
 }

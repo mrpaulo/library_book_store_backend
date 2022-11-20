@@ -33,7 +33,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepositoryCustom {
     
-    PagedResult<BookDTO> findPageble(BookFilter filter);
+    PagedResult<BookDTO> findPageable(BookFilter filter);
     List<AuthorDTO> getListAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException;
     List<Book> getBooksFromAuthorName(String authorName);
     List<Book> getBooksFromPublisherId(long publisherId);
