@@ -71,7 +71,7 @@ public class AuthorController {
         Page<Author> result = authorService.findPageable(filter, pageable);
         res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
 
-        return authorService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
+        return authorService.authorsToDTOs(result.getContent()).stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -96,7 +96,7 @@ public class AuthorController {
 
     @DeleteMapping("/{id}")
     public Map<String, Long> delete(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
-        authorService.erase(authorId);
+        authorService.delete(authorId);
         Map<String, Long> response = new HashMap<>();
         response.put("id", authorId);
 

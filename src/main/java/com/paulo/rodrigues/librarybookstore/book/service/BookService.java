@@ -19,9 +19,7 @@ package com.paulo.rodrigues.librarybookstore.book.service;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.google.common.collect.Lists;
-import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO;
-import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.utils.*;
 import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
@@ -54,7 +52,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class BookService {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
     private final PublisherService publisherService;
@@ -62,14 +60,14 @@ public class BookService {
     private final BookSubjectRepository bookSubjectRepository;
 
     public BookService(@Autowired BookRepository bookRepository,
-            @Autowired AuthorService personService,
-            @Autowired PublisherService companyService,
+            @Autowired AuthorService authorService,
+            @Autowired PublisherService publisherService,
             @Autowired LanguageRepository languageRepository,
             @Autowired BookSubjectRepository bookSubjectRepository,
             @Autowired ModelMapper modelMapper) {
         this.bookRepository = bookRepository;
-        this.authorService = personService;
-        this.publisherService = companyService;
+        this.authorService = authorService;
+        this.publisherService = publisherService;
         this.languageRepository = languageRepository;
         this.bookSubjectRepository = bookSubjectRepository;
         this.modelMapper = modelMapper;
@@ -78,7 +76,7 @@ public class BookService {
     public List<BookDTO> findAll() {
         List<Book> books = bookRepository.findAll();
 
-        return toListDTO(books);
+        return booksToDTOs(books);
     }
 
     public PagedResult<BookDTO> findPageable(BookFilter filter) {
@@ -93,17 +91,17 @@ public class BookService {
         }
 
 
-        book.get().setAuthors(new HashSet<>(authorService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
+        book.get().setAuthors(new HashSet<>(authorService.authorsFromDTOs(getAuthorsDTOByBookId(bookId))));
 
         return book.get();
     }
 
     public BookDTO create(BookDTO dto) throws LibraryStoreBooksException, NotFoundException {
-        Book book = fromDTO(dto);
+        Book book = bookFromDTO(dto);
         book = save(book);
         saveBookAuthor(book);
 
-        return toDTO(book);
+        return bookToDTO(book);
     }
 
     public Book save(Book book) throws LibraryStoreBooksException {
@@ -134,14 +132,14 @@ public class BookService {
         String createBy = bookToEdit.getCreateBy();
         
         bookToEdit = modelMapper.map(bookDetail, Book.class);
-        bookToEdit.setAuthors(authorService.saveBookAuthorFromListBooksDTO(bookToEdit, bookDetail.getAuthors()));
+        bookToEdit.setAuthors(authorService.saveBookAuthorsFromDTOs(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
-        bookToEdit.setPublisher(publisherService.fromDTO(bookDetail.getPublisher()));
+        bookToEdit.setPublisher(publisherService.publisherFromDTO(bookDetail.getPublisher()));
         bookToEdit.setCreateBy(createBy);
         bookToEdit.setId(bookId);
         
-        return toDTO(save(bookToEdit));
+        return bookToDTO(save(bookToEdit));
     }
 
     public void delete(Long bookId) throws LibraryStoreBooksException, NotFoundException {
@@ -154,13 +152,18 @@ public class BookService {
         bookRepository.delete(bookToErase);
     }
 
-    public BookDTO toDTO(Book book) {
+    public BookDTO bookToDTO(Book book) {
+
+        if(book == null){
+            return new BookDTO();
+        }
+
         return BookDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
-                .authors(getListAuthorsDTO(Lists.newArrayList(book.getAuthors())))
+                .authors(authorService.authorsToDTOs(Lists.newArrayList(book.getAuthors())))
                 .languageName(book.getLanguage() != null ? book.getLanguage().getName() : null)
-                .publisher(getPublisherDTO(book.getPublisher()))
+                .publisher(publisherService.publisherToDTO(book.getPublisher()))
                 .subjectName(book.getSubject() != null ? book.getSubject().getName() : null)
                 .subtitle(book.getSubtitle())
                 .review(book.getReview())
@@ -174,13 +177,13 @@ public class BookService {
                 .build();
     }
 
-    public Book fromDTO(BookDTO dto) throws LibraryStoreBooksException {
+    public Book bookFromDTO(BookDTO dto) throws LibraryStoreBooksException {
         return Book.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
-                .authors(new HashSet<>(getListAuthors(dto.getAuthors())))
+                .authors(new HashSet<>(authorService.authorsFromDTOs(dto.getAuthors())))
                 .language(getLanguageFromName(dto.getLanguageName()))
-                .publisher(publisherService.fromDTO(dto.getPublisher()))
+                .publisher(publisherService.publisherFromDTO(dto.getPublisher()))
                 .subject(getSubjectFromName(dto.getSubjectName()))
                 .subtitle(dto.getSubtitle())
                 .review(dto.getReview())
@@ -194,41 +197,28 @@ public class BookService {
                 .build();
     }
 
-    public List<BookDTO> toListDTO(List<Book> books) {
-        return books.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public List<BookDTO> booksToDTOs(List<Book> books) {
+        return books.stream().map(b -> bookToDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public List<Book> fromListDTO(List<BookDTO> books) throws LibraryStoreBooksException {
+    public List<Book> booksFromDTOs(List<BookDTO> books) throws LibraryStoreBooksException {
         List<Book> result = new ArrayList<>();
 
         for (BookDTO book : books) {
-            result.add(fromDTO(book));
+            result.add(bookFromDTO(book));
         }
         return result;
     }
 
-    private List<AuthorDTO> getListAuthorsDTO(List<Author> authors) {
-        return authorService.getListAuthorsDTO(authors);
-    }
-
-    private List<Author> getListAuthors(List<AuthorDTO> authors) throws LibraryStoreBooksException {
-        return authorService.getListAuthorsByListDTO(authors);
-    }
-
-    private PublisherDTO getPublisherDTO(Publisher publisher) {
-        return publisherService.toDTO(publisher);
-    }
-
-
     private void saveBookAuthor(Book book) {
-        if (!FormatUtils.isEmpty(book.getAuthors())) {
+        if (book != null && !FormatUtils.isEmpty(book.getAuthors())) {
             for (Author author : book.getAuthors()) {
                 authorService.saveBookAuthor(book, author);
             }
         }
     }
 
-    public List<AuthorDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
+    public List<AuthorDTO> getAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException {
         return bookRepository.getListAuthorsDTOByBookId(bookId);
     }
 
@@ -240,21 +230,21 @@ public class BookService {
         return languageRepository.findByName(name);
     }
 
-    public List<BookSubject> getBookSubject() {
+    public List<BookSubject> getAllBookSubjectsSorted() {
         return bookSubjectRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(BookSubject::getName))
                 .collect(Collectors.toList());
     }
 
-    public List<Language> getBookLanguage() {
+    public List<Language> getAllBookLanguagesSorted() {
         return languageRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Language::getName))
                 .collect(Collectors.toList());
     }
 
-    public List<Map<String, String>> getEBookFormat() {
+    public List<Map<String, String>> getAllEBookFormats() {
         return Stream.of(EBookFormat.values()).map(temp -> {
             Map<String, String> obj = new HashMap<>();
             obj.put("value", temp.getName());
@@ -264,19 +254,12 @@ public class BookService {
     }
 
     @JsonGetter
-    public List<Map<String, String>> getEBookCondition() {
+    public List<Map<String, String>> getAllEBookConditions() {
         return Stream.of(EBookCondition.values()).map(temp -> {
             Map<String, String> obj = new HashMap<>();
             obj.put("value", temp.getName());
             obj.put("label", temp.getDescription());
             return obj;
         }).collect(Collectors.toList());
-    }
-
-    List<Book> getBooksFromAuthorName(String authorName) {
-        return bookRepository.getBooksFromAuthorName(authorName);
-    }
-    List<Book> getBooksFromPublisher(String authorName) {
-        return bookRepository.getBooksFromAuthorName(authorName);
     }
 }

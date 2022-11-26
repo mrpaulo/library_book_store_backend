@@ -122,6 +122,23 @@ class AuthorServiceTest extends Specification {
         response.getName() == buildAuthorDTO().getName()
     }
 
+    def "Author - create - should throw a assertion error"() {
+        given:
+        def author = null
+
+        when:
+        def response = service.create(author)
+
+        then:
+        def e = thrown(AssertionError)
+
+        and:
+        response == null
+
+        and:
+        e.getMessage() == MessageUtil.getMessage("AUTHOR_IS_NULL")
+    }
+
     def "Author - save - happy path"() {
         given:
         def author = buildAuthor()
@@ -183,31 +200,31 @@ class AuthorServiceTest extends Specification {
         1 * service.authorRepository.saveAndFlush(_)
     }
 
-    def "Author - erase - happy path"() {
+    def "Author - delete - happy path"() {
         given:
         def author = buildAuthor()
         def id = 99
         service.authorRepository.findById(id) >> Optional.of(author)
 
         when:
-        service.erase(id)
+        service.delete(id)
 
         then:
         1 * service.authorRepository.delete(_)
     }
 
-    def "Author - toDTO - happy path"() {
+    def "Author - authorToDTO - happy path"() {
         given:
         def author = buildAuthor()
 
         when:
-        def response = service.toDTO(author)
+        def response = service.authorToDTO(author)
 
         then:
         response.getName() == buildAuthorDTO().getName()
     }
 
-    def "Author - fromDTO - happy path"() {
+    def "Author - authorFromDTO - happy path"() {
         given:
         def author = buildAuthorDTO()
         service.addressService.findById(_) >> buildAddress()
@@ -216,7 +233,103 @@ class AuthorServiceTest extends Specification {
 
 
         when:
-        def response = service.fromDTO(author)
+        def response = service.authorFromDTO(author)
+
+        then:
+        response.getName() == buildAuthor().getName()
+    }
+
+    //To DO
+    def "Author - authorsToDTOs - happy path"() {
+        given:
+        def author = buildAuthorDTO()
+        service.addressService.findById(_) >> buildAddress()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
+
+
+        when:
+        def response = service.authorFromDTO(author)
+
+        then:
+        response.getName() == buildAuthor().getName()
+    }
+
+    //To DO
+    def "Author - authorsFromDTOs - happy path"() {
+        given:
+        def author = buildAuthorDTO()
+        service.addressService.findById(_) >> buildAddress()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
+
+
+        when:
+        def response = service.authorFromDTO(author)
+
+        then:
+        response.getName() == buildAuthor().getName()
+    }
+
+    //To DO
+    def "Author - saveBookAuthorDTO - happy path"() {
+        given:
+        def author = buildAuthorDTO()
+        service.addressService.findById(_) >> buildAddress()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
+
+
+        when:
+        def response = service.authorFromDTO(author)
+
+        then:
+        response.getName() == buildAuthor().getName()
+    }
+
+    //To DO
+    def "Author - saveBookAuthor - happy path"() {
+        given:
+        def author = buildAuthorDTO()
+        service.addressService.findById(_) >> buildAddress()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
+
+
+        when:
+        def response = service.authorFromDTO(author)
+
+        then:
+        response.getName() == buildAuthor().getName()
+    }
+
+    //To DO
+    def "Author - saveBookAuthorsFromDTOs - happy path"() {
+        given:
+        def author = buildAuthorDTO()
+        service.addressService.findById(_) >> buildAddress()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
+
+
+        when:
+        def response = service.authorFromDTO(author)
+
+        then:
+        response.getName() == buildAuthor().getName()
+    }
+
+    //To DO
+    def "Author - saveAuthors - happy path"() {
+        given:
+        def author = buildAuthorDTO()
+        service.addressService.findById(_) >> buildAddress()
+        service.addressService.getCityFromDTO(_) >> buildCity()
+        service.addressService.getCountryFromDTO(_) >> buildCountry()
+
+
+        when:
+        def response = service.authorFromDTO(author)
 
         then:
         response.getName() == buildAuthor().getName()

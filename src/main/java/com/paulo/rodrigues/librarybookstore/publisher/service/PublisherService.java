@@ -58,7 +58,7 @@ public class PublisherService {
     BookRepository bookRepository;
 
     public List<PublisherDTO> findAll() {
-        return toListDTO(publisherRepository.findAll());
+        return publishersToDTOs(publisherRepository.findAll());
     }
 
     public Page<Publisher> findPageable(PublisherFilter filter, Pageable pageable) {
@@ -95,7 +95,7 @@ public class PublisherService {
     }
     
     public List<PublisherDTO> findByName(String name) {
-        return toListDTO(publisherRepository.findByName(name));
+        return publishersToDTOs(publisherRepository.findByName(name));
     }
 
     public PublisherDTO create(Publisher publisher) throws LibraryStoreBooksException {
@@ -103,7 +103,7 @@ public class PublisherService {
             addressService.create(publisher.getAddress());
         }
         
-        return toDTO(save(publisher));
+        return publisherToDTO(save(publisher));
     }
 
     public Publisher save(Publisher publisher) throws LibraryStoreBooksException {
@@ -155,7 +155,7 @@ public class PublisherService {
         publisherToEdit.setCreateBy(createBy);
         publisherToEdit.setId(publisherId);
         
-        return toDTO(save(publisherToEdit));
+        return publisherToDTO(save(publisherToEdit));
     }
 
     public void delete(Long publisherId) throws LibraryStoreBooksException, NotFoundException {
@@ -176,7 +176,7 @@ public class PublisherService {
         publisherRepository.delete(publisherToDelete);
     }
 
-    public PublisherDTO toDTO(Publisher publisher) {
+    public PublisherDTO publisherToDTO(Publisher publisher) {
 
         if (publisher == null) {
             return null;
@@ -193,7 +193,7 @@ public class PublisherService {
                 
     }
 
-    public Publisher fromDTO(PublisherDTO dto) {
+    public Publisher publisherFromDTO(PublisherDTO dto) {
         try {
             return checkAndSave(dto);
         } catch (Exception e) {
@@ -201,8 +201,8 @@ public class PublisherService {
         }
     }
 
-    public List<PublisherDTO> toListDTO(List<Publisher> publishers) {
-        return publishers.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public List<PublisherDTO> publishersToDTOs(List<Publisher> publishers) {
+        return publishers.stream().map(b -> publisherToDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
     
 }

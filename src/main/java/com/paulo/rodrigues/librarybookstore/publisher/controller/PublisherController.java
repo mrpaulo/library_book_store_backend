@@ -71,7 +71,7 @@ public class PublisherController {
         Page<Publisher> result = publisherService.findPageable(filter, pageable);
         res.addHeader("totalcount", String.valueOf(result.getTotalElements()));
 
-        return publisherService.toListDTO(result.getContent());
+        return publisherService.publishersToDTOs(result.getContent());
     }
 
     @GetMapping("/{id}")

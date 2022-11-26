@@ -35,7 +35,7 @@ import org.springframework.test.context.TestPropertySource
 import spock.lang.Shared
 import spock.lang.Unroll
 
-import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthor
+import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.nameForTest
 import static groovyx.net.http.ContentType.URLENC
 import static org.apache.http.HttpStatus.SC_OK
 
@@ -89,7 +89,7 @@ abstract class AbstractLBSSpecification extends Specification {
 
     def cleanupSpec() {
         def baseAuthorAPI = "/api/v1/authors"
-        def nameToSearch = buildAuthor().getName()
+        def nameToSearch = nameForTest
         def authorResponse = client.get(path : baseAuthorAPI + "/fetch/" + nameToSearch)
 
         if(authorResponse != null && authorResponse.responseData.size() > 0){

@@ -100,21 +100,21 @@ public class BookController {
     
     @GetMapping("/subjects")
     public ResponseEntity<List<BookSubject>> getBookSubject() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getBookSubject());
+        return ResponseEntity.ok().body(bookService.getAllBookSubjectsSorted());
     }
     
     @GetMapping("/formats")
     public ResponseEntity<List<Map<String, String>>> getEBookFormat() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getEBookFormat());
+        return ResponseEntity.ok().body(bookService.getAllEBookFormats());
     }
     
     @GetMapping("/conditions")
     public ResponseEntity<List<Map<String, String>>> getEBookCondition() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getEBookCondition());
+        return ResponseEntity.ok().body(bookService.getAllEBookConditions());
     }
     
     @GetMapping("/languages")
     public ResponseEntity<List<Language>> getLanguages() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getBookLanguage());
+        return ResponseEntity.ok().body(bookService.getAllBookLanguagesSorted());
     }
 }

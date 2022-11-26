@@ -56,6 +56,8 @@ class ObjectMother extends Specification {
     /*
     Generic
     */
+    static def nameForTest = "GroovySpockTest_gfkgjoemf48"
+
     static <T> T applyProperties(props, T object) {
         if (props) {
             props.each { k, v -> object[k] = v }
@@ -137,7 +139,7 @@ class ObjectMother extends Specification {
         applyProperties(props, new Address(
                 id: genericId,
                 logradouro: ETypePublicPlace.AVENUE,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 number: "123",
                 neighborhood: "Downtown",
                 cep: "123-123",
@@ -152,7 +154,7 @@ class ObjectMother extends Specification {
         applyProperties(props, new AddressDTO(
                 id: genericId,
                 logradouro: ETypePublicPlace.AVENUE,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 number: "321",
                 neighborhood: "Downtown",
                 cep: "321-321",
@@ -190,7 +192,7 @@ class ObjectMother extends Specification {
     static buildAuthor (props = null) {
         applyProperties(props, new Author(
                 id: genericId,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 //birthdate: buildPastDate(),
                 sex: "M",
                 email: "test@test.com",
@@ -208,7 +210,7 @@ class ObjectMother extends Specification {
     static buildAuthorDTO (props = null) {
         applyProperties(props, new AuthorDTO(
                 id: genericId,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 //birthdate: buildPastDate(),
                 sex: "M",
                 email: "test@test.com",
@@ -230,7 +232,7 @@ class ObjectMother extends Specification {
                 sort: 'asc',
                 offset: 0,
                 id: null,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 //startDate: buildPastDate(),
                 //finalDate: buildPastDate(),
                 title: '',
@@ -253,7 +255,7 @@ class ObjectMother extends Specification {
     static buildBook (props = null) {
         applyProperties(props, new Book(
                 id: genericId,
-                title: "GroovySpockTest",
+                title: nameForTest,
                 authors: buildAuthors(),
                 publisher: buildPublisher(),
                 language: buildLanguage(),
@@ -277,7 +279,7 @@ class ObjectMother extends Specification {
     static buildBookDTO (props = null) {
         applyProperties(props, new BookDTO(
                 id: genericId,
-                title: "GroovySpockTest",
+                title: nameForTest,
                 authors: buildAuthorsDTO(),
                 publisher: buildPublisherDTO(),
                 subtitle: '',
@@ -320,7 +322,7 @@ class ObjectMother extends Specification {
                 sort: 'asc',
                 offset: 0,
                 id: null,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 //startDate: buildPastDate(),
                 //finalDate: buildPastDate(),
                 cnpj: '',
@@ -340,7 +342,7 @@ class ObjectMother extends Specification {
     static buildPublisher (props = null) {
         applyProperties(props, new Publisher(
                 id: genericId,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 cnpj: cnpjToTest,
                 //foundationDate: "test@test.com",
                 address: buildAddress(),
@@ -355,7 +357,7 @@ class ObjectMother extends Specification {
     static buildPublisherDTO (props = null) {
         applyProperties(props, new PublisherDTO(
                 id: genericId,
-                name: "GroovySpockTest",
+                name: nameForTest,
                 //birthdate: buildPastDate(),
                 cnpj: cnpjToTest,
                 //foundationDate: "test@test.com",

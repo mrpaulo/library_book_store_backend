@@ -24,6 +24,9 @@ package com.paulo.rodrigues.librarybookstore.test.book
 
 
 import com.paulo.rodrigues.librarybookstore.author.service.AuthorService
+import com.paulo.rodrigues.librarybookstore.book.enums.EBookCondition
+import com.paulo.rodrigues.librarybookstore.book.enums.EBookFormat
+import com.paulo.rodrigues.librarybookstore.book.model.Book
 import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository
 import com.paulo.rodrigues.librarybookstore.book.repository.BookSubjectRepository
 import com.paulo.rodrigues.librarybookstore.book.repository.LanguageRepository
@@ -85,7 +88,7 @@ class BookServiceTest extends Specification {
         given:
         def book = buildBook()
         def id = 1
-        authorService.getListAuthorsByListDTO(_) >> buildAuthors()
+        authorService.authorsFromDTOs(_) >> buildAuthors()
 
         when:
         def response = service.findById(id)
@@ -111,23 +114,23 @@ class BookServiceTest extends Specification {
         e.getMessage() != null
         e.getMessage() == MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + id
     }
-//TODO:
-//    def "Book - create - happy path"() {
-//        given:
-//        def bookDTO = buildBookDTO()
-//        authorService.getListAuthorsByListDTO(_) >> buildAuthors()
-//        bookRepository.saveAndFlush(_) >> buildBook()
-//
-//        when:
-//        def response = service.create(bookDTO)
-//
-//        then:
-//        1 * bookRepository.saveAndFlush(bookDTO) >> bookDTO
-//
-//        and:
-//        response != null
-//        response.getTitle() == buildBookDTO().getTitle()
-//    }
+
+    def "Book - create - happy path"() {
+        given:
+        def bookDTO = buildBookDTO()
+        def book = buildBook()
+        authorService.authorsFromDTOs(_) >> buildAuthors()
+
+        when:
+        def response = service.create(bookDTO)
+
+        then:
+        1 * bookRepository.saveAndFlush(_) >> book
+
+        and:
+        response != null
+        response.getTitle() == bookDTO.getTitle()
+    }
 
     def "Book - save - happy path"() {
         given:
@@ -176,59 +179,194 @@ class BookServiceTest extends Specification {
         'review is bigger than max size'    | buildBook(review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT + 1)) | MessageUtil.getMessage("BOOK_REVIEW_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + "")
     }
 
-    //TODO:
-//    def "Book - edit - happy path"() {
-//        given:
-//        def book = buildBook()
-//        def bookDTO = buildBookDTO()
-//        def id = 99
-//        bookRepository.findById(id) >> Optional.of(book)
-//        service.findById(id) >> book
-//        authorService.getListAuthorsByListDTO(_) >> buildAuthors()
-//        authorService.saveBookAuthorFromListBooksDTO(_) >> buildAuthors()
-//
-//        when:
-//        service.edit(id, bookDTO)
-//
-//        then:
-//        1 * bookRepository.saveAndFlush(_)
-//    }
-//TODO:
-//    def "Book - erase - happy path"() {
-//        given:
-//        def book = buildBook()
-//        def id = 99
-//        bookRepository.findById(id) >> Optional.of(book)
-//        //bookRepository.getBooksFromBookId(id) >> null
-//
-//        when:
-//        service.delete(id)
-//
-//        then:
-//        1 * bookRepository.delete(_)
-//    }
-
-    def "Book - toDTO - happy path"() {
+    def "Book - checkAndSaveReference - happy path"() {
         given:
         def book = buildBook()
 
         when:
-        def response = service.toDTO(book)
+        def response = service.checkAndSaveReference(book)
+
+        then:
+        response.getAuthors().getAt(0).description == book.authors.getAt(0).description
+
+        and:
+        response.getPublisher().description == book.publisher.description
+    }
+
+    def "Book - edit - happy path"() {
+        given:
+        def book = buildBook()
+        def bookDTO = buildBookDTO()
+        def id = 99
+        authorService.authorsFromDTOs(_) >> buildAuthors()
+        bookRepository.findById(id) >> Optional.of(book)
+        modelMapper.map(bookDTO, Book.class) >> book
+
+        when:
+        service.edit(id, bookDTO)
+
+        then:
+        1 * bookRepository.saveAndFlush(_)
+    }
+
+    def "Book - delete - happy path"() {
+        given:
+        def book = buildBook()
+        def id = 99
+        authorService.authorsFromDTOs(_) >> buildAuthors()
+        bookRepository.findById(id) >> Optional.of(book)
+
+        when:
+        service.delete(id)
+
+        then:
+        1 * bookRepository.delete(_)
+    }
+
+    def "Book - bookToDTO - happy path"() {
+        given:
+        def book = buildBook()
+
+        when:
+        def response = service.bookToDTO(book)
 
         then:
         response.getTitle() == buildBookDTO().getTitle()
     }
 
-    def "Book - fromDTO - happy path"() {
+    def "Book - bookFromDTO - happy path"() {
         given:
         def book = buildBookDTO()
-        publisherService.fromDTO(_) >> buildPublisher()
-        authorService.getListAuthorsByListDTO(_) >> buildAuthors()
+        publisherService.publisherFromDTO(_) >> buildPublisher()
+        authorService.authorsFromDTOs(_) >> buildAuthors()
 
         when:
-        def response = service.fromDTO(book)
+        def response = service.bookFromDTO(book)
 
         then:
         response.getTitle() == buildBookDTO().getTitle()
+    }
+
+    def "Book - booksToDTOs - happy path"() {
+        given:
+        def books = buildBooks()
+
+        when:
+        def response = service.booksToDTOs(books)
+
+        then:
+        response.size() == 1
+    }
+
+    def "Book - booksFromDTOs - happy path"() {
+        given:
+        def books = buildBooksDTO()
+        publisherService.publisherFromDTO(_) >> buildPublisher()
+        authorService.authorsFromDTOs(_) >> buildAuthors()
+
+        when:
+        def response = service.booksFromDTOs(books)
+
+        then:
+        response.size() == 1
+    }
+
+    def "Book - saveBookAuthor - happy path"() {
+        given:
+        def book = buildBook()
+
+        when:
+        service.saveBookAuthor(book)
+
+        then:
+        1 * authorService.saveBookAuthor(*_)
+    }
+
+    def "Book - getAuthorsDTOByBookId - happy path"() {
+        given:
+        def id = 1
+
+        when:
+        service.getAuthorsDTOByBookId(id)
+
+        then:
+        1 * bookRepository.getListAuthorsDTOByBookId(id) >> buildAuthorsDTO()
+    }
+
+    def "Book - getSubjectFromName - happy path"() {
+        given:
+        def name = 'test'
+
+        when:
+        service.getSubjectFromName(name)
+
+        then:
+        1 * bookSubjectRepository.findByName(name) >> buildBookSubject()
+    }
+
+    def "Book - getLanguageFromName - happy path"() {
+        given:
+        def name = 'test'
+
+        when:
+        service.getLanguageFromName(name)
+
+        then:
+        1 * languageRepository.findByName(name) >> buildLanguage()
+    }
+
+    //TO DO:
+//    def "Book - getBookSubject - happy path"() {
+//        given:
+//        def book = buildBookDTO()
+//        publisherService.fromDTO(_) >> buildPublisher()
+//        authorService.getListAuthorsByListDTO(_) >> buildAuthors()
+//
+//        when:
+//        def response = service.fromDTO(book)
+//
+//        then:
+//        response.getTitle() == buildBookDTO().getTitle()
+//    }
+
+    //TO DO:
+//    def "Book - getAllBookLanguagesSorted - happy path"() {
+//        given:
+//        languageRepository.findAll() >> Arrays.asList(buildLanguage())
+//
+//        when:
+//        service.getAllBookLanguagesSorted()
+//
+//        then:
+//        1 * languageRepository.findAll()
+//    }
+
+    def "Book - getAllEBookFormats - happy path"() {
+        given:
+        def printed = EBookFormat.PRINTED_BOOK
+
+        when:
+        def response = service.getAllEBookFormats()
+
+        then:
+        response != null
+
+        and:
+        response.get(0).label == printed.description
+    }
+
+    def "Book - getAllEBookConditions - happy path"() {
+        given:
+        def used = EBookCondition.USED
+
+        when:
+        def response = service.getAllEBookConditions()
+
+        then:
+        response != null
+
+        and:
+        response.get(0).label == used.description
+
     }
 }

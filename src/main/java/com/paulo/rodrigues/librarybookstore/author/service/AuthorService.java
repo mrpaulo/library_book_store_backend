@@ -58,7 +58,7 @@ public class AuthorService {
     private BookRepository bookRepository;
 
     public List<AuthorDTO> findAll() {
-        return toListDTO(authorRepository.findAll());
+        return authorsToDTOs(authorRepository.findAll());
     }
 
     public Page<Author> findPageable(AuthorFilter filter, Pageable pageable) {
@@ -82,15 +82,17 @@ public class AuthorService {
     }
     
     public List<AuthorDTO> findByName (String name) throws LibraryStoreBooksException {
-        return toListDTO(authorRepository.findByName(name));
+        return authorsToDTOs(authorRepository.findByName(name));
     }
 
     public AuthorDTO create(Author author) throws LibraryStoreBooksException {
-        if(author != null && author.getAddress() != null){
+        assert author != null : MessageUtil.getMessage("AUTHOR_IS_NULL");
+
+        if(author.getAddress() != null){
             addressService.create(author.getAddress());
         }
 
-        return toDTO(save(author));
+        return authorToDTO(save(author));
     }
 
     public Author save(Author author) throws LibraryStoreBooksException {
@@ -113,10 +115,10 @@ public class AuthorService {
         authorToEdit.setCreateBy(createBy);
         authorToEdit.setCreateAt(createAt);
         
-        return toDTO(save(authorToEdit));
+        return authorToDTO(save(authorToEdit));
     }
  
-    public void erase(Long authorId) throws LibraryStoreBooksException, NotFoundException {
+    public void delete(Long authorId) throws LibraryStoreBooksException, NotFoundException {
         Author author = findById(authorId);
 
         if(author.getAddress() != null){
@@ -126,7 +128,7 @@ public class AuthorService {
         authorRepository.delete(author);
     }
 
-    public AuthorDTO toDTO(Author author) {
+    public AuthorDTO authorToDTO(Author author) {
         if (author == null) {
             return null;
         }
@@ -144,7 +146,7 @@ public class AuthorService {
 
     }
 
-    public Author fromDTO(AuthorDTO dto) throws LibraryStoreBooksException {
+    public Author authorFromDTO(AuthorDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -163,20 +165,16 @@ public class AuthorService {
 
     
 
-    public List<AuthorDTO> toListDTO(List<Author> people) {
-        return people.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public List<AuthorDTO> authorsToDTOs(List<Author> authors) {
+        return authors.stream().map(this::authorToDTO).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public List<AuthorDTO> getListAuthorsDTO(List<Author> authors) {
-        return authors.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-    }
-
-    public List<Author> getListAuthorsByListDTO(List<AuthorDTO> listDTOs) throws LibraryStoreBooksException {
+    public List<Author> authorsFromDTOs(List<AuthorDTO> authorsDTO) throws LibraryStoreBooksException {
         List<Author> result = new ArrayList<>();
 
-        if (!FormatUtils.isEmpty(listDTOs)) {
-            for (AuthorDTO dto : listDTOs) {
-                result.add(fromDTO(dto));
+        if (!FormatUtils.isEmpty(authorsDTO)) {
+            for (AuthorDTO dto : authorsDTO) {
+                result.add(authorFromDTO(dto));
             }
         }
 
@@ -188,7 +186,7 @@ public class AuthorService {
         try {
             author = findById(dto.getId());
         } catch (NotFoundException e) {
-            author = fromDTO(dto);
+            author = authorFromDTO(dto);
             author = save(author);
         }
 
@@ -213,7 +211,7 @@ public class AuthorService {
         return author;
     }
     
-    public Set<Author> saveBookAuthorFromListBooksDTO(Book book, List<AuthorDTO> authorsDTO) throws LibraryStoreBooksException {
+    public Set<Author> saveBookAuthorsFromDTOs(Book book, List<AuthorDTO> authorsDTO) throws LibraryStoreBooksException {
         Set<Author> authors = new HashSet<>();
         for(AuthorDTO author: authorsDTO){
             authors.add(saveBookAuthorDTO(book, author));
@@ -222,16 +220,16 @@ public class AuthorService {
     }
 
     public Set<Author> saveAuthors(Set<Author> authors) throws LibraryStoreBooksException {
-        Set<Author> authorsNew =  new HashSet<>();
+        Set<Author> newAuthors =  new HashSet<>();
             if(!FormatUtils.isEmpty(authors)){
                 for (Author author: authors) {
                     try {
-                        authorsNew.add(findById(author.getId()));
+                        newAuthors.add(findById(author.getId()));
                     } catch (NotFoundException e) {
-                        authorsNew.add(save(author));
+                        newAuthors.add(save(author));
                     }
                 }
             }
-        return authorsNew;
+        return newAuthors;
     }
 }

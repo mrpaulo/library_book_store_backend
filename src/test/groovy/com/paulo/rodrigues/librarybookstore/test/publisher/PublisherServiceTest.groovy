@@ -170,6 +170,36 @@ class PublisherServiceTest extends Specification {
         'description is bigger than max size'  | buildPublisher(description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT + 1)) | MessageUtil.getMessage("PUBLISHER_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + "")
     }
 
+    //TO DO
+    def "Publisher - checkAndSave - happy path"() {
+        given:
+        def publisher = buildPublisher()
+        def publisherDTO = buildPublisherDTO()
+        def id = 99
+        service.publisherRepository.findById(id) >> Optional.of(publisher)
+
+        when:
+        service.edit(id, publisherDTO)
+
+        then:
+        1 * service.publisherRepository.saveAndFlush(_)
+    }
+
+    //TO DO
+    def "Publisher - checkAndSave dto - happy path"() {
+        given:
+        def publisher = buildPublisher()
+        def publisherDTO = buildPublisherDTO()
+        def id = 99
+        service.publisherRepository.findById(id) >> Optional.of(publisher)
+
+        when:
+        service.edit(id, publisherDTO)
+
+        then:
+        1 * service.publisherRepository.saveAndFlush(_)
+    }
+
     def "Publisher - edit - happy path"() {
         given:
         def publisher = buildPublisher()
@@ -184,7 +214,7 @@ class PublisherServiceTest extends Specification {
         1 * service.publisherRepository.saveAndFlush(_)
     }
 
-    def "Publisher - erase - happy path"() {
+    def "Publisher - delete - happy path"() {
         given:
         def publisher = buildPublisher()
         def id = 99
@@ -198,25 +228,24 @@ class PublisherServiceTest extends Specification {
         1 * service.publisherRepository.delete(_)
     }
 
-    def "Publisher - toDTO - happy path"() {
+    def "Publisher - publisherToDTO - happy path"() {
         given:
         def publisher = buildPublisher()
 
         when:
-        def response = service.toDTO(publisher)
+        def response = service.publisherToDTO(publisher)
 
         then:
         response.getName() == buildPublisherDTO().getName()
     }
 
-    def "Publisher - fromDTO - happy path"() {
+    def "Publisher - publisherFromDTO - happy path"() {
         given:
         def publisher = buildPublisherDTO()
         service.publisherRepository.findByCnpj(_) >> buildPublisher()
-        //service.addressService.getAddressFromDTO(_) >> buildAddress()
 
         when:
-        def response = service.fromDTO(publisher)
+        def response = service.publisherFromDTO(publisher)
 
         then:
         response.getName() == buildPublisher().getName()

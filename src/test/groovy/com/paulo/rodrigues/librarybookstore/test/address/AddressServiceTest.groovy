@@ -85,6 +85,7 @@ class AddressServiceTest extends Specification {
     def "Address - create - happy path"() {
         given:
         def address = buildAddress()
+        def name = nameForTest
 
         when:
         def response = service.create(address)
@@ -94,7 +95,7 @@ class AddressServiceTest extends Specification {
 
         and:
         response != null
-        response.getFmtAddress() == 'Avenida GroovySpockTest, 123. San Francisco - California - USA'
+        response.getFmtAddress() == 'Avenida '+ name +', 123. San Francisco - California - USA'
     }
 
     def "Address - save - happy path"() {
@@ -179,12 +180,13 @@ class AddressServiceTest extends Specification {
     def "Address - toDTO - happy path"() {
         given:
         def address = buildAddress()
+        def name = nameForTest
 
         when:
         def response = service.toDTO(address)
 
         then:
-        response.getFmtAddress() == 'Avenida GroovySpockTest, 123. San Francisco - California - USA'
+        response.getFmtAddress() == 'Avenida '+ name +', 123. San Francisco - California - USA'
     }
 
     def "Address - getETypePublicPlace - happy path"() {
