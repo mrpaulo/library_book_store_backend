@@ -239,36 +239,27 @@ class AuthorServiceTest extends Specification {
         response.getName() == buildAuthor().getName()
     }
 
-    //To DO
     def "Author - authorsToDTOs - happy path"() {
         given:
-        def author = buildAuthorDTO()
-        service.addressService.findById(_) >> buildAddress()
-        service.addressService.getCityFromDTO(_) >> buildCity()
-        service.addressService.getCountryFromDTO(_) >> buildCountry()
-
+        def authors = buildAuthors()
 
         when:
-        def response = service.authorFromDTO(author)
+        def response = service.authorsToDTOs(authors)
 
         then:
-        response.getName() == buildAuthor().getName()
+        response.size() == 1
     }
 
     //To DO
     def "Author - authorsFromDTOs - happy path"() {
         given:
-        def author = buildAuthorDTO()
-        service.addressService.findById(_) >> buildAddress()
-        service.addressService.getCityFromDTO(_) >> buildCity()
-        service.addressService.getCountryFromDTO(_) >> buildCountry()
-
+        def author = buildAuthorsDTO()
 
         when:
-        def response = service.authorFromDTO(author)
+        def response = service.authorsFromDTOs(author)
 
         then:
-        response.getName() == buildAuthor().getName()
+        response.size() == 1
     }
 
     //To DO
