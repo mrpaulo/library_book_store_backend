@@ -147,7 +147,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         sql.append(" , b.rating ");
         sql.append(" , b.length ");
         sql.append(" FROM BOOK b  ");
-        sql.append(" LEFT JOIN  PUBLISHER pu ON pu.id = b.publisher_id ");
+        sql.append(" LEFT JOIN PUBLISHER pu ON pu.id = b.publisher_id ");
+        sql.append(" LEFT JOIN author_books ab ON ab.books_id = b.id ");
+        sql.append(" LEFT JOIN author a ON ab.author_id = a.id ");
         sql.append(" WHERE 1 = 1 ");
 
         return sql;
@@ -161,11 +163,8 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         if (!FormatUtils.isEmpty(filter.getTitle())) {
             sql.append(" AND LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')) ");            
         }
-        if (!FormatUtils.isEmpty(filter.getAuthor())) {            
-            sql.append("AND LOWER(:authorName) IN ");
-            sql.append("(SELECT LOWER(p.name) FROM AUTHOR p "
-                    + "INNER JOIN author_books ab ON p.id = ab.author_id "
-                    + "WHERE ab.books_id = b.id)");
+        if (!FormatUtils.isEmpty(filter.getAuthor())) {
+            sql.append(" AND LOWER(a.name) LIKE LOWER(CONCAT('%', :authorName, '%')) ");
         }
         if (!FormatUtils.isEmpty(filter.getPublisher())) {            
             sql.append("AND LOWER(pu.name) LIKE LOWER(CONCAT('%', :publisherName, '%')) ");            
