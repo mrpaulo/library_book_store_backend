@@ -24,20 +24,7 @@ import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,7 +58,7 @@ public class Address implements Serializable {
 
     @NotNull
     @OneToOne
-    @JoinColumn(name = "CITY_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "CITY_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "CITY_ADDRESS"))
     private City city;
 
     @NotNull

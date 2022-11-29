@@ -80,7 +80,7 @@ public class PublisherController {
     }
     
     @GetMapping("/fetch/{name}")
-    public ResponseEntity<List<PublisherDTO>> fetchByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+    public ResponseEntity<List<PublisherDTO>> fetchByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(publisherService.findByName(name));
     }
 

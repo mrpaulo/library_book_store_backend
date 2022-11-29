@@ -78,15 +78,15 @@ public class Book implements Serializable {
 
     @NotNull(message = "Publisher is required")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "PUBLISHER_BOOK"))
     private Publisher publisher;
 
     @ManyToOne
-    @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "LANGUAGE_BOOK"))
     private Language language;
 
     @ManyToOne
-    @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "SUBJECT_BOOK"))
     private BookSubject subject;
 
     @Column(length = ConstantsUtil.MAX_SIZE_NAME)
@@ -95,7 +95,7 @@ public class Book implements Serializable {
     @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
     private String review;
 
-    @Column(length = ConstantsUtil.MAX_SIZE_NAME)
+    @Column(length = ConstantsUtil.MAX_SIZE_SHORT_TEXT)
     private String link;
 
     @Enumerated(EnumType.STRING)
@@ -134,8 +134,8 @@ public class Book implements Serializable {
         if (!FormatUtils.isEmptyOrNull(subtitle) && subtitle.length() > ConstantsUtil.MAX_SIZE_NAME) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_SUBTITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
-        if (!FormatUtils.isEmptyOrNull(link) && link.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        if (!FormatUtils.isEmptyOrNull(link) && link.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
         }
         if (!FormatUtils.isEmptyOrNull(review) && review.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_REVIEW_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));

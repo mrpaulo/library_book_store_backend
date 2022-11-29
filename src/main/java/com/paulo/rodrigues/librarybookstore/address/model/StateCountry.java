@@ -18,16 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.address.model;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,6 +52,6 @@ public class StateCountry implements Serializable {
     
     @NotNull
     @OneToOne
-    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID") 
+    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "COUNTRY_STATE"))
     private Country country;
 }

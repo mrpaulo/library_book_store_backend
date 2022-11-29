@@ -42,6 +42,7 @@ ALTER SEQUENCE language_id_seq RESTART;
 ALTER SEQUENCE publisher_id_seq RESTART;
 ALTER SEQUENCE state_id_seq RESTART;
 ALTER SEQUENCE subject_id_seq RESTART;
+ALTER SEQUENCE user_id_seq RESTART;
 
 --Address
 INSERT INTO country (id, name) 
@@ -346,3 +347,5 @@ values
 
 insert into user_role (user_id, role_id) values
 (1,1);
+
+ALTER SEQUENCE user_id_seq RESTART WITH 2;

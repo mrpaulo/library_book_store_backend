@@ -93,6 +93,51 @@ class PublisherServiceTest extends Specification {
         response == publisher
     }
 
+    def "Publisher - findByCnpj - happy path"() {
+        given:
+        def publisher = buildPublisher()
+        def cnpj = cnpjToTest
+
+        when:
+        def response = service.findByCnpj(cnpj)
+
+        then:
+        1 * service.publisherRepository.findByCnpj(cnpj) >> publisher
+
+        and:
+        response == publisher
+    }
+
+    def "Publisher - findByCnpj - should throw an exception"() {
+        given:
+        def cnpj = cnpjToTest
+
+        when:
+        service.findByCnpj(cnpj)
+
+        then:
+        def e = thrown(NotFoundException)
+
+        and:
+        e.getMessage() != null
+        e.getMessage() == MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " CNPJ: " + cnpj
+    }
+
+    def "Publisher - findByName - happy path"() {
+        given:
+        def publishers = buildPublishers()
+        def name = nameForTest
+
+        when:
+        def response = service.findByName(name)
+
+        then:
+        1 * service.publisherRepository.findByName(name) >> publishers
+
+        and:
+        response.size() == 1
+    }
+
     def "Publisher - findById - should throw an exception"() {
         given:
         def id = 1
@@ -170,34 +215,29 @@ class PublisherServiceTest extends Specification {
         'description is bigger than max size'  | buildPublisher(description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT + 1)) | MessageUtil.getMessage("PUBLISHER_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + "")
     }
 
-    //TO DO
     def "Publisher - checkAndSave - happy path"() {
         given:
         def publisher = buildPublisher()
-        def publisherDTO = buildPublisherDTO()
-        def id = 99
-        service.publisherRepository.findById(id) >> Optional.of(publisher)
+        service.publisherRepository.findByCnpj(*_) >> publisher
 
         when:
-        service.edit(id, publisherDTO)
+        def response = service.checkAndSave(publisher)
 
         then:
-        1 * service.publisherRepository.saveAndFlush(_)
+        response == publisher
     }
 
-    //TO DO
     def "Publisher - checkAndSave dto - happy path"() {
         given:
         def publisher = buildPublisher()
         def publisherDTO = buildPublisherDTO()
-        def id = 99
-        service.publisherRepository.findById(id) >> Optional.of(publisher)
+        service.publisherRepository.findByCnpj(*_) >> publisher
 
         when:
-        service.edit(id, publisherDTO)
+        def response = service.checkAndSave(publisherDTO)
 
         then:
-        1 * service.publisherRepository.saveAndFlush(_)
+        response == publisher
     }
 
     def "Publisher - edit - happy path"() {
@@ -249,5 +289,16 @@ class PublisherServiceTest extends Specification {
 
         then:
         response.getName() == buildPublisher().getName()
+    }
+
+    def "Publisher - publishersToDTOs - happy path"() {
+        given:
+        def publishers = buildPublishers()
+
+        when:
+        def response = service.publishersToDTOs(publishers)
+
+        then:
+        response.size() == 1
     }
 }

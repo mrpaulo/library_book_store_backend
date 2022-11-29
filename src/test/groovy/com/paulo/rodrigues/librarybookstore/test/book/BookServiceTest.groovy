@@ -175,7 +175,7 @@ class BookServiceTest extends Specification {
         where:
         scenario                            | book                                                                       | message
         'subtitle is bigger than max size'  | buildBook(subtitle: buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1))    | MessageUtil.getMessage("BOOK_SUBTITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
-        'link is bigger than max size'      | buildBook(link: buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1))        | MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
+        'link is bigger than max size'      | buildBook(link: buildRandomString(ConstantsUtil.MAX_SIZE_SHORT_TEXT + 1))  | MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + "")
         'review is bigger than max size'    | buildBook(review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT + 1)) | MessageUtil.getMessage("BOOK_REVIEW_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + "")
     }
 
