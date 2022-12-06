@@ -23,6 +23,7 @@ package com.paulo.rodrigues.librarybookstore.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.paulo.rodrigues.librarybookstore.LibraryBookStoreApplication
+import groovy.sql.Sql
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -59,7 +60,13 @@ abstract class AbstractLBSSpecification extends Specification {
          
     @Shared
     def client
-    
+
+    @Shared
+    def sql
+
+    @Shared
+    def userId = 99999
+
     def setup() {
         def username = "client"
         def password = "teste"
@@ -72,19 +79,44 @@ abstract class AbstractLBSSpecification extends Specification {
     def toJson(object) {
         new ObjectMapper().writeValueAsString(object)
     }
-    
+
+    def createUser() {
+        Map dbConnParams = [
+                url: 'jdbc:postgresql://localhost:5432/test2_library_book_store',
+                user: 'postgres',
+                password: 'postgres',
+                driver: 'org.postgresql.Driver']
+
+        sql = Sql.newInstance(dbConnParams)
+
+        sql.execute "insert into lbs_user (id, name, username, password, email, create_by) \n" +
+                "values (" +
+                userId + ", '"+ nameForTest +"', '" + nameForTest + "', '{noop}1', '" + nameForTest + "@teste.com', 'Teste');"
+
+        sql.execute "insert into user_role (user_id, role_id) values (" + userId  +",1);"
+    }
+
+    def deleteUserAndClose() {
+        sql.execute "DELETE FROM user_role where user_id = " + userId + ";"
+        sql.execute "DELETE FROM lbs_user where id = " + userId + ";"
+        sql.close()
+    }
+
     @Unroll
-    def "Login - testing"() {             
+    def "Login - testing"() {
+        given:
+        createUser()
         
         when: "a rest call is performed to the status page"
         def response = client.post(
             path : "/oauth/token",
             requestContentType : URLENC,
-            body : [username:'paulo', password:'1', grant_type:'password']
+            body : [username: nameForTest, password:'1', grant_type:'password']
         )
 
         then: "the correct message is expected"
         response.status == SC_OK
+        deleteUserAndClose() == null
     }
 
     def cleanupSpec() {
