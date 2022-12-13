@@ -21,7 +21,6 @@ import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.model.City;
@@ -54,6 +53,8 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 @Service
 @Transactional
 public class AddressService {
+
+    private ModelMapper modelMapper;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -105,7 +106,7 @@ public class AddressService {
         Address addressToEdit = findById(addressId);
         String createBy = addressToEdit.getCreateBy();
         var createAt = addressToEdit.getCreateAt();
-        
+
         ModelMapper modelMapper = new ModelMapper();
         addressToEdit = modelMapper.map(addressDetail, Address.class);
         addressToEdit.setCreateBy(createBy);
@@ -157,7 +158,7 @@ public class AddressService {
             return null;
         }
     }
-    
+
     public List<Map<String, String>> getETypePublicPlace() {
         return Stream.of(ETypePublicPlace.values()).map(temp -> {
             Map<String, String> obj = new HashMap<>();
