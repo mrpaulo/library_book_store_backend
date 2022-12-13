@@ -25,6 +25,7 @@ import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.model.BookSubject;
 import com.paulo.rodrigues.librarybookstore.book.model.Language;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -65,32 +66,32 @@ public class BookController {
     }
 
     @PostMapping("/fetch")
-    public List<BookDTO> getAllPageble(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<BookDTO> findPageable(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         
-        PagedResult<BookDTO> result = bookService.findPageble(FormatUtils.setOffSet(filter));
+        PagedResult<BookDTO> result = bookService.findPageable(FormatUtils.setOffSet(filter));
         res.addHeader("totalcount", String.valueOf(result != null ? result.getTotalElementos() : 0));
 
         return result.getElementos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {
+    public ResponseEntity<Book> getById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(bookService.findById(bookId));
     }
     
     @PostMapping()
-    public BookDTO create(@RequestBody BookDTO dto) throws LibraryStoreBooksException {
+    public BookDTO create(@RequestBody BookDTO dto) throws LibraryStoreBooksException, NotFoundException {
         return bookService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDetalhes) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok(bookService.edit(bookId, bookDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Long> delete(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException {
-        bookService.erase(bookId);
+    public Map<String, Long> delete(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException, NotFoundException {
+        bookService.delete(bookId);
         Map<String, Long> response = new HashMap<>();
         response.put("id", bookId);
 
@@ -99,21 +100,21 @@ public class BookController {
     
     @GetMapping("/subjects")
     public ResponseEntity<List<BookSubject>> getBookSubject() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getBookSubject());
+        return ResponseEntity.ok().body(bookService.getAllBookSubjectsSorted());
     }
     
     @GetMapping("/formats")
     public ResponseEntity<List<Map<String, String>>> getEBookFormat() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getEBookFormat());
+        return ResponseEntity.ok().body(bookService.getAllEBookFormats());
     }
     
     @GetMapping("/conditions")
     public ResponseEntity<List<Map<String, String>>> getEBookCondition() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getEBookCondition());
+        return ResponseEntity.ok().body(bookService.getAllEBookConditions());
     }
     
     @GetMapping("/languages")
     public ResponseEntity<List<Language>> getLanguages() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getBookLanguage());
+        return ResponseEntity.ok().body(bookService.getAllBookLanguagesSorted());
     }
 }

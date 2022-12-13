@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,16 +66,16 @@ public class AuthorController {
     }
 
     @PostMapping("/fetch")
-    public List<AuthorDTO> getAllPageble(@RequestBody AuthorFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<AuthorDTO> findPageable(@RequestBody AuthorFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
-        Page<Author> result = authorService.findPageble(filter, pageable);
+        Page<Author> result = authorService.findPageable(filter, pageable);
         res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
 
-        return authorService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
+        return authorService.authorsToDTOs(result.getContent()).stream().sorted(Comparator.comparing(AuthorDTO::getName)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getById(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException {
+    public ResponseEntity<Author> getById(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(authorService.findById(authorId));
     }
     
@@ -89,13 +90,13 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDetalhes) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok(authorService.edit(authorId, authorDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Long> delete(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException {
-        authorService.erase(authorId);
+    public Map<String, Long> delete(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
+        authorService.delete(authorId);
         Map<String, Long> response = new HashMap<>();
         response.put("id", authorId);
 

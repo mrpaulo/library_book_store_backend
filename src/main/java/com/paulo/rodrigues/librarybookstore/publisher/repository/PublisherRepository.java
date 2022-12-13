@@ -48,8 +48,8 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long>{
             + " WHERE (:id IS NULL OR c.id = :id) "
             + " AND (:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) "
             + " AND (:cnpj IS NULL OR :cnpj = '' OR c.cnpj LIKE CONCAT('%',:cnpj,'%')) "
-//            + " AND ((:startDate IS NULL AND :finalDate IS NULL) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
-            + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (c.createDate BETWEEN :startDate AND :finalDate)) "
+//            + " AND ((:startDate IS NULL AND :finalDate IS NULL) OR (c.foundationDate BETWEEN :startDate AND :finalDate)) "
+            + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (c.foundationDate BETWEEN :startDate AND :finalDate)) "
             + "")
     public Page<Publisher> findPageble(
             @Param("id") Long id,

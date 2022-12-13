@@ -38,6 +38,6 @@ public class PublisherDTO {
     private String name;
     private String cnpj;
     private AddressDTO address;
-    private Date createDate;
+    private Date foundationDate;
     private String description; 
 }

@@ -1,7 +1,7 @@
 INSERT INTO publisher 
     (id,
     cnpj,
-    create_date,
+    foundation_date,
     name,
     address_id)
 VALUES

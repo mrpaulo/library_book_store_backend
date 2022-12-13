@@ -49,6 +49,10 @@ public class FormatUtils {
         return value == null || value.isEmpty();
     }
 
+//    public static boolean isNullOrIdNull(T value) {
+//        return value == null && (value != null && value.getId() == null);
+//    }
+
     public static String removeFormatCPF(String CPF) {
         return CPF.replace(".", "").replace("-", "");
     }

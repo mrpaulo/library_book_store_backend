@@ -24,19 +24,7 @@ import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,24 +38,28 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-@Table(name="lbs_user")
+@Table(name="lbs_user", uniqueConstraints = {
+        @UniqueConstraint(name = "unique_cpf", columnNames = "cpf"),
+        @UniqueConstraint(name = "unique_username", columnNames = "username"),
+        @UniqueConstraint(name = "unique_email", columnNames = "email")})
 public class User {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "SEQ_USER", allocationSize = 1, sequenceName = "user_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USER")
     private Long id;
         
     @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String name;
    
     @NotNull
-    @Column(unique = true, nullable=true, length = ConstantsUtil.MAX_SIZE_NAME)
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_NAME)
     private String username;
     
-    @Column(unique = true, nullable=true, length = ConstantsUtil.MAX_SIZE_CPF)
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_CPF)
     private String cpf;
     
-    @Column(unique = true, nullable=true, length = ConstantsUtil.MAX_SIZE_NAME)
+    @Column(unique = true, length = ConstantsUtil.MAX_SIZE_NAME)
     private String email;
     
 //    @JsonIgnore
@@ -75,7 +67,7 @@ public class User {
     private String password;
     
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "ADDRESS_USER"))
     private Address address;
     
     @Temporal(javax.persistence.TemporalType.DATE)

@@ -20,9 +20,8 @@ package com.paulo.rodrigues.librarybookstore.book.service;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.google.common.collect.Lists;
 import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO;
-import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.*;
 import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
@@ -36,15 +35,8 @@ import com.paulo.rodrigues.librarybookstore.book.enums.EBookFormat;
 import com.paulo.rodrigues.librarybookstore.book.model.Language;
 import com.paulo.rodrigues.librarybookstore.book.repository.LanguageRepository;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
-import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.transaction.Transactional;
@@ -60,7 +52,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class BookService {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
     private final PublisherService publisherService;
@@ -68,14 +60,14 @@ public class BookService {
     private final BookSubjectRepository bookSubjectRepository;
 
     public BookService(@Autowired BookRepository bookRepository,
-            @Autowired AuthorService personService,
-            @Autowired PublisherService companyService,
+            @Autowired AuthorService authorService,
+            @Autowired PublisherService publisherService,
             @Autowired LanguageRepository languageRepository,
             @Autowired BookSubjectRepository bookSubjectRepository,
             @Autowired ModelMapper modelMapper) {
         this.bookRepository = bookRepository;
-        this.authorService = personService;
-        this.publisherService = companyService;
+        this.authorService = authorService;
+        this.publisherService = publisherService;
         this.languageRepository = languageRepository;
         this.bookSubjectRepository = bookSubjectRepository;
         this.modelMapper = modelMapper;
@@ -84,68 +76,94 @@ public class BookService {
     public List<BookDTO> findAll() {
         List<Book> books = bookRepository.findAll();
 
-        return toListDTO(books);
+        return booksToDTOs(books);
     }
 
-    public PagedResult<BookDTO> findPageble(BookFilter filter) {
-        return bookRepository.findPageble(filter);
+    public PagedResult<BookDTO> findPageable(BookFilter filter) {
+        return bookRepository.findPageable(filter);
     }
 
-    public Book findById(Long bookId) throws LibraryStoreBooksException {
-        Book book = bookRepository.findById(bookId).orElse(null);
-        if (book == null) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
+    public Book findById(Long bookId) throws NotFoundException, LibraryStoreBooksException {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book == null || !book.isPresent()) {
+            throw new NotFoundException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
-        book.setAuthors(new HashSet<>(authorService.getListAuthorsByListDTO(bookRepository.getListAuthorsDTOByBookId(bookId))));
 
-        return book;
+
+        book.get().setAuthors(new HashSet<>(authorService.authorsFromDTOs(getAuthorsDTOByBookId(bookId))));
+
+        return book.get();
     }
 
-    public BookDTO create(BookDTO dto) throws LibraryStoreBooksException {
-        Book book = fromDTO(dto);
+    public BookDTO create(BookDTO dto) throws LibraryStoreBooksException, NotFoundException {
+        Book book = bookFromDTO(dto);
         book = save(book);
-        saveBookAuthor(book, dto);
+        saveBookAuthor(book);
 
-        return toDTO(book);
+        return bookToDTO(book);
     }
 
     public Book save(Book book) throws LibraryStoreBooksException {
         book.validation();
         book.persistAt();
+        book = checkAndSaveReference(book);
 
         return bookRepository.saveAndFlush(book);
     }
 
-    public BookDTO edit(Long bookId, BookDTO bookDetail) throws LibraryStoreBooksException {
+    public Book checkAndSaveReference(Book book) throws LibraryStoreBooksException {
+
+        Set<Author> authors = authorService.saveAuthors(book.getAuthors());
+        if(!FormatUtils.isEmpty(authors)){
+            book.setAuthors(authors);
+        }
+
+        Publisher publisher = publisherService.checkAndSave(book.getPublisher());
+        if(publisher != null){
+            book.setPublisher(publisher);
+        }
+
+        return book;
+    }
+
+    public BookDTO edit(Long bookId, BookDTO bookDetail) throws NotFoundException, LibraryStoreBooksException {
         Book bookToEdit = findById(bookId);
         String createBy = bookToEdit.getCreateBy();
         
         bookToEdit = modelMapper.map(bookDetail, Book.class);
-        bookToEdit.setAuthors(authorService.saveBookAuthorFromListBooksDTO(bookToEdit, bookDetail.getAuthors()));
+        bookToEdit.setAuthors(authorService.saveBookAuthorsFromDTOs(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
-        bookToEdit.setPublisher(getPublisher(bookDetail.getPublisher()));
+        bookToEdit.setPublisher(publisherService.publisherFromDTO(bookDetail.getPublisher()));
         bookToEdit.setCreateBy(createBy);
+        bookToEdit.setId(bookId);
         
-        return toDTO(save(bookToEdit));
+        return bookToDTO(save(bookToEdit));
     }
 
-    public void erase(Long bookId) throws LibraryStoreBooksException {
+    public void delete(Long bookId) throws LibraryStoreBooksException, NotFoundException {
         Book bookToErase = findById(bookId);
         bookToErase.getAuthors().stream()
                 .forEach(author -> {
                     bookRepository.deleteBookAuthor(author.getId(), bookToErase.getId());
                 });
+
         bookRepository.delete(bookToErase);
     }
 
-    public BookDTO toDTO(Book book) {
+    public BookDTO bookToDTO(Book book) {
+
+        if(book == null){
+            return new BookDTO();
+        }
+
         return BookDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
-                .authors(getListAuthorsDTO(Lists.newArrayList(book.getAuthors())))
+                .authors(authorService.authorsToDTOs(Lists.newArrayList(book.getAuthors())))
                 .languageName(book.getLanguage() != null ? book.getLanguage().getName() : null)
-                .publisher(getCompanyDTO(book.getPublisher()))
+                .publisher(publisherService.publisherToDTO(book.getPublisher()))
                 .subjectName(book.getSubject() != null ? book.getSubject().getName() : null)
                 .subtitle(book.getSubtitle())
                 .review(book.getReview())
@@ -159,13 +177,13 @@ public class BookService {
                 .build();
     }
 
-    public Book fromDTO(BookDTO dto) throws LibraryStoreBooksException {
+    public Book bookFromDTO(BookDTO dto) throws LibraryStoreBooksException {
         return Book.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
-                .authors(new HashSet<>(getListAuthors(dto.getAuthors())))
+                .authors(new HashSet<>(authorService.authorsFromDTOs(dto.getAuthors())))
                 .language(getLanguageFromName(dto.getLanguageName()))
-                .publisher(getPublisher(dto.getPublisher()))
+                .publisher(publisherService.publisherFromDTO(dto.getPublisher()))
                 .subject(getSubjectFromName(dto.getSubjectName()))
                 .subtitle(dto.getSubtitle())
                 .review(dto.getReview())
@@ -179,46 +197,28 @@ public class BookService {
                 .build();
     }
 
-    public List<BookDTO> toListDTO(List<Book> books) {
-        return books.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public List<BookDTO> booksToDTOs(List<Book> books) {
+        return books.stream().map(b -> bookToDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public List<Book> fromListDTO(List<BookDTO> books) throws LibraryStoreBooksException {
+    public List<Book> booksFromDTOs(List<BookDTO> books) throws LibraryStoreBooksException {
         List<Book> result = new ArrayList<>();
 
         for (BookDTO book : books) {
-            result.add(fromDTO(book));
+            result.add(bookFromDTO(book));
         }
         return result;
     }
 
-    private List<AuthorDTO> getListAuthorsDTO(List<Author> authors) {
-        return authorService.getListAuthorsDTO(authors);
-    }
-
-    private List<Author> getListAuthors(List<AuthorDTO> authors) throws LibraryStoreBooksException {
-        return authorService.getListAuthorsByListDTO(authors);
-    }
-
-    private PublisherDTO getCompanyDTO(Publisher publisher) {
-        return publisherService.toDTO(publisher);
-    }
-
-    private Publisher getPublisher(PublisherDTO publisher) throws LibraryStoreBooksException {
-        return publisherService.findById(publisher.getId());
-    }
-
-    private void saveBookAuthor(Book book, BookDTO dto) throws LibraryStoreBooksException {
-        List<AuthorDTO> authors = dto.getAuthors();
-
-        if (!FormatUtils.isEmpty(authors)) {
-            for (AuthorDTO author : authors) {
+    private void saveBookAuthor(Book book) {
+        if (book != null && !FormatUtils.isEmpty(book.getAuthors())) {
+            for (Author author : book.getAuthors()) {
                 authorService.saveBookAuthor(book, author);
             }
         }
     }
 
-    public List<AuthorDTO> getListAuthorsByBookId(Long bookId) throws LibraryStoreBooksException {
+    public List<AuthorDTO> getAuthorsDTOByBookId(Long bookId) throws LibraryStoreBooksException {
         return bookRepository.getListAuthorsDTOByBookId(bookId);
     }
 
@@ -230,21 +230,21 @@ public class BookService {
         return languageRepository.findByName(name);
     }
 
-    public List<BookSubject> getBookSubject() {
+    public List<BookSubject> getAllBookSubjectsSorted() {
         return bookSubjectRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(BookSubject::getName))
                 .collect(Collectors.toList());
     }
 
-    public List<Language> getBookLanguage() {
+    public List<Language> getAllBookLanguagesSorted() {
         return languageRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Language::getName))
                 .collect(Collectors.toList());
     }
 
-    public List<Map<String, String>> getEBookFormat() {
+    public List<Map<String, String>> getAllEBookFormats() {
         return Stream.of(EBookFormat.values()).map(temp -> {
             Map<String, String> obj = new HashMap<>();
             obj.put("value", temp.getName());
@@ -254,16 +254,12 @@ public class BookService {
     }
 
     @JsonGetter
-    public List<Map<String, String>> getEBookCondition() {
+    public List<Map<String, String>> getAllEBookConditions() {
         return Stream.of(EBookCondition.values()).map(temp -> {
             Map<String, String> obj = new HashMap<>();
             obj.put("value", temp.getName());
             obj.put("label", temp.getDescription());
             return obj;
         }).collect(Collectors.toList());
-    }
-
-    List<Book> getBooksFromAuthor(String authorName) {
-        return bookRepository.getBooksFromAuthor(authorName);
     }
 }

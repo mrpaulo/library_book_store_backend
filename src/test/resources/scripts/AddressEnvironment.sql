@@ -33,7 +33,7 @@ INSERT INTO address
     name,
     neighborhood,
     number,
-    referencial_point,    
+    referential_point,
     zip_code,
     city_id)
 VALUES

@@ -19,16 +19,7 @@ package com.paulo.rodrigues.librarybookstore.address.model;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,12 +55,12 @@ public class City implements Serializable{
         
     @NotNull
     @OneToOne
-    @JoinColumn(name = "STATE_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "STATE_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "STATE_CITY"))
     private StateCountry state;
     
     @NotNull
     @OneToOne
-    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID")    
+    @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "COUNTRY_CITY"))
     private Country country;
     
     @Column(length = 10)

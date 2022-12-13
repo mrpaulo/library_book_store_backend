@@ -24,20 +24,7 @@ import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,7 +58,7 @@ public class Address implements Serializable {
 
     @NotNull
     @OneToOne
-    @JoinColumn(name = "CITY_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "CITY_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "CITY_ADDRESS"))
     private City city;
 
     @NotNull
@@ -94,7 +81,7 @@ public class Address implements Serializable {
     private String coordination;
 
     @Column(length = ConstantsUtil.MAX_SIZE_SHORT_TEXT)
-    private String referencialPoint;
+    private String referentialPoint;
 
     @Transient
     private String fmtAddress;
@@ -107,7 +94,30 @@ public class Address implements Serializable {
     private String updateBy;
 
     public String formatAddress() {
-        return "";
+
+        String formattedAddress = "";
+        if (city != null) {
+            formattedAddress = city.getName();
+            if (city.getState() != null) {
+                formattedAddress = formattedAddress + " - " + city.getState().getName();
+
+                if (city.getState().getCountry() != null) {
+                    formattedAddress = formattedAddress + " - " + city.getState().getCountry().getName();
+                }
+            }
+        }
+
+        if(!FormatUtils.isEmpty(number)){
+            formattedAddress = number + ". " + formattedAddress;
+        }
+        if(!FormatUtils.isEmpty(name)){
+            formattedAddress = name + ", " + formattedAddress;
+        }
+        if(logradouro != null && !FormatUtils.isEmpty(logradouro.getDescription())){
+            formattedAddress = logradouro.getDescription() + " " + formattedAddress;
+        }
+
+        return formattedAddress;
     }
 
     public void addressValidation() throws LibraryStoreBooksException {
@@ -132,8 +142,8 @@ public class Address implements Serializable {
         if (!FormatUtils.isEmptyOrNull(coordination) && coordination.length() > ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_COORDINATION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + ""));
         }
-        if (!FormatUtils.isEmptyOrNull(referencialPoint) && referencialPoint.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_REFERENCIALPOINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
+        if (!FormatUtils.isEmptyOrNull(referentialPoint) && referentialPoint.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_REFERENTIAL_POINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
         }
     }
 

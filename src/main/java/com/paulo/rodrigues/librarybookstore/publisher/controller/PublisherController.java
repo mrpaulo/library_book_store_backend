@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,21 +66,21 @@ public class PublisherController {
     }
 
     @PostMapping("/fetch")
-    public List<PublisherDTO> getAllPageble(@RequestBody PublisherFilter filter, HttpServletRequest req, HttpServletResponse res) {
+    public List<PublisherDTO> findPageable(@RequestBody PublisherFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);        
-        Page<Publisher> result = publisherService.findPageble(filter, pageable);
+        Page<Publisher> result = publisherService.findPageable(filter, pageable);
         res.addHeader("totalcount", String.valueOf(result.getTotalElements()));
 
-        return publisherService.toListDTO(result.getContent());
+        return publisherService.publishersToDTOs(result.getContent());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Publisher> getById(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException {
+    public ResponseEntity<Publisher> getById(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(publisherService.findById(publisherId));
     }
     
     @GetMapping("/fetch/{name}")
-    public ResponseEntity<List<PublisherDTO>> fetchByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+    public ResponseEntity<List<PublisherDTO>> fetchByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(publisherService.findByName(name));
     }
 
@@ -88,13 +90,13 @@ public class PublisherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDetalhes) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok(publisherService.edit(publisherId, publisherDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Long> delete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException {
-        publisherService.erase(publisherId);
+    public Map<String, Long> delete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
+        publisherService.delete(publisherId);
         Map<String, Long> response = new HashMap<>();
         response.put("id", publisherId);
 

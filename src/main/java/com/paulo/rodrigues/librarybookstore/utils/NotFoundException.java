@@ -15,18 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.util;
+package com.paulo.rodrigues.librarybookstore.utils;
 
-import java.sql.Connection;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author paulo.rodrigues
  */
-public class StaticBeanUtil {
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class NotFoundException extends Exception {
 
-    static Connection getBeanByClass(Class<Connection> aClass) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public NotFoundException(String message){
+        super(message);
     }
-    
 }

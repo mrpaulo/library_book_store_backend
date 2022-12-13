@@ -19,20 +19,26 @@ package com.paulo.rodrigues.librarybookstore.publisher.service;
 
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
+import com.paulo.rodrigues.librarybookstore.book.model.Book;
+import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
+import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
+import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository;
+import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
+import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
-import java.util.ArrayList;
-import java.util.List;
-import javax.transaction.Transactional;
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.modelmapper.ModelMapper;
-import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -46,13 +52,16 @@ public class PublisherService {
     PublisherRepository publisherRepository;
 
     @Autowired
-    private AddressService addressService;
+    AddressService addressService;
+
+    @Autowired
+    BookRepository bookRepository;
 
     public List<PublisherDTO> findAll() {
-        return toListDTO(publisherRepository.findAll());
+        return publishersToDTOs(publisherRepository.findAll());
     }
 
-    public Page<Publisher> findPageble(PublisherFilter filter, Pageable pageable) {
+    public Page<Publisher> findPageable(PublisherFilter filter, Pageable pageable) {
         return publisherRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
@@ -62,18 +71,31 @@ public class PublisherService {
                 pageable);
     }
 
-    public Publisher findById(Long publisherId) throws LibraryStoreBooksException {
-        Publisher publisher = publisherRepository.findById(publisherId).orElse(null);
+    public Publisher findById(Long publisherId) throws NotFoundException {
+        Optional<Publisher> publisher = publisherRepository.findById(publisherId);
 
+        if (publisher == null || !publisher.isPresent()) {
+            throw new NotFoundException(MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " ID: " + publisherId);
+        }
+
+        return publisher.get();
+    }
+
+    public Publisher findByCnpj(String cnpj) throws NotFoundException, LibraryStoreBooksException {
+        if (!FormatUtils.isCNPJ(cnpj)) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_CNPJ_INVALID"));
+        }
+
+        Publisher publisher = publisherRepository.findByCnpj(cnpj);
         if (publisher == null) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " ID: " + publisherId);
+            throw new NotFoundException(MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " CNPJ: " + cnpj);
         }
 
         return publisher;
     }
     
     public List<PublisherDTO> findByName(String name) {
-        return toListDTO(publisherRepository.findByName(name));
+        return publishersToDTOs(publisherRepository.findByName(name));
     }
 
     public PublisherDTO create(Publisher publisher) throws LibraryStoreBooksException {
@@ -81,7 +103,7 @@ public class PublisherService {
             addressService.create(publisher.getAddress());
         }
         
-        return toDTO(save(publisher));
+        return publisherToDTO(save(publisher));
     }
 
     public Publisher save(Publisher publisher) throws LibraryStoreBooksException {
@@ -91,7 +113,36 @@ public class PublisherService {
         return publisherRepository.saveAndFlush(publisher);
     }
 
-    public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws LibraryStoreBooksException {
+    public Publisher checkAndSave(Publisher publisher) throws LibraryStoreBooksException {
+        try {
+            return findByCnpj(publisher.getCnpj());
+        } catch (NotFoundException e) {
+            return save(publisher);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Publisher checkAndSave(PublisherDTO dto) throws LibraryStoreBooksException {
+        try {
+            return findByCnpj(dto.getCnpj());
+        } catch (NotFoundException e) {
+            if(dto == null){
+                return null;
+            }
+            Publisher publisher = Publisher.builder()
+                    .name(dto.getName())
+                    .cnpj(dto.getCnpj())
+                    .foundationDate(dto.getFoundationDate())
+                    .address(addressService.getAddressFromDTO(dto.getAddress()))
+                    .build();
+            return save(publisher);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws LibraryStoreBooksException, NotFoundException {
         Publisher publisherToEdit = findById(publisherId);
         String createBy = publisherToEdit.getCreateBy();
         var createAt = publisherToEdit.getCreateAt();
@@ -102,41 +153,56 @@ public class PublisherService {
         publisherToEdit.setAddress(address);
         publisherToEdit.setCreateAt(createAt);
         publisherToEdit.setCreateBy(createBy);
+        publisherToEdit.setId(publisherId);
         
-        
-        return toDTO(save(publisherToEdit));
+        return publisherToDTO(save(publisherToEdit));
     }
 
-    public void erase(Long publisherId) throws LibraryStoreBooksException {
+    public void delete(Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         Publisher publisherToDelete = findById(publisherId);
+
+        if(publisherToDelete.getAddress() != null){
+            addressService.erase(publisherToDelete.getAddress().getId());
+        }
+
+        List<Book> books = bookRepository.getBooksFromPublisherId(publisherId);
+
+        if (!FormatUtils.isEmpty(books)){
+            for (Book book : books) {
+                bookRepository.delete(book);
+            }
+        }
 
         publisherRepository.delete(publisherToDelete);
     }
 
-    public PublisherDTO toDTO(Publisher publisher) {
-        
+    public PublisherDTO publisherToDTO(Publisher publisher) {
+
+        if (publisher == null) {
+            return null;
+        }
+
         return PublisherDTO.builder()
                 .id(publisher.getId())
                 .name(publisher.getName())
                 .cnpj(publisher.getCnpj())
-                .createDate(publisher.getCreateDate())
+                .foundationDate(publisher.getFoundationDate())
                 .address(addressService.toDTO(publisher.getAddress()))
                 .description(publisher.getDescription())
                 .build();
                 
     }
 
-    public Publisher fromDTO(PublisherDTO dto) throws LibraryStoreBooksException {
-        return Publisher.builder()
-                .name(dto.getName())
-                .cnpj(dto.getCnpj())
-                .createDate(dto.getCreateDate())
-                .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
-                .build();
+    public Publisher publisherFromDTO(PublisherDTO dto) {
+        try {
+            return checkAndSave(dto);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public List<PublisherDTO> toListDTO(List<Publisher> publishers) {
-        return publishers.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public List<PublisherDTO> publishersToDTOs(List<Publisher> publishers) {
+        return publishers.stream().map(b -> publisherToDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
     
 }

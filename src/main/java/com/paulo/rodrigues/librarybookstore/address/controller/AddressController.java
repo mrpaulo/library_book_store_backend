@@ -27,6 +27,8 @@ import com.paulo.rodrigues.librarybookstore.address.model.StateCountry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,8 +54,13 @@ public class AddressController {
     private AddressService addressService;
     
     @GetMapping("/{id}")
-    public ResponseEntity<Address> getById(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException {
+    public ResponseEntity<Address> getById(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(addressService.findById(addressId));
+    }
+
+    @GetMapping("/{name}/name")
+    public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+        return ResponseEntity.ok().body(addressService.findByName(name));
     }
 
     @PostMapping()
@@ -62,12 +69,12 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDetalhes) throws LibraryStoreBooksException {
+    public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDetalhes) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok(addressService.edit(addressId, addressDetalhes));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> delete(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException {
+    public Map<String, Boolean> delete(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
         addressService.erase(addressId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);

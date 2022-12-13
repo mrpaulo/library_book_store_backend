@@ -18,6 +18,8 @@
 package com.paulo.rodrigues.librarybookstore.address.service;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
+import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
@@ -32,9 +34,12 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.transaction.Transactional;
+
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +53,8 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 @Service
 @Transactional
 public class AddressService {
+
+    private ModelMapper modelMapper;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -67,14 +74,21 @@ public class AddressService {
     @Autowired
     private PublisherRepository companyRepository;
 
-    public Address findById(Long addressId) throws LibraryStoreBooksException {
-        Address address = addressRepository.findById(addressId).orElse(null);
+    public Address findById(Long addressId) throws NotFoundException {
+        /*
+       Should be this, but I got a nullPointer on Address - findById - should throw an exception test
+          return addressRepository.findById(addressId)
+               .orElseThrow(
+                        () -> new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId)
+                );
+         */
+        Optional<Address> address = addressRepository.findById(addressId);
 
-        if (address == null) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
+        if (address == null || !address.isPresent()) {
+            throw new NotFoundException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
         }
 
-        return address;
+        return address.get();
     }
 
     public AddressDTO create(Address address) throws LibraryStoreBooksException {
@@ -88,20 +102,21 @@ public class AddressService {
         return addressRepository.saveAndFlush(address);
     }
 
-    public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException {
+    public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException, NotFoundException {
         Address addressToEdit = findById(addressId);
         String createBy = addressToEdit.getCreateBy();
         var createAt = addressToEdit.getCreateAt();
-        
+
         ModelMapper modelMapper = new ModelMapper();
         addressToEdit = modelMapper.map(addressDetail, Address.class);
         addressToEdit.setCreateBy(createBy);
         addressToEdit.setCreateAt(createAt);
-        
+        addressToEdit.setId(addressId);
+
         return toDTO(save(addressToEdit));
     }
 
-    public void erase(Long addressId) throws LibraryStoreBooksException {
+    public void erase(Long addressId) throws LibraryStoreBooksException, NotFoundException {
         Address addressToDelete = findById(addressId);
         
         personRepository.deleteAddressReference(addressId);
@@ -119,7 +134,31 @@ public class AddressService {
                 .fmtAddress(address.formatAddress())
                 .build();
     }
-    
+
+    public Address getAddressFromDTO (AddressDTO dto) {
+        try {
+            return findById(dto.getId());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public City getCityFromDTO (CityDTO dto) {
+        try {
+            return cityRepository.findById(dto.getId()).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Country getCountryFromDTO (CountryDTO dto) {
+        try {
+            return countryRepository.findById(dto.getId()).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public List<Map<String, String>> getETypePublicPlace() {
         return Stream.of(ETypePublicPlace.values()).map(temp -> {
             Map<String, String> obj = new HashMap<>();
@@ -133,20 +172,22 @@ public class AddressService {
         return countryRepository.findAll();
     }
      
-    public List<StateCountry> getAllStates(Long coutryId){
-        Country country = countryRepository.findById(coutryId).orElse(null);
-        if(country == null){
-            return null;
-        }
-        return stateCountryRepository.findByCountry(country);
+    public List<StateCountry> getAllStates(Long countryId){
+        Optional<Country> country = countryRepository.findById(countryId);
+
+        return country.map(value -> stateCountryRepository.findByCountry(value)).orElse(null);
     }
     
-    public List<City> getAllCities(Long coutryId, Long stateId){
-        Country country = countryRepository.findById(coutryId).orElse(null);
+    public List<City> getAllCities(Long countryId, Long stateId){
+        Country country = countryRepository.findById(countryId).orElse(null);
         StateCountry state = stateCountryRepository.findById(stateId).orElse(null);
         if(country == null || state == null){
             return null;
         }
         return cityRepository.findByCountryAndState(country, state);
+    }
+
+    public List<Address> findByName(String name) {
+        return addressRepository.findByName(name);
     }
 }
