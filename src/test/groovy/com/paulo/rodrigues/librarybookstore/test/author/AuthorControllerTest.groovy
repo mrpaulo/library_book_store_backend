@@ -43,7 +43,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "an author object"
         def author = buildAuthor()
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest POST call is performed to create an author"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : author
@@ -61,7 +61,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "an author object with invalid field value"
         def author = buildAuthor(name: null)
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest POST call is performed to create an author"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : author
@@ -79,7 +79,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToGet = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest GET call is performed to get an author by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "the correct 200 status is expected"
@@ -94,7 +94,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "id that I hope not exist"
         def idToGet = idNotExist
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest GET call is performed to get an author by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "throw an Exception"
@@ -110,7 +110,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def idToEdit = getIdCreatedFromTest()
         def author = buildAuthorDTO(description: "test2")
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest PUT call is performed to update an author by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : author
@@ -129,7 +129,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def idToEdit = getIdCreatedFromTest()
         def author = buildAuthorDTO(name: null)
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest PUT call is performed to update an author by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : author
@@ -144,7 +144,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Author - getAll - happy path"() {
-        when: "a rest call is performed to get all authors"
+        when: "a rest GET call is performed to get all authors"
         def response = client.get(path : baseAPI + "/all")
 
         then: "the correct 200 status is expected"
@@ -159,7 +159,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "a author filter"
         def filter = buildAuthorFilter()
 
-        when: "a rest call is performed to get all authors"
+        when: "a rest POST call is performed to get all authors by filter"
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
                 body : filter
@@ -177,7 +177,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "a name to search"
         def nameToSearch = buildAuthor().getName()
 
-        when: "a rest call is performed to get all authors"
+        when: "a rest GET call is performed to get a list of authors by name"
         def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
 
         then: "the correct 200 status is expected"
@@ -192,7 +192,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest DELETE call is performed to delete an author by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "the correct 200 status is expected"
@@ -206,7 +206,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = idNotExist
 
-        when: "a rest call is performed to get an author by id"
+        when: "a rest DELETE call is performed to delete an author by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "throw an Exception"

@@ -38,14 +38,16 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Publisher - create - happy path"() {
-        given: "an publisher object"
+        given: "a check if we already have an object with same name"
         def idToDelete = getIdCreatedFromTest()
         if (idToDelete){
             client.delete(path : baseAPI + "/" + idToDelete)
         }
+
+        and: "a publisher object"
         def publisher = buildPublisher()
 
-        when: "a rest call is performed to get an publisher by id"
+        when: "a rest POST call is performed to create a publisher"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : publisher
@@ -60,10 +62,10 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Publisher - create - should throw an exception"() {
-        given: "an publisher object with invalid field value"
+        given: "a publisher object with invalid field value"
         def publisher = buildPublisher(name: null)
 
-        when: "a rest call is performed to get an publisher by id"
+        when: " a rest POST call is performed to create a publisher"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : publisher
@@ -81,7 +83,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToGet = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an publisher by id"
+        when: "a rest GET call is performed to get a publisher by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "the correct 200 status is expected"
@@ -96,7 +98,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "id that I hope not exist"
         def idToGet = idNotExist
 
-        when: "a rest call is performed to get an publisher by id"
+        when: "a rest GET call is performed to get a publisher by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "throw an Exception"
@@ -108,12 +110,12 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Publisher - update - happy path"() {
-        given: "an id and an publisher object"
+        given: "an id and a publisher object"
         def idToEdit = getIdCreatedFromTest()
         def publisher = buildPublisherDTO(description: "test2")
 
-        when: "a rest call is performed to get an publisher by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
+        when: "a rest PUT call is performed to update a publisher by id"
+        def response = client.put(path : baseAPI + "/" + idToEdit,
                 requestContentType : JSON,
                 body : publisher
         )
@@ -127,11 +129,11 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Publisher - update - should throw an exception"() {
-        given: "an id and an publisher object"
+        given: "an id and a publisher object"
         def idToEdit = getIdCreatedFromTest()
         def publisher = buildPublisherDTO(name: null)
 
-        when: "a rest call is performed to get an publisher by id"
+        when: "a rest PUT call is performed to update a publisher by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : publisher
@@ -146,7 +148,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Publisher - getAll - happy path"() {
-        when: "a rest call is performed to get all publishers"
+        when: "a rest GET call is performed to get all publishers"
         def response = client.get(path : baseAPI + "/all")
 
         then: "the correct 200 status is expected"
@@ -161,7 +163,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "a publisher filter"
         def filter = buildPublisherFilter()
 
-        when: "a rest call is performed to get all publishers"
+        when: "a rest call is performed to get all publishers by a filter"
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
                 body : filter
@@ -179,7 +181,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "a name to search"
         def nameToSearch = buildPublisher().getName()
 
-        when: "a rest call is performed to get all publishers"
+        when: "a rest call is performed to get a publishers by name"
         def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
 
         then: "the correct 200 status is expected"
@@ -194,7 +196,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an publisher by id"
+        when: "a rest call is performed to delete a publisher by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "the correct 200 status is expected"
@@ -208,7 +210,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = idNotExist
 
-        when: "a rest call is performed to get an publisher by id"
+        when: "a rest call is performed to delete a publisher by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "throw an Exception"

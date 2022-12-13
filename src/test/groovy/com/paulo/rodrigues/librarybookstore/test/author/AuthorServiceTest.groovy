@@ -22,9 +22,11 @@
 
 package com.paulo.rodrigues.librarybookstore.test.author
 
+import com.google.common.collect.Sets
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService
 import com.paulo.rodrigues.librarybookstore.author.service.AuthorService
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository
+import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
@@ -42,6 +44,7 @@ class AuthorServiceTest extends Specification {
         service = new AuthorService()
         service.authorRepository = Mock(AuthorRepository)
         service.addressService = Mock(AddressService)
+        service.bookRepository = Mock(BookRepository)
 
     }
 
@@ -250,7 +253,6 @@ class AuthorServiceTest extends Specification {
         response.size() == 1
     }
 
-    //To DO
     def "Author - authorsFromDTOs - happy path"() {
         given:
         def author = buildAuthorsDTO()
@@ -262,67 +264,64 @@ class AuthorServiceTest extends Specification {
         response.size() == 1
     }
 
-    //To DO
     def "Author - saveBookAuthorDTO - happy path"() {
         given:
-        def author = buildAuthorDTO()
-        service.addressService.findById(_) >> buildAddress()
-        service.addressService.getCityFromDTO(_) >> buildCity()
-        service.addressService.getCountryFromDTO(_) >> buildCountry()
-
+        def book = buildBook()
+        def authorDTO = buildAuthorDTO()
+        service.authorRepository.findById(_) >> Optional.of(buildAuthor())
+        service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
 
         when:
-        def response = service.authorFromDTO(author)
+        service.saveBookAuthorDTO(book, authorDTO)
 
         then:
-        response.getName() == buildAuthor().getName()
+        1 * service.authorRepository.saveAndFlush(_)
     }
 
-    //To DO
     def "Author - saveBookAuthor - happy path"() {
         given:
-        def author = buildAuthorDTO()
-        service.addressService.findById(_) >> buildAddress()
-        service.addressService.getCityFromDTO(_) >> buildCity()
-        service.addressService.getCountryFromDTO(_) >> buildCountry()
+        def book = buildBook()
+        def author = buildAuthor()
+        service.authorRepository.findById(_) >> Optional.of(buildAuthor())
+        service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
 
 
         when:
-        def response = service.authorFromDTO(author)
+        service.saveBookAuthor(book, author)
 
         then:
-        response.getName() == buildAuthor().getName()
+        1 * service.authorRepository.saveAndFlush(_)
     }
 
-    //To DO
     def "Author - saveBookAuthorsFromDTOs - happy path"() {
         given:
-        def author = buildAuthorDTO()
-        service.addressService.findById(_) >> buildAddress()
-        service.addressService.getCityFromDTO(_) >> buildCity()
-        service.addressService.getCountryFromDTO(_) >> buildCountry()
+        def book = buildBook()
+        def authorsDTO = buildAuthorsDTO()
+        service.authorRepository.findById(_) >> Optional.of(buildAuthor())
+        service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
 
 
         when:
-        def response = service.authorFromDTO(author)
+        def response = service.saveBookAuthorsFromDTOs(book, authorsDTO)
 
         then:
-        response.getName() == buildAuthor().getName()
+        response.size() == 1
+
+        and:
+        1 * service.authorRepository.saveAndFlush(_)
     }
 
-    //To DO
     def "Author - saveAuthors - happy path"() {
         given:
-        def author = buildAuthorDTO()
-        service.addressService.findById(_) >> buildAddress()
-        service.addressService.getCityFromDTO(_) >> buildCity()
-        service.addressService.getCountryFromDTO(_) >> buildCountry()
+        def authors = Sets.newHashSet(buildAuthors())
+        service.authorRepository.findById(_) >> Optional.of(buildAuthor())
+        service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
 
 
         when:
-        def response = service.authorFromDTO(author)
+        def response = service.saveAuthors(authors)
 
         then:
-        response.getName() == buildAuthor().getName()
+        response.size() == 1
     }
 }

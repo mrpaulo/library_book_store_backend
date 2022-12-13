@@ -21,6 +21,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.test
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO
 import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO
 import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO
@@ -46,9 +47,16 @@ import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.DateUtils
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult
+import groovy.json.JsonOutput
+import groovy.json.JsonParserType
+import groovy.json.JsonSlurper
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
+
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 class ObjectMother extends Specification {
@@ -57,6 +65,13 @@ class ObjectMother extends Specification {
     Generic
     */
     static def nameForTest = "GroovySpockTest_gfkgjoemf48"
+
+
+    def static slurper = new JsonSlurper()
+
+    def static toJson(object) {
+        new ObjectMapper().writeValueAsString(object)
+    }
 
     static <T> T applyProperties(props, T object) {
         if (props) {
@@ -77,6 +92,10 @@ class ObjectMother extends Specification {
                 .toString()
     }
 
+    /*TODO: Add dates to objectMother
+       Current when I try to set a date I got this error:
+       HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `java.util.Date` from Object value (token `JsonToken.START_OBJECT`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.util.Date` from Object value (token `JsonToken.START_OBJECT`)<EOL>
+    */
     static buildPastDate () {
         return DateUtils.getDateEnFormat("2022-10-30T00:00:00.000+00:00")
     }
@@ -344,7 +363,7 @@ class ObjectMother extends Specification {
                 id: genericId,
                 name: nameForTest,
                 cnpj: cnpjToTest,
-                //foundationDate: "test@test.com",
+                //foundationDate: buildPastDate(),
                 address: buildAddress(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))
@@ -358,7 +377,6 @@ class ObjectMother extends Specification {
         applyProperties(props, new PublisherDTO(
                 id: genericId,
                 name: nameForTest,
-                //birthdate: buildPastDate(),
                 cnpj: cnpjToTest,
                 //foundationDate: "test@test.com",
                 address: buildAddressDTO(),

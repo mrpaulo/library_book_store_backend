@@ -38,10 +38,10 @@ class BookControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Book - create - happy path"() {
-        given: "an book object"
+        given: "a book object"
         def book = buildBookDTO()
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest POST call is performed to create a book"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : book
@@ -56,10 +56,10 @@ class BookControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Book - create - should throw an exception"() {
-        given: "an book object with invalid field value"
+        given: "a book object with invalid field value"
         def book = buildBook(title: null)
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest POST call is performed to create a book"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : book
@@ -77,7 +77,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToGet = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest GET call is performed to get a book by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "the correct 200 status is expected"
@@ -92,7 +92,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         given: "id that I hope not exist"
         def idToGet = idNotExist
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest GET call is performed to get a book by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
 
         then: "throw an Exception"
@@ -104,11 +104,11 @@ class BookControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Book - update - happy path"() {
-        given: "an id and an book object"
+        given: "an id and a book object"
         def idToEdit = getIdCreatedFromTest()
         def book = buildBookDTO(id: idToEdit, review: "test2")
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest PUT call is performed to update a book by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : book
@@ -123,11 +123,11 @@ class BookControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Book - update - should throw an exception"() {
-        given: "an id and an book object"
+        given: "an id and a book object"
         def idToEdit = getIdCreatedFromTest()
         def book = buildBookDTO(title: null)
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest PUT call is performed to update a book by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : book
@@ -142,7 +142,7 @@ class BookControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Book - getAll - happy path"() {
-        when: "a rest call is performed to get all books"
+        when: "a rest GET call is performed to get all books"
         def response = client.get(path : baseAPI + "/all")
 
         then: "the correct 200 status is expected"
@@ -157,7 +157,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         given: "a book filter"
         def filter = buildBookFilter()
 
-        when: "a rest call is performed to get all books"
+        when: "a rest POST call is performed to get a list of books by filter"
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
                 body : filter
@@ -175,7 +175,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest DELETE call is performed to delete a book by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "the correct 200 status is expected"
@@ -189,7 +189,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = idNotExist
 
-        when: "a rest call is performed to get an book by id"
+        when: "a rest DELETE call is performed to delete a book by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "throw an Exception"

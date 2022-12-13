@@ -41,7 +41,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         given: "an address object"
         def address = buildAddress()
 
-        when: "a rest call is performed to get an address by id"
+        when: "a rest POST call is performed to create an address"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : address
@@ -59,7 +59,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         given: "an address object with invalid field value"
         def address = buildAddress(name: null)
 
-        when: "a rest call is performed to get an address by id"
+        when: "a rest POST call is performed to create an address"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
                 body : address
@@ -108,7 +108,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def idToEdit = getIdCreatedFromTest()
         def address = buildAddressDTO(coordination: "test2")
 
-        when: "a rest call is performed to get an address by id"
+        when: "a rest PUT call is performed to update an address by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : address
@@ -127,7 +127,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def idToEdit = getIdCreatedFromTest()
         def address = buildAddressDTO(name: null)
 
-        when: "a rest call is performed to get an address by id"
+        when: "a rest PUT call is performed to update an address by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
                 body : address
@@ -145,7 +145,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = getIdCreatedFromTest()
 
-        when: "a rest call is performed to get an address by id"
+        when: "a rest DELETE call is performed to delete an address by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "the correct 200 status is expected"
@@ -159,7 +159,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         given: "id just created on method create"
         def idToDelete = idNotExist
 
-        when: "a rest call is performed to get an address by id"
+        when: "a rest DELETE call is performed to delete an address by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
 
         then: "throw an Exception"
@@ -171,7 +171,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllCountries - happy path"() {
-        when: "a rest call is performed to get a list of countries"
+        when: "a rest GET call is performed to get a list of countries"
         def response = client.get(path : baseAPI + "/countries")
 
         then: "the correct status is expected"
@@ -183,7 +183,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllStates - happy path"() {
-        when: "a rest call is performed to get all states given a country with id 1"
+        when: "a rest GET call is performed to get all states given a country with id 1"
         def response = client.get(path : baseAPI + "/1/states")
 
         then: "the correct status is expected"
@@ -195,7 +195,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllStates - should throw an exception given an invalid input"() {
-        when: "a rest call is performed with an invalid abc input"
+        when: "a rest GET call is performed with an invalid abc input"
         def response = client.get(path : baseAPI + "/abc/states")
 
         then: "throw an Exception"
@@ -207,7 +207,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllCities - happy path"() {
-        when: "a rest call is performed to get all cities given a country 1 and state 1"
+        when: "a rest GET call is performed to get all cities given a country 1 and state 1"
         def response = client.get(path : baseAPI + "/1/1/cities")
 
         then: "the correct status is expected"
@@ -219,7 +219,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllCities - should throw an exception given an invalid input"() {
-        when: "a rest call is performed with an invalid abc input"
+        when: "a rest GET call is performed with an invalid abc input"
         def response = client.get(path : baseAPI + "1/abc/cities")
 
         then: "throw an Exception"
@@ -231,7 +231,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getETypePublicPlace - happy path"() {
-        when: "a rest call is performed to get all types of public place enum"
+        when: "a rest GET call is performed to get all types of public place enum"
         def response = client.get(path : baseAPI + "/logradouros")
 
         then: "the correct status is expected"

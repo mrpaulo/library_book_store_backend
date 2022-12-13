@@ -23,6 +23,8 @@ package com.paulo.rodrigues.librarybookstore.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.paulo.rodrigues.librarybookstore.LibraryBookStoreApplication
+import groovy.json.JsonOutput
+import groovy.json.JsonParserType
 import groovy.sql.Sql
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -73,12 +75,8 @@ abstract class AbstractLBSSpecification extends Specification {
         client = new RESTClient("http://localhost:${port}")        
         client.headers['Authorization'] = "Basic ${"$username:$password".bytes.encodeBase64()}"
     }
-    
-    def slurper = new JsonSlurper()
 
-    def toJson(object) {
-        new ObjectMapper().writeValueAsString(object)
-    }
+
 
     def createUser() {
         Map dbConnParams = [
