@@ -18,6 +18,8 @@
 package com.paulo.rodrigues.librarybookstore.publisher.dto;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
+
+import java.time.LocalDate;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +40,6 @@ public class PublisherDTO {
     private String name;
     private String cnpj;
     private AddressDTO address;
-    private Date foundationDate;
+    private LocalDate foundationDate;
     private String description; 
 }

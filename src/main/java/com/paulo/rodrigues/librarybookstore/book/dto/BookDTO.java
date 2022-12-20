@@ -23,6 +23,8 @@ import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.book.enums.EBookCondition;
 import com.paulo.rodrigues.librarybookstore.book.enums.EBookFormat;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -52,7 +54,7 @@ public class BookDTO {
     private EBookFormat format;
     private EBookCondition condition;
     private int edition;
-    private Date publishDate;   
+    private LocalDate publishDate;
     private Double rating;    
     private int length;
 }

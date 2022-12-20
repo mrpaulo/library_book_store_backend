@@ -26,6 +26,7 @@ import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.*;
@@ -104,8 +105,7 @@ public class Book implements Serializable {
     @Enumerated(EnumType.STRING)
     private EBookCondition condition;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date publishDate;
+    private LocalDate publishDate;
 
     private int edition;
     private Double rating;

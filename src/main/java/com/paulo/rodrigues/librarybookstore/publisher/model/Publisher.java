@@ -25,6 +25,7 @@ import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -71,8 +72,7 @@ public class Publisher implements Serializable {
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "ADDRESS_PUBLISHER"))
     private Address address;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date foundationDate;
+    private LocalDate foundationDate;
     
     @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
     private String description;

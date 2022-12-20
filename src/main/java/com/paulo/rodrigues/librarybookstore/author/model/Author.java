@@ -27,6 +27,7 @@ import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.*;
@@ -60,9 +61,8 @@ public class Author implements Serializable {
     @NotNull
     @Column(length = ConstantsUtil.MAX_SIZE_NAME)
     private String name;
-    
-    @Temporal(TemporalType.DATE)
-    private Date birthdate;
+
+    private LocalDate birthdate;
     
     @Column(length = 1)
     private String sex;

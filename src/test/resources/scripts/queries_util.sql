@@ -1,3 +1,5 @@
+
+
 --selects
 select * from address a;
 
@@ -28,17 +30,41 @@ select * from state_country sc;
 select * from user_role ur;
 
 --select from test2_library_book_store
-select * from book b where title = 'GroovySpockTest'
-select * from author au where name = 'GroovySpockTest'
-select * from address a where name = 'GroovySpockTest'
-select * from publisher p where name = 'GroovySpockTest'
+select * from book b where title = 'GroovySpockTest_gfkgjoemf48';
+select * from author au where name = 'GroovySpockTest_gfkgjoemf48';
+select * from address a where name = 'GroovySpockTest_gfkgjoemf48';
+select * from publisher p where name = 'GroovySpockTest_gfkgjoemf48';
 
-delete from author where name = 'GroovySpockTest'
-delete from address where name = 'GroovySpockTest'
+delete from author where name = 'GroovySpockTest_gfkgjoemf48';
+delete from address where name = 'GroovySpockTest_gfkgjoemf48';
 
 --selects join
-select * from book b 
-join publisher p on p.id = b.publisher_id 
-where p.cnpj = '77072141000144'
+select * from book b
+join publisher p on p.id = b.publisher_id
+where p.cnpj = '77072141000144';
+
+update publisher set description = 'test' where id = 21;
+
+delete from author_books where books_id in (47,46);
+delete from book where id in (47,46);
 
 
+select a.name, p."name", b.title, b.*
+from book b
+join publisher p on p.id = b.publisher_id
+join author_books ab ON ab.books_id = b.id
+join author a on ab.author_id = a.id
+order by a.name;
+
+
+  SELECT b.id   , b.title   , b.subtitle   , b.language_id  , b.publisher_id  , b.subject_id  , b.review  , b.link  , b.format  , b.condition  , b.edition  , b.publish_date  , b.rating  , b.length
+  FROM BOOK b
+  LEFT JOIN  PUBLISHER pu ON pu.id = b.publisher_id
+  join author_books ab ON ab.books_id = b.id
+  join author a on ab.author_id = a.id
+  WHERE 1 = 1
+  AND LOWER(a.name) like LOWER(CONCAT('%ana%'));
+
+delete from lbs_user where id = 99999
+
+DROP TABLE IF EXISTS person;

@@ -33,7 +33,6 @@ import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -221,7 +220,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                                 .format(b[8] != null ? EBookFormat.valueOf((String) b[8]) : null)
                                 .condition(b[9] != null ? EBookCondition.valueOf((String) b[9]) : null)
                                 .edition(b[10] != null ? (Integer) b[10] : null)
-                                .publishDate(b[11] != null ? (Date) b[11] : null)
+                                .publishDate(b[11] != null ? ((java.sql.Date) b[11]).toLocalDate() : null)
                                 .rating(b[12] != null ? (Double) b[12] : null)
                                 .length((b[13] != null ? (Integer) b[13] : null))
                                 .authors(getListAuthorsDTOByBookId(((BigInteger) b[0]).longValue()))
@@ -254,7 +253,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                                 .format(b[8] != null ? EBookFormat.valueOf((String) b[8]) : null)
                                 .condition(b[9] != null ? EBookCondition.valueOf((String) b[9]) : null)
                                 .edition(b[10] != null ? (Integer) b[10] : null)
-                                .publishDate(b[11] != null ? (Date) b[11] : null)
+                                .publishDate(b[11] != null ? ((java.sql.Date) b[11]).toLocalDate() : null)
                                 .rating(b[12] != null ? (Double) b[12] : null)
                                 .length((b[13] != null ? (Integer) b[13] : null))
                                 .authors(getListAuthorsByBookId(((BigInteger) b[0]).longValue()))
@@ -331,7 +330,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             authors.add(AuthorDTO.builder()
                     .id(((BigInteger) b[0]).longValue())
                     .name((String) b[1])
-                    .birthdate(b[2] != null ? (Date) b[2] : null)
+                    .birthdate(b[2] != null ? ((java.sql.Date) b[2]).toLocalDate() : null)
                     .sex(b[3] != null ? (String) b[3] : null)
                     .email(b[4] != null ? (String) b[4] : null)
                     .description(b[5] != null ? (String) b[5] : null)
@@ -350,7 +349,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             authors.add(Author.builder()
                     .id(((BigInteger) b[0]).longValue())
                     .name((String) b[1])
-                    .birthdate(b[2] != null ? (Date) b[2] : null)
+                    .birthdate(b[2] != null ? ((java.sql.Date) b[2]).toLocalDate() : null)
                     .sex(b[3] != null ? (String) b[3] : null)
                     .email(b[4] != null ? (String) b[4] : null)
                     .build());
@@ -391,7 +390,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                     publishers.add(Publisher.builder()
                         .id(((BigInteger) b[0]).longValue())
                         .name((String) b[1])
-                        .foundationDate(b[2] != null ? (Date) b[2] : null)
+                        .foundationDate(b[2] != null ? ((java.sql.Date) b[2]).toLocalDate() : null)
                         .cnpj(b[3] != null ? (String) b[3] : null)
                         .description(b[4] != null ? (String) b[4] : null)
                         .build()));
@@ -405,7 +404,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                 publishers.add(PublisherDTO.builder()
                         .id(((BigInteger) b[0]).longValue())
                         .name((String) b[1])
-                        .foundationDate(b[2] != null ? (Date) b[2] : null)
+                        .foundationDate(b[2] != null ? ((java.sql.Date) b[2]).toLocalDate() : null)
                         .cnpj(b[3] != null ? (String) b[3] : null)
                         .description(b[4] != null ? (String) b[4] : null)
                         .build()));

@@ -24,6 +24,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.annotation.PostConstruct;
+import java.util.Date;
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableJpaRepositories(enableDefaultTransactions=false)
 @EnableAutoConfiguration
@@ -33,8 +37,15 @@ public class LibraryBookStoreApplication {
 		SpringApplication.run(LibraryBookStoreApplication.class, args);
 	}
 
-        @Bean
+	@Bean
 	public ModelMapper modelMapper() {
 	    return new ModelMapper();
+	}
+
+	@PostConstruct
+	public void init(){
+		// Setting Spring Boot SetTimeZone
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT-3:00"));
+		System.out.println("Starting Date in GMT: " + new Date());
 	}
 }

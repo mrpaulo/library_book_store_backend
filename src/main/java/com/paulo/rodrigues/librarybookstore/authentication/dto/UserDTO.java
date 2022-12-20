@@ -17,6 +17,8 @@
 package com.paulo.rodrigues.librarybookstore.authentication.dto;
 
 import com.paulo.rodrigues.librarybookstore.authentication.model.Role;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -38,7 +40,7 @@ public class UserDTO {
     private String name;    
     private String username;    
     private String cpf;    
-    private Date birthdate;
+    private LocalDate birthdate;
     private String sex;
     private String email;
     private List<Role> roles;

@@ -22,6 +22,8 @@ import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
@@ -70,8 +72,7 @@ public class User {
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "ADDRESS_USER"))
     private Address address;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date birthdate;
+    private LocalDate birthdate;
     
     @Column(length = 1)
     private String sex;

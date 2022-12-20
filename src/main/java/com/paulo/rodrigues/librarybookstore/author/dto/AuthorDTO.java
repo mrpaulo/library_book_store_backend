@@ -22,6 +22,8 @@ import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.StateDTO;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -40,7 +42,7 @@ import lombok.NoArgsConstructor;
 public class AuthorDTO {
     private long id;
     private String name;    
-    private Date birthdate;
+    private LocalDate birthdate;
     private String sex;
     private String email;
     private CityDTO birthCity;
@@ -49,22 +51,4 @@ public class AuthorDTO {
     private AddressDTO address;  
     private String description;
 
-    public AuthorDTO(long id, String name, Date birthdate, String sex, String email, String description) {
-        this.id = id;
-        this.name = name;        
-        this.birthdate = birthdate;
-        this.sex = sex;
-        this.email = email;
-        this.description = description;
-    }
-    
-    public AuthorDTO(Author p) {
-        this.id = p.getId();
-        this.name = p.getName();        
-        this.birthdate = p.getBirthdate();
-        this.sex = p.getSex();
-        this.email = p.getEmail();        
-    }
-    
-    
 }
