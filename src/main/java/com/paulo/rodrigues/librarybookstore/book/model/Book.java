@@ -111,6 +111,8 @@ public class Book implements Serializable {
     private Double rating;
     private int length;
 
+    private boolean adultsOnly;
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;
     private String createBy;

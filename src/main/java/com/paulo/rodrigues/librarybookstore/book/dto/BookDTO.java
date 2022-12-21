@@ -57,4 +57,6 @@ public class BookDTO {
     private LocalDate publishDate;
     private Double rating;    
     private int length;
+
+    private boolean adultsOnly;
 }

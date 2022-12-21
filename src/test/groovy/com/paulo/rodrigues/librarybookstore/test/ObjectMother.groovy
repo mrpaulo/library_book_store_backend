@@ -45,19 +45,13 @@ import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
-import com.paulo.rodrigues.librarybookstore.utils.DateUtils
 import com.paulo.rodrigues.librarybookstore.utils.PagedResult
-import groovy.json.JsonOutput
-import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
 
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-
+import java.time.LocalDate
 
 class ObjectMother extends Specification {
 
@@ -97,7 +91,7 @@ class ObjectMother extends Specification {
        HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `java.util.Date` from Object value (token `JsonToken.START_OBJECT`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.util.Date` from Object value (token `JsonToken.START_OBJECT`)<EOL>
     */
     static buildPastDate () {
-        return DateUtils.getDateEnFormat("2022-10-30T00:00:00.000+00:00")
+        return LocalDate.of(1999, 12, 31);
     }
 
     static buildPageable () {
@@ -258,6 +252,7 @@ class ObjectMother extends Specification {
                 author: '',
                 publisher: '',
                 subjectName: '',
+                adultsOnly: null
                 //publishDate: buildPastDate()
 
         ))
@@ -287,7 +282,8 @@ class ObjectMother extends Specification {
                 length: 100,
                 edition: 1,
                 rating: 5.0,
-                review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+                review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT),
+                adultsOnly: false
         ))
     }
 
@@ -309,7 +305,8 @@ class ObjectMother extends Specification {
                 length: 100,
                 edition: 1,
                 rating: 5.0,
-                review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+                review: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT),
+                adultsOnly: false
         ))
     }
 

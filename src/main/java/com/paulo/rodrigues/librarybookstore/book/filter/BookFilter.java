@@ -39,4 +39,6 @@ public class BookFilter extends PageableFilter {
     private String publisher;
     private String subjectName;
     private Date publishDate;
+
+    private Boolean adultsOnly;
 }

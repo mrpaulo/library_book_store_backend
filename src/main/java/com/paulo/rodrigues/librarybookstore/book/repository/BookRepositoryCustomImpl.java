@@ -145,6 +145,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         sql.append(" , b.publish_date ");
         sql.append(" , b.rating ");
         sql.append(" , b.length ");
+        sql.append(" , b.adults_only ");
         sql.append(" FROM BOOK b  ");
         sql.append(" LEFT JOIN PUBLISHER pu ON pu.id = b.publisher_id ");
         sql.append(" LEFT JOIN author_books ab ON ab.books_id = b.id ");
@@ -175,6 +176,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         if (filter.getStartDate() != null && filter.getFinalDate() != null) {
             sql.append(" AND b.publish_date BETWEEN :startDate AND :finalDate ");
         }
+        if (filter.getAdultsOnly() != null) {
+            sql.append(" AND b.adults_only = :adultsOnly");
+        }
         return sql;
     }
 
@@ -198,6 +202,9 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         if (filter.getStartDate() != null && filter.getFinalDate() != null) {
            query.setParameter("startDate", filter.getStartDate());
            query.setParameter("finalDate", filter.getFinalDate());
+        }
+        if (filter.getAdultsOnly() != null) {
+            query.setParameter("adultsOnly", filter.getAdultsOnly());
         }
         return query;
     }
@@ -223,6 +230,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                                 .publishDate(b[11] != null ? ((java.sql.Date) b[11]).toLocalDate() : null)
                                 .rating(b[12] != null ? (Double) b[12] : null)
                                 .length((b[13] != null ? (Integer) b[13] : null))
+                                .adultsOnly((Boolean) b[14])
                                 .authors(getListAuthorsDTOByBookId(((BigInteger) b[0]).longValue()))
                                 .build());
             } catch (LibraryStoreBooksException ex) {
@@ -256,6 +264,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                                 .publishDate(b[11] != null ? ((java.sql.Date) b[11]).toLocalDate() : null)
                                 .rating(b[12] != null ? (Double) b[12] : null)
                                 .length((b[13] != null ? (Integer) b[13] : null))
+                                .adultsOnly((Boolean) b[14])
                                 .authors(getListAuthorsByBookId(((BigInteger) b[0]).longValue()))
                                 .build());
             } catch (LibraryStoreBooksException ex) {
@@ -451,7 +460,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         try {
 
             StringBuilder sql = new StringBuilder();
-            BookFilter filter = new BookFilter(null, authorName, null, null, null);
+            BookFilter filter = new BookFilter(null, authorName, null, null, null, null);
             sql.append(getSqlQuery(filter));
 
             Query query = em.createNativeQuery(sql.toString());
