@@ -40,6 +40,7 @@ import java.util.stream.Stream;
 import javax.transaction.Transactional;
 
 import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,9 +53,8 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
  */
 @Service
 @Transactional
+@Log4j2
 public class AddressService {
-
-    private ModelMapper modelMapper;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -82,23 +82,24 @@ public class AddressService {
                         () -> new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId)
                 );
          */
+        log.info("Finding address by addressId={}", addressId);
         Optional<Address> address = addressRepository.findById(addressId);
-
         if (address == null || !address.isPresent()) {
+            log.error("Address not found by addressId={}", addressId);
             throw new NotFoundException(MessageUtil.getMessage("ADDRESS_NOT_FOUND") + " ID: " + addressId);
         }
-
         return address.get();
     }
 
     public AddressDTO create(Address address) throws LibraryStoreBooksException {
+        log.info("Creating address name={}", address.getName());
         return toDTO(save(address));
     }
 
     public Address save(Address address) throws LibraryStoreBooksException {
         address.addressValidation();
         address.persistAt();
-
+        log.info("Saving address={}", address);
         return addressRepository.saveAndFlush(address);
     }
 
@@ -106,19 +107,18 @@ public class AddressService {
         Address addressToEdit = findById(addressId);
         String createBy = addressToEdit.getCreateBy();
         var createAt = addressToEdit.getCreateAt();
-
         ModelMapper modelMapper = new ModelMapper();
         addressToEdit = modelMapper.map(addressDetail, Address.class);
         addressToEdit.setCreateBy(createBy);
         addressToEdit.setCreateAt(createAt);
         addressToEdit.setId(addressId);
-
+        log.info("Updating address id={}, name={}", addressId, addressToEdit.getName());
         return toDTO(save(addressToEdit));
     }
 
-    public void erase(Long addressId) throws LibraryStoreBooksException, NotFoundException {
+    public void erase(Long addressId) throws NotFoundException {
         Address addressToDelete = findById(addressId);
-        
+        log.info("Deleting address id={}, name={}", addressId, addressToDelete.getName());
         personRepository.deleteAddressReference(addressId);
         companyRepository.deleteAddressReference(addressId);
         addressRepository.delete(addressToDelete);
@@ -128,7 +128,6 @@ public class AddressService {
         if (address == null) {
             return null;
         }
-
         return AddressDTO.builder()
                 .id(address.getId())
                 .fmtAddress(address.formatAddress())
@@ -139,6 +138,7 @@ public class AddressService {
         try {
             return findById(dto.getId());
         } catch (Exception e) {
+            log.error("Exception getAddressFromDTO addressDTO={}, message={}", dto, e.getMessage());
             return null;
         }
     }
@@ -147,6 +147,7 @@ public class AddressService {
         try {
             return cityRepository.findById(dto.getId()).get();
         } catch (Exception e) {
+            log.error("Exception getCityFromDTO CityDTO={}, message={}", dto, e.getMessage());
             return null;
         }
     }
@@ -155,6 +156,7 @@ public class AddressService {
         try {
             return countryRepository.findById(dto.getId()).get();
         } catch (Exception e) {
+            log.error("Exception getCountryFromDTO CountryDTO={}, message={}", dto, e.getMessage());
             return null;
         }
     }
@@ -174,7 +176,6 @@ public class AddressService {
      
     public List<StateCountry> getAllStates(Long countryId){
         Optional<Country> country = countryRepository.findById(countryId);
-
         return country.map(value -> stateCountryRepository.findByCountry(value)).orElse(null);
     }
     

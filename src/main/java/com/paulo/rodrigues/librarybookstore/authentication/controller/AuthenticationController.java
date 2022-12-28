@@ -21,6 +21,8 @@ import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,8 +51,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/authentications")
+@Log4j2
 public class AuthenticationController {
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -62,21 +65,19 @@ public class AuthenticationController {
     
     @GetMapping("/logout")
     public boolean logout(HttpServletRequest request) {
-                
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null) {
             String tokenValue = authHeader.replace("Bearer", "").trim();
-            System.out.println("Logout");
-            System.out.println(tokenValue);
+            log.info("Logout token={}", tokenValue);
             tokenServices.revokeToken(tokenValue);
         }
-        
         return true;
     }
     
     @Secured({Login.ROLE_ADMIN})    
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User user){
+        log.info("Saving id={}, userName={}", user.getId(), user.getName());
         user = this.userRepository.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -84,6 +85,7 @@ public class AuthenticationController {
     @Secured({Login.ROLE_ADMIN})
     @PutMapping("/edit")
     public ResponseEntity<User> edit(@RequestBody User user){
+        log.info("Updating id={}, user={}", user.getId(), user.getName());
         user = this.userRepository.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -92,8 +94,7 @@ public class AuthenticationController {
     @GetMapping("/users")
     public ResponseEntity<Page<User>> list(
             @RequestParam("page") int page,
-            @RequestParam("size") int size
-    ){
+            @RequestParam("size") int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
         return new ResponseEntity<>(userRepository.findAll(pageable), HttpStatus.OK);
     }

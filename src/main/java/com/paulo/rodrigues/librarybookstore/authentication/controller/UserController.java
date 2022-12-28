@@ -63,16 +63,14 @@ public class UserController {
     @GetMapping("/all")
     public List<UserDTO> getAll() {
         List<UserDTO> usersList = userService.findAll();
-
         return usersList.stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
     }
 
     @PostMapping("/fetch")
     public List<UserDTO> getAllPageble(@RequestBody UserFilter filter, HttpServletRequest req, HttpServletResponse res) {
         Pageable pageable = FormatUtils.getPageRequest(filter);
-        Page<User> result = userService.findPageble(filter, pageable);
+        Page<User> result = userService.findPageable(filter, pageable);
         res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
-
         return userService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
     }
 
@@ -98,17 +96,15 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public Map<String, Long> delete(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException {
-        userService.erase(userId);
+        userService.delete(userId);
         Map<String, Long> response = new HashMap<>();
         response.put("id", userId);
-
         return response;
     }
 
     @PostMapping("/update")
     public ResponseEntity<String> changeUserPassword(@RequestBody UpdatePassword updatePassword) throws LibraryStoreBooksException {
         userService.changeUserPassword(updatePassword);
-
         return ResponseEntity.status(HttpStatus.OK).body("Updated");
     }
 

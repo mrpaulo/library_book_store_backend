@@ -40,6 +40,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.transaction.Transactional;
+
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,8 +52,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Transactional
+@Log4j2
 public class BookService {
-
+  
     private final ModelMapper modelMapper;
     private final BookRepository bookRepository;
     private final AuthorService authorService;
@@ -75,7 +78,6 @@ public class BookService {
 
     public List<BookDTO> findAll() {
         List<Book> books = bookRepository.findAll();
-
         return booksToDTOs(books);
     }
 
@@ -84,15 +86,13 @@ public class BookService {
     }
 
     public Book findById(Long bookId) throws NotFoundException, LibraryStoreBooksException {
-
+        log.info("Finding book by bookId={}", bookId);
         Optional<Book> book = bookRepository.findById(bookId);
         if (book == null || !book.isPresent()) {
+            log.info("Book not found by bookId={}", bookId);
             throw new NotFoundException(MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + bookId);
         }
-
-
         book.get().setAuthors(new HashSet<>(authorService.authorsFromDTOs(getAuthorsDTOByBookId(bookId))));
-
         return book.get();
     }
 
@@ -100,7 +100,7 @@ public class BookService {
         Book book = bookFromDTO(dto);
         book = save(book);
         saveBookAuthor(book);
-
+        log.info("Creating book title={}", book.getTitle());
         return bookToDTO(book);
     }
 
@@ -108,29 +108,25 @@ public class BookService {
         book.validation();
         book.persistAt();
         book = checkAndSaveReference(book);
-
+        log.info("Saving book={}", book);
         return bookRepository.saveAndFlush(book);
     }
 
     public Book checkAndSaveReference(Book book) throws LibraryStoreBooksException {
-
         Set<Author> authors = authorService.saveAuthors(book.getAuthors());
         if(!FormatUtils.isEmpty(authors)){
             book.setAuthors(authors);
         }
-
         Publisher publisher = publisherService.checkAndSave(book.getPublisher());
         if(publisher != null){
             book.setPublisher(publisher);
         }
-
         return book;
     }
 
     public BookDTO edit(Long bookId, BookDTO bookDetail) throws NotFoundException, LibraryStoreBooksException {
         Book bookToEdit = findById(bookId);
         String createBy = bookToEdit.getCreateBy();
-        
         bookToEdit = modelMapper.map(bookDetail, Book.class);
         bookToEdit.setAuthors(authorService.saveBookAuthorsFromDTOs(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
@@ -138,7 +134,7 @@ public class BookService {
         bookToEdit.setPublisher(publisherService.publisherFromDTO(bookDetail.getPublisher()));
         bookToEdit.setCreateBy(createBy);
         bookToEdit.setId(bookId);
-        
+        log.info("Updating book id={}, title={}", bookId, bookToEdit.getTitle());
         return bookToDTO(save(bookToEdit));
     }
 
@@ -148,16 +144,14 @@ public class BookService {
                 .forEach(author -> {
                     bookRepository.deleteBookAuthor(author.getId(), bookToErase.getId());
                 });
-
+        log.info("Deleting book id={}, title={}", bookId, bookToErase.getTitle());
         bookRepository.delete(bookToErase);
     }
 
     public BookDTO bookToDTO(Book book) {
-
         if(book == null){
             return new BookDTO();
         }
-
         return BookDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())

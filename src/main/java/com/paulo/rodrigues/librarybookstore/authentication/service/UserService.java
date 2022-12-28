@@ -34,6 +34,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
+
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,9 +49,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Transactional
+@Log4j2
 public class UserService {
-
-    private ModelMapper modelMapper;
 
     @Autowired
     UserRepository userRepository;
@@ -63,14 +64,11 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    CustomUserDetailsService customUserDetailsService;
-
     public List<UserDTO> findAll() {
         return toListDTO(userRepository.findAll());
     }
 
-    public Page<User> findPageble(UserFilter filter, Pageable pageable) {
+    public Page<User> findPageable(UserFilter filter, Pageable pageable) {
         return userRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
@@ -81,17 +79,18 @@ public class UserService {
     }
 
     public User findById(Long userId) throws LibraryStoreBooksException {
+        log.info("Finding user by userId={}", userId);
         User user = userRepository.findById(userId).orElse(null);
-
         if (user == null) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NOT_FOUND") + " ID: " + userId);
+            log.error("User not found by userId={}", userId);
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_NOT_FOUND") + " ID: " + userId);
         }
         user.setPassword(null);
-
         return user;
     }
 
     public List<UserDTO> findByName(String name) {
+        log.info("Finding user by name={}", name);
         return toListDTO(userRepository.findByName(name));
     }
 
@@ -99,7 +98,6 @@ public class UserService {
         if (user == null) {
             return null;
         }
-
         if (FormatUtils.isEmpty(user.getRoles())) {
             Role role = roleRepository.findByName(Login.ROLE_CLIENT);
             if (role == null) {
@@ -109,20 +107,18 @@ public class UserService {
 
             user.setRoles(Arrays.asList(role));
         }
-
         if (user.getAddress() != null) {
             addressService.create(user.getAddress());
         }
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
+        log.info("Creating user name={}", user.getName());
         return toDTO(save(user));
     }
 
     public User save(User user) throws LibraryStoreBooksException {
         user.validation();
         user.persistAt();
-
+        log.info("Saving id={}, userName={}", user.getId(), user.getName());
         return userRepository.saveAndFlush(user);
     }
 
@@ -140,18 +136,17 @@ public class UserService {
         userToEdit.setCreateAt(createAt);
         userToEdit.setCreateBy(createBy);
         userToEdit.setPassword(pw);
-
+        log.info("Updating id={}, userName={}", userToEdit.getId(), userToEdit.getName());
         return toDTO(save(userToEdit));
     }
 
-    public void erase(Long userId) throws LibraryStoreBooksException {
+    public void delete(Long userId) throws LibraryStoreBooksException {
         User userToDelete = findById(userId);
-
+        log.info("Deleting id={}, userName={}", userToDelete.getId(), userToDelete.getName());
         userRepository.delete(userToDelete);
     }
 
     public UserDTO toDTO(User user) {
-
         return UserDTO.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -161,7 +156,6 @@ public class UserService {
                 .email(user.getEmail())
                 .roles(user.getRoles())
                 .build();
-
     }
 
     public User fromDTO(UserDTO dto) throws LibraryStoreBooksException {
@@ -185,17 +179,14 @@ public class UserService {
 
     public void changeUserPassword(UpdatePassword updatePassword) throws LibraryStoreBooksException {
         User user = userRepository.findByEmail(FormatUtils.getUsernameLogged());
-
         if (!checkIfValidOldPassword(user, updatePassword.getCurrentPassword())) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("INCORRECT_PASSWORD"));
         }
         user.setPassword(passwordEncoder.encode(updatePassword.getNewPassword()));
         userRepository.save(user);
-
     }
 
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
         return passwordEncoder.matches(oldPassword, user.getPassword());
     }
-
 }

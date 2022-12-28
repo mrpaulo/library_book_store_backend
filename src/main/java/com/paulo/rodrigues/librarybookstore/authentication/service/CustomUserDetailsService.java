@@ -65,17 +65,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-            System.out.println("Roles");
-            System.out.println(getRoles());
             getRoles().forEach(role -> {
                 grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-
             });
-
             return grantedAuthorities;
-
         }
 
         @Override
@@ -107,7 +101,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         public String getPassword() {
             return super.getPassword();
         }
-
     }
-
 }
