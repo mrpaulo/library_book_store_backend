@@ -60,24 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAccessFilter filter = new CustomAccessFilter();
         return filter;
     }
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .addFilterBefore(accessFilter(), SessionManagementFilter.class)
-//                .csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("/api/**/authentiations/**").permitAll()
-//                .antMatchers("/source/**").permitAll()
-//                .antMatchers("/api/**/fetch").permitAll()
-//                .antMatchers("/api/**").permitAll()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .httpBasic();               
-//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.anonymous().disable()
@@ -111,11 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         
         auth.userDetailsService(loginService);
     }
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        
-//        auth.userDetailsService(loginService);
-//    }
+
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -125,7 +104,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        @Override
 //    public void configure(WebSecurity web) throws Exception {
 //        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
-//                     
 //    }
     @Bean
     public PasswordEncoder passwordEncoder() {

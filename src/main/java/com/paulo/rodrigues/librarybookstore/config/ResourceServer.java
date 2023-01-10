@@ -33,10 +33,8 @@ public class ResourceServer extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                
-                .antMatchers("/api/v1/books/subjects").permitAll()
-                
-                ;
-        //.anyRequest().authenticated();
+                .antMatchers("/api/v1/books/subjects", "/v2/api-docs", "/configuration/ui", "/swagger-resources",
+                        "/spring-security-rest/**", "/swagger-resources/configuration/ui", "/swagger-ui/**",
+                        "/swagger-resources/configuration/security").permitAll();
     }
 }
