@@ -17,6 +17,8 @@
 package com.paulo.rodrigues.librarybookstore.authentication.repository;
 
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -50,8 +52,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("id") Long id,
             @Param("name") String name,
             @Param("cpf") String cpf,                        
-            @Param("startDate") Date startDate,
-            @Param("finalDate") Date finalDate,
+            @Param("startDate") LocalDate startDate,
+            @Param("finalDate") LocalDate finalDate,
             Pageable page);   
 
     public User findByUsername(String username);

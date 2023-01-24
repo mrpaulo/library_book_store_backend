@@ -29,7 +29,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,30 +51,40 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin(origins = {"*"})
+@ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Ok success"),
+        @ApiResponse(code = 201, message = "Address created"),
+        @ApiResponse(code = 400, message = "Validation Error Response", response = LibraryStoreBooksException.class),
+        @ApiResponse(code = 401, message = "Full Authentication Required or Invalid access token"),
+        @ApiResponse(code = 403, message = "Insufficient scope"),
+        @ApiResponse(code = 404, message = "Not found"),
+        @ApiResponse(code = 500, message = "Something Unexpected Happened"),})
 @RequestMapping("/api/v1/addresses")
 public class AddressController {
     
     @Autowired
     private AddressService addressService;
-    
+
+    @ApiOperation(value = "Get the address by id",
+            notes = "It returns the address given an Id")
     @GetMapping("/{id}")
     public ResponseEntity<Address> getById(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
         return ResponseEntity.ok().body(addressService.findById(addressId));
     }
 
     @GetMapping("/{name}/name")
-    public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
+    public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String name) {
         return ResponseEntity.ok().body(addressService.findByName(name));
     }
 
     @PostMapping()
-    public AddressDTO create(@RequestBody Address address) throws LibraryStoreBooksException {
-        return addressService.create(address);
+    public ResponseEntity<AddressDTO> create(@RequestBody Address address) throws LibraryStoreBooksException {
+        return new ResponseEntity<>(addressService.create(address), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDetalhes) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok(addressService.edit(addressId, addressDetalhes));
+    public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDTO) throws LibraryStoreBooksException, NotFoundException {
+        return ResponseEntity.ok(addressService.edit(addressId, addressDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -83,22 +97,22 @@ public class AddressController {
     }
     
     @GetMapping("/logradouros")
-    public ResponseEntity<List<Map<String, String>>> getETypePublicPlace() throws LibraryStoreBooksException {
+    public ResponseEntity<List<Map<String, String>>> getETypePublicPlace() {
         return ResponseEntity.ok().body(addressService.getETypePublicPlace());
     }
     
     @GetMapping("/{country}/{state}/cities")
-    public ResponseEntity<List<City>> getAllCities(@PathVariable(value = "country") Long country, @PathVariable(value = "state") Long state) throws LibraryStoreBooksException {
+    public ResponseEntity<List<City>> getAllCities(@PathVariable(value = "country") Long country, @PathVariable(value = "state") Long state) {
         return ResponseEntity.ok().body(addressService.getAllCities(country, state));
     }
     
     @GetMapping("/{country}/states")
-    public ResponseEntity<List<StateCountry>> getAllStates(@PathVariable(value = "country") Long country) throws LibraryStoreBooksException {
+    public ResponseEntity<List<StateCountry>> getAllStates(@PathVariable(value = "country") Long country) {
         return ResponseEntity.ok().body(addressService.getAllStates(country));
     }
     
     @GetMapping("/countries")
-    public ResponseEntity<List<Country>> getAllCountries() throws LibraryStoreBooksException {
+    public ResponseEntity<List<Country>> getAllCountries() {
         return ResponseEntity.ok().body(addressService.getAllCountries());
     }
 }

@@ -18,6 +18,8 @@
 package com.paulo.rodrigues.librarybookstore.publisher.repository;
 
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -55,8 +57,8 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long>{
             @Param("id") Long id,
             @Param("name") String name,
             @Param("cnpj") String cnpj,                        
-            @Param("startDate") Date startDate,
-            @Param("finalDate") Date finalDate,
+            @Param("startDate") LocalDate startDate,
+            @Param("finalDate") LocalDate finalDate,
             Pageable page);
 
     @Modifying

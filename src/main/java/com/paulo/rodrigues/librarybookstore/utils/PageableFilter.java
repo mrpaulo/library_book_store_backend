@@ -17,6 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.utils;
 
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -46,9 +47,7 @@ public class PageableFilter {
     private Long id;
     private String name;
     
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
+    private LocalDate startDate;
     
-    @Temporal(TemporalType.DATE)
-    private Date finalDate;
+    private LocalDate finalDate;
 }
