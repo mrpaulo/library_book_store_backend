@@ -74,7 +74,6 @@ public class OAuth2ServerConfiguration {
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().fullyAuthenticated();
         }
-
     }
 
     @Configuration
@@ -128,7 +127,5 @@ public class OAuth2ServerConfiguration {
             tokenServices.setTokenStore(this.tokenStore);
             return tokenServices;
         }
-
     }
-
 }
