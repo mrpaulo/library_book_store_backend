@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class UserService {
     }
 
     public Page<User> findPageable(UserFilter filter, Pageable pageable) {
-        return userRepository.findPageble(
+        return userRepository.findPageable(
                 filter.getId(),
                 filter.getName(),
                 filter.getCpf(),
@@ -140,8 +141,11 @@ public class UserService {
         return toDTO(save(userToEdit));
     }
 
-    public void delete(Long userId) throws LibraryStoreBooksException {
+    public void delete(Long userId) throws LibraryStoreBooksException, NotFoundException {
         User userToDelete = findById(userId);
+        if(userToDelete.getAddress() != null){
+            addressService.delete(userToDelete.getAddress().getId());
+        }
         log.info("Deleting id={}, userName={}", userToDelete.getId(), userToDelete.getName());
         userRepository.delete(userToDelete);
     }
@@ -170,7 +174,7 @@ public class UserService {
     }
 
     public List<UserDTO> toListDTO(List<User> users) {
-        return users.stream().map(b -> toDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return users.stream().map(this::toDTO).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public List<Role> getAllRoles() {

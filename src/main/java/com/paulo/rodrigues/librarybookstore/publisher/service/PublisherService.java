@@ -164,7 +164,7 @@ public class PublisherService {
     public void delete(Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         Publisher publisherToDelete = findById(publisherId);
         if(publisherToDelete.getAddress() != null){
-            addressService.erase(publisherToDelete.getAddress().getId());
+            addressService.delete(publisherToDelete.getAddress().getId());
         }
         List<Book> books = bookRepository.getBooksFromPublisherId(publisherId);
         if (!FormatUtils.isEmpty(books)){

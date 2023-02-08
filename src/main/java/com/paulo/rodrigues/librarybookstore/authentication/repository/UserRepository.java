@@ -19,11 +19,11 @@ package com.paulo.rodrigues.librarybookstore.authentication.repository;
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -48,7 +48,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             + " AND (:cpf IS NULL OR :cpf = '' OR c.cpf LIKE CONCAT('%',:cpf,'%')) "
             + " AND ((coalesce(:startDate, null) is null AND coalesce(:finalDate, null) is null) OR (c.birthdate BETWEEN :startDate AND :finalDate)) "
             + "")
-    public Page<User> findPageble(
+    public Page<User> findPageable(
             @Param("id") Long id,
             @Param("name") String name,
             @Param("cpf") String cpf,                        
@@ -57,5 +57,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
             Pageable page);   
 
     public User findByUsername(String username);
-    
+
+    @Modifying
+    @Query(value = "UPDATE "
+            + " lbs_user "
+            + " SET  address_id = null"
+            + " WHERE address_id = :addressId ",
+            nativeQuery = true)
+    public void deleteAddressReference(Long addressId);
+
 }

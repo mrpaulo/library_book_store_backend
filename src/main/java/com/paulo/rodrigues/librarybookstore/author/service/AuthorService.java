@@ -120,7 +120,7 @@ public class AuthorService {
     public void delete(Long authorId) throws LibraryStoreBooksException, NotFoundException {
         Author author = findById(authorId);
         if(author.getAddress() != null){
-            addressService.erase(author.getAddress().getId());
+            addressService.delete(author.getAddress().getId());
         }
         log.info("Deleting author id={}, name={}", authorId, author.getName());
         authorRepository.delete(author);

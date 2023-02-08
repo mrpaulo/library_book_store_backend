@@ -32,6 +32,7 @@ import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author paulo.rodrigues
  */
+@Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
 @ApiResponses(value = {
@@ -69,50 +71,103 @@ public class AddressController {
             notes = "It returns the address given an Id")
     @GetMapping("/{id}")
     public ResponseEntity<Address> getById(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok().body(addressService.findById(addressId));
+        try {
+            return ResponseEntity.ok().body(addressService.findById(addressId));
+        } catch (Exception e) {
+            log.error("Exception on getById addressId={}, message={}", addressId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @GetMapping("/{name}/name")
-    public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String name) {
-        return ResponseEntity.ok().body(addressService.findByName(name));
+    public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String addressName) {
+        try {
+            return ResponseEntity.ok().body(addressService.findByName(addressName));
+        } catch (Exception e) {
+            log.error("Exception on getById addressName={}, message={}", addressName, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PostMapping()
     public ResponseEntity<AddressDTO> create(@RequestBody Address address) throws LibraryStoreBooksException {
-        return new ResponseEntity<>(addressService.create(address), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(addressService.create(address), HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error("Exception on getById address={}, message={}", address, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDTO) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok(addressService.edit(addressId, addressDTO));
+        try {
+            return ResponseEntity.ok(addressService.edit(addressId, addressDTO));
+        } catch (Exception e) {
+            log.error("Exception on update addressId={}, message={}", addressId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
     public Map<String, Boolean> delete(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
-        addressService.erase(addressId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-
-        return response;
+        try {
+            addressService.delete(addressId);
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("deleted", Boolean.TRUE);
+            return response;
+        } catch (Exception e) {
+            log.error("Exception on delete addressId={}, message={}", addressId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/logradouros")
     public ResponseEntity<List<Map<String, String>>> getETypePublicPlace() {
-        return ResponseEntity.ok().body(addressService.getETypePublicPlace());
+        try {
+            return ResponseEntity.ok().body(addressService.getETypePublicPlace());
+        } catch (Exception e) {
+            log.error("Exception on getETypePublicPlace message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/{country}/{state}/cities")
-    public ResponseEntity<List<City>> getAllCities(@PathVariable(value = "country") Long country, @PathVariable(value = "state") Long state) {
-        return ResponseEntity.ok().body(addressService.getAllCities(country, state));
+    public ResponseEntity<List<City>> getAllCities(@PathVariable(value = "country") Long countryId, @PathVariable(value = "state") Long stateId) {
+        try {
+            return ResponseEntity.ok().body(addressService.getAllCities(countryId, stateId));
+        } catch (Exception e) {
+            log.error("Exception on getAllCities countryId={}, stateId={}, message={}", countryId, stateId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/{country}/states")
-    public ResponseEntity<List<StateCountry>> getAllStates(@PathVariable(value = "country") Long country) {
-        return ResponseEntity.ok().body(addressService.getAllStates(country));
+    public ResponseEntity<List<StateCountry>> getAllStates(@PathVariable(value = "country") Long countryId) {
+        try {
+            return ResponseEntity.ok().body(addressService.getAllStates(countryId));
+        } catch (Exception e) {
+            log.error("Exception on getAllStates countryId={}, message={}", countryId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/countries")
     public ResponseEntity<List<Country>> getAllCountries() {
-        return ResponseEntity.ok().body(addressService.getAllCountries());
+        try {
+            return ResponseEntity.ok().body(addressService.getAllCountries());
+        } catch (Exception e) {
+            log.error("Exception on getAllCountries message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 }

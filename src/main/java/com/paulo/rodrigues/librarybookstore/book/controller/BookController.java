@@ -20,13 +20,11 @@ package com.paulo.rodrigues.librarybookstore.book.controller;
 import com.paulo.rodrigues.librarybookstore.book.dto.BookDTO;
 import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
 import com.paulo.rodrigues.librarybookstore.book.service.BookService;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.*;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.model.BookSubject;
 import com.paulo.rodrigues.librarybookstore.book.model.Language;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
-import com.paulo.rodrigues.librarybookstore.utils.PagedResult;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +32,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author paulo.rodrigues
  */
+@Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/books")
@@ -59,62 +61,120 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping("/all")
-    public List<BookDTO> getAll() {
-        List<BookDTO> booksList = bookService.findAll();
-
-        return booksList.stream().sorted(Comparator.comparing(BookDTO::getTitle)).collect(Collectors.toList());
+    public ResponseEntity<List<BookDTO>> getAll() {
+        try {
+            List<BookDTO> books = bookService.findAll();
+            List<BookDTO> booksSorted = books.stream().sorted(Comparator.comparing(BookDTO::getTitle)).collect(Collectors.toList());
+            return ResponseEntity.ok().body(booksSorted);
+        } catch (Exception e) {
+            log.error("Exception on getAll message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PostMapping("/fetch")
-    public List<BookDTO> findPageable(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
-        
-        PagedResult<BookDTO> result = bookService.findPageable(FormatUtils.setOffSet(filter));
-        res.addHeader("totalcount", String.valueOf(result != null ? result.getTotalElementos() : 0));
-
-        return result.getElementos();
+    public ResponseEntity<List<BookDTO>> findPageable(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
+        try {
+            PagedResult<BookDTO> books = bookService.findPageable(FormatUtils.setOffSet(filter));
+            res.addHeader("totalcount", String.valueOf(books != null ? books.getTotalElementos() : 0));
+            assert books != null : MessageUtil.getMessage("BOOKS_NOT_FOUND");
+            return ResponseEntity.ok().body(books.getElementos());
+        } catch (Exception e) {
+            log.error("Exception on findPageable, message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok().body(bookService.findById(bookId));
+        try {
+            return ResponseEntity.ok().body(bookService.findById(bookId));
+        } catch (Exception e) {
+            log.error("Exception on getById bookId={}, message={}", bookId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @PostMapping()
-    public BookDTO create(@RequestBody BookDTO dto) throws LibraryStoreBooksException, NotFoundException {
-        return bookService.create(dto);
+    public ResponseEntity<BookDTO> create(@RequestBody BookDTO bookDTO) throws LibraryStoreBooksException, NotFoundException {
+        try {
+            return new ResponseEntity<>(bookService.create(bookDTO), HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error("Exception on create bookDTO={}, message={}", bookDTO, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDetalhes) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok(bookService.edit(bookId, bookDetalhes));
+    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDTO) throws LibraryStoreBooksException, NotFoundException {
+        try {
+            return ResponseEntity.ok(bookService.edit(bookId, bookDTO));
+        } catch (Exception e) {
+            log.error("Exception on update bookId={}, message={}", bookId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
     public Map<String, Long> delete(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException, NotFoundException {
-        bookService.delete(bookId);
-        Map<String, Long> response = new HashMap<>();
-        response.put("id", bookId);
-
-        return response;
+        try {
+            bookService.delete(bookId);
+            Map<String, Long> response = new HashMap<>();
+            response.put("id", bookId);
+            return response;
+        } catch (Exception e) {
+            log.error("Exception on delete bookId={}, message={}", bookId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/subjects")
-    public ResponseEntity<List<BookSubject>> getBookSubject() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getAllBookSubjectsSorted());
+    public ResponseEntity<List<BookSubject>> getBookSubject() {
+        try {
+            return ResponseEntity.ok().body(bookService.getAllBookSubjectsSorted());
+        } catch (Exception e) {
+            log.error("Exception on getBookSubject, message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/formats")
-    public ResponseEntity<List<Map<String, String>>> getEBookFormat() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getAllEBookFormats());
+    public ResponseEntity<List<Map<String, String>>> getEBookFormat() {
+        try {
+            return ResponseEntity.ok().body(bookService.getAllEBookFormats());
+        } catch (Exception e) {
+            log.error("Exception on getEBookFormat, message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/conditions")
-    public ResponseEntity<List<Map<String, String>>> getEBookCondition() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getAllEBookConditions());
+    public ResponseEntity<List<Map<String, String>>> getEBookCondition() {
+        try {
+            return ResponseEntity.ok().body(bookService.getAllEBookConditions());
+        } catch (Exception e) {
+            log.error("Exception on getEBookCondition, message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/languages")
-    public ResponseEntity<List<Language>> getLanguages() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(bookService.getAllBookLanguagesSorted());
+    public ResponseEntity<List<Language>> getLanguages() {
+        try {
+            return ResponseEntity.ok().body(bookService.getAllBookLanguagesSorted());
+        } catch (Exception e) {
+            log.error("Exception on getEBookCondition, message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 }

@@ -92,7 +92,7 @@ public class Publisher implements Serializable {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }        
         String nuCnpj = FormatUtils.desformatCnpj(cnpj);
-        if (nuCnpj.isEmpty()) {
+        if (nuCnpj != null && nuCnpj.isEmpty()) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_CNPJ_NOT_INFORMED"));
         }
         if (!FormatUtils.isCNPJ(nuCnpj)) {

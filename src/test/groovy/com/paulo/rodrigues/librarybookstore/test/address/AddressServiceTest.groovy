@@ -169,7 +169,7 @@ class AddressServiceTest extends Specification {
         service.addressRepository.findById(id) >> Optional.of(address)
 
         when:
-        service.erase(id)
+        service.delete(id)
 
         then:
         1 * service.personRepository.deleteAddressReference(_)

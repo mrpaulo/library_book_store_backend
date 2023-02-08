@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author paulo.rodrigues
  */
+@Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/users")
@@ -62,54 +65,108 @@ public class UserController {
 
     @GetMapping("/all")
     public List<UserDTO> getAll() {
-        List<UserDTO> usersList = userService.findAll();
-        return usersList.stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
+        try {
+            List<UserDTO> usersList = userService.findAll();
+            return usersList.stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Exception on findPageable message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PostMapping("/fetch")
-    public List<UserDTO> getAllPageble(@RequestBody UserFilter filter, HttpServletRequest req, HttpServletResponse res) {
-        Pageable pageable = FormatUtils.getPageRequest(filter);
-        Page<User> result = userService.findPageable(filter, pageable);
-        res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
-        return userService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
+    public List<UserDTO> findPageable(@RequestBody UserFilter filter, HttpServletRequest req, HttpServletResponse res) {
+        try {
+            Pageable pageable = FormatUtils.getPageRequest(filter);
+            Page<User> result = userService.findPageable(filter, pageable);
+            res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
+            return userService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Exception on findPageable message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getById(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(userService.findById(userId));
+        try {
+            return ResponseEntity.ok().body(userService.findById(userId));
+        } catch (Exception e) {
+            log.error("Exception on getById bookId={}, message={}", userId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @GetMapping("/fetch/{name}")
-    public ResponseEntity<List<UserDTO>> getByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(userService.findByName(name));
+    public ResponseEntity<List<UserDTO>> getByName(@PathVariable(value = "name") String nameOfUser) throws LibraryStoreBooksException {
+        try {
+            return ResponseEntity.ok().body(userService.findByName(nameOfUser));
+        } catch (Exception e) {
+            log.error("Exception on getByName nameOfUser={}, message={}", nameOfUser, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PostMapping()
     public UserDTO create(@RequestBody User user) throws LibraryStoreBooksException {
-        return userService.create(user);
+        try {
+            return userService.create(user);
+        } catch (Exception e) {
+            log.error("Exception on create user={}, message={}", user, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDetalhes) throws LibraryStoreBooksException {
-        return ResponseEntity.ok(userService.edit(userId, userDetalhes));
+    public ResponseEntity<UserDTO> update(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO) throws LibraryStoreBooksException {
+        try {
+            return ResponseEntity.ok(userService.edit(userId, userDTO));
+        } catch (Exception e) {
+            log.error("Exception on update userDTO={}, message={}", userDTO, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Long> delete(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException {
-        userService.delete(userId);
-        Map<String, Long> response = new HashMap<>();
-        response.put("id", userId);
-        return response;
+    public Map<String, Long> delete(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException, NotFoundException {
+        try {
+            userService.delete(userId);
+            Map<String, Long> response = new HashMap<>();
+            response.put("id", userId);
+            return response;
+        } catch (Exception e) {
+            log.error("Exception on delete userId={}, message={}", userId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PostMapping("/update")
     public ResponseEntity<String> changeUserPassword(@RequestBody UpdatePassword updatePassword) throws LibraryStoreBooksException {
-        userService.changeUserPassword(updatePassword);
-        return ResponseEntity.status(HttpStatus.OK).body("Updated");
+        try {
+            userService.changeUserPassword(updatePassword);
+            return ResponseEntity.status(HttpStatus.OK).body("Updated");
+        } catch (Exception e) {
+            log.error("Exception on changeUserPassword message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles() throws LibraryStoreBooksException {
-        return ResponseEntity.ok().body(userService.getAllRoles());
+        try {
+            return ResponseEntity.ok().body(userService.getAllRoles());
+        } catch (Exception e) {
+            log.error("Exception on getAllRoles message={}", e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 }

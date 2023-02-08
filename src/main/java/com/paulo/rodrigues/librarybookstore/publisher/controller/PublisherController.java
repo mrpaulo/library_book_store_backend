@@ -32,9 +32,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author paulo.rodrigues
  */
+@Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
 @RequestMapping("/api/v1/publishers")
@@ -67,39 +70,73 @@ public class PublisherController {
 
     @PostMapping("/fetch")
     public List<PublisherDTO> findPageable(@RequestBody PublisherFilter filter, HttpServletRequest req, HttpServletResponse res) {
-        Pageable pageable = FormatUtils.getPageRequest(filter);        
-        Page<Publisher> result = publisherService.findPageable(filter, pageable);
-        res.addHeader("totalcount", String.valueOf(result.getTotalElements()));
-
-        return publisherService.publishersToDTOs(result.getContent());
+        try {
+            Pageable pageable = FormatUtils.getPageRequest(filter);
+            Page<Publisher> result = publisherService.findPageable(filter, pageable);
+            res.addHeader("totalcount", String.valueOf(result.getTotalElements()));
+            return publisherService.publishersToDTOs(result.getContent());
+        } catch (Exception e) {
+            log.error("Exception on findPageable PublisherFilter={}, message={}", filter, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Publisher> getById(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok().body(publisherService.findById(publisherId));
+        try {
+            return ResponseEntity.ok().body(publisherService.findById(publisherId));
+        } catch (Exception e) {
+            log.error("Exception on getById publisherId={}, message={}", publisherId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
     
     @GetMapping("/fetch/{name}")
-    public ResponseEntity<List<PublisherDTO>> fetchByName(@PathVariable(value = "name") String name) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok().body(publisherService.findByName(name));
+    public ResponseEntity<List<PublisherDTO>> findByName(@PathVariable(value = "name") String publisherName) throws LibraryStoreBooksException, NotFoundException {
+        try {
+            return ResponseEntity.ok().body(publisherService.findByName(publisherName));
+        } catch (Exception e) {
+            log.error("Exception on findByName publisherName={}, message={}", publisherName, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PostMapping()
-    public PublisherDTO create(@RequestBody Publisher publisher) throws LibraryStoreBooksException {
-        return publisherService.create(publisher);
+    public ResponseEntity<PublisherDTO> create(@RequestBody Publisher publisher) throws Exception {
+        try {
+           return new ResponseEntity<>(publisherService.create(publisher), HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error("Exception on create publisher={}, message={}", publisher, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDetalhes) throws LibraryStoreBooksException, NotFoundException {
-        return ResponseEntity.ok(publisherService.edit(publisherId, publisherDetalhes));
+    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDTO) throws LibraryStoreBooksException, NotFoundException {
+        try {
+            return ResponseEntity.ok(publisherService.edit(publisherId, publisherDTO));
+        } catch (Exception e) {
+            log.error("Exception on update publisherId={}, message={}", publisherId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
     public Map<String, Long> delete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
-        publisherService.delete(publisherId);
-        Map<String, Long> response = new HashMap<>();
-        response.put("id", publisherId);
-
-        return response;
+        try {
+            publisherService.delete(publisherId);
+            Map<String, Long> response = new HashMap<>();
+            response.put("id", publisherId);
+            return response;
+        } catch (Exception e) {
+            log.error("Exception on delete publisherId={}, message={}", publisherId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
     }
 }

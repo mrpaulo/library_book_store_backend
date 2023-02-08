@@ -1,0 +1,1689 @@
+{
+	"info": {
+		"_postman_id": "5eeec8b3-49b9-47d5-88b1-942d7184b4bc",
+		"name": "LibraryBookStoreApplication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2025336"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "client",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "teste",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4080/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "password",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authentications/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authentications",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CheckToken",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "teste",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "client",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4080/oauth/check_token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"oauth",
+								"check_token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Source test",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"teste\",\n    \"birthdate\": \"2000-01-10\",\n    \"cpf\": \"00788975056\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/librarybookstore/souce",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"librarybookstore",
+								"souce"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "GetById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"teste company\",\n    \"createDate\": \"2000-01-10\",\n    \"cnpj\": \"21106538099\",\n    \"adress\": {\n        \"id\": 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/199",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"199"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByName",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"teste company\",\n    \"createDate\": \"2000-01-10\",\n    \"cnpj\": \"21106538099\",\n    \"adress\": {\n        \"id\": 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/test/name",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"test",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cep\": \"string\",\n    \"city\": {\n        \"country\": {\n            \"id\": 1,\n            \"name\": \"string\"\n        },\n        \"ibgeCode\": \"string\",\n        \"id\": 1,\n        \"name\": \"string\",\n        \"state\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"id\": 1,\n            \"name\": \"string\"\n        }\n    },\n    \"coordination\": \"string\",\n    \"fmtAddress\": \"string\",\n    \"id\": 0,\n    \"logradouro\": \"AVENUE\",\n    \"name\": \"string\",\n    \"neighborhood\": \"string\",\n    \"number\": \"string\",\n    \"referentialPoint\": \"string\",\n    \"updateAt\": \"2023-01-24T21:32:48.832Z\",\n    \"updateBy\": \"string\",\n    \"zipCode\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cep\": \"123\",\n    \"city\": {\n        \"country\": {\n            \"id\": 1,\n            \"name\": \"Brazil\"\n        },\n        \"ibgeCode\": \"string\",\n        \"id\": 1,\n        \"name\": \"Taquara\",\n        \"state\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"Brazil\"\n            },\n            \"id\": 1,\n            \"name\": \"Rio Grande do Sul\"\n        }\n    },\n    \"coordination\": \"string\",\n    \"fmtAddress\": \"string\",\n    \"id\": 57,\n    \"logradouro\": \"AVENUE\",\n    \"name\": \"test tes\",\n    \"neighborhood\": \"Mundo Novo\",\n    \"number\": \"123\",\n    \"referentialPoint\": \"string\",\n    \"zipCode\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/57",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"57"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/57",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"57"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetETypePublicPlace",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/logradouros",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"logradouros"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllCities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/1/1/cities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"1",
+								"1",
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllStates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/1/states",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"1",
+								"states"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllCountries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/addresses/countries",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"countries"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{bearerToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Author",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindPageble",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPage\": 1,\n    \"rowsPerPage\": 10,\n    \"sortColumn\": \"name\",\n    \"sort\": \"asc\",\n    \"name\": \"\",\n    \"startDate\": \"1998-01-24T23:33:02.915Z\",\n    \"finalDate\": \"2023-01-24T23:33:02.915Z\"\n\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors/fetch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors/fetch/Ana",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"fetch",
+								"Ana"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {\n        \"cep\": \"string\",\n        \"city\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"ibgeCode\": \"string\",\n            \"id\": 1,\n            \"name\": \"string\",\n            \"state\": {\n                \"country\": {\n                    \"id\": 1,\n                    \"name\": \"string\"\n                },\n                \"id\": 1,\n                \"name\": \"string\"\n            }\n        },\n        \"coordination\": \"string\",\n        \"fmtAddress\": \"string\",\n        \"id\": 0,\n        \"logradouro\": \"AVENUE\",\n        \"name\": \"string\",\n        \"neighborhood\": \"string\",\n        \"number\": \"string\",\n        \"referentialPoint\": \"string\",\n        \"zipCode\": \"string\"\n    },\n    \"birthCity\": {\n        \"country\": {\n            \"id\": 1,\n            \"name\": \"string\"\n        },\n        \"ibgeCode\": \"string\",\n        \"id\": 1,\n        \"name\": \"string\",\n        \"state\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"id\": 1,\n            \"name\": \"string\"\n        }\n    },\n    \"birthCountry\": {\n        \"id\": 1,\n        \"name\": \"string\"\n    },\n    \"birthdate\": \"2023-01-25\",\n    \"description\": \"string\",\n    \"email\": \"string\",\n    \"id\": 0,\n    \"name\": \"string\",\n    \"sex\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {\n        \"cep\": \"string\",\n        \"city\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"ibgeCode\": \"string\",\n            \"id\": 1,\n            \"name\": \"string\",\n            \"state\": {\n                \"country\": {\n                    \"id\": 1,\n                    \"name\": \"string\"\n                },\n                \"id\": 1,\n                \"name\": \"string\"\n            }\n        },\n        \"coordination\": \"string\",\n        \"fmtAddress\": \"string\",\n        \"id\": 0,\n        \"logradouro\": \"AVENUE\",\n        \"name\": \"string\",\n        \"neighborhood\": \"string\",\n        \"number\": \"string\",\n        \"referentialPoint\": \"string\",\n        \"zipCode\": \"string\"\n    },\n    \"birthCity\": {\n        \"country\": {\n            \"id\": 1,\n            \"name\": \"string\"\n        },\n        \"ibgeCode\": \"string\",\n        \"id\": 1,\n        \"name\": \"string\",\n        \"state\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"id\": 1,\n            \"name\": \"string\"\n        }\n    },\n    \"birthCountry\": {\n        \"id\": 1,\n        \"name\": \"string\"\n    },\n    \"birthdate\": \"2023-01-25\",\n    \"description\": \"string\",\n    \"email\": \"string\",\n    \"id\": 0,\n    \"name\": \"string\",\n    \"sex\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors/20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/authors/34",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"34"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{bearerToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "GetAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"teste\",\n    \"birthdate\": \"2000-01-10\",\n    \"cpf\": \"00788975056\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindPageble",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"adultsOnly\": false,\n  \"author\": null,\n  \"currentPage\": 1,\n  \"finalDate\": null,\n  \"id\": null,\n  \"name\": null,\n  \"offset\": 0,\n  \"publishDate\": null,\n  \"publisher\": null,\n  \"rowsPerPage\": 10,\n  \"sort\": \"asc\",\n  \"sortColumn\": \"title\",\n  \"startDate\": null,\n  \"subjectName\": null,\n  \"title\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/fetch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adultsOnly\": false,\n    \"authors\": [\n        {\n            \"id\": 1\n        }\n    ],\n    \"condition\": \"COLLECTABLE\",\n    \"edition\": 1,\n    \"format\": \"AUDIO_BOOK\",\n    \"id\": 0,\n    \"languageName\": \"English\",\n    \"length\": 100,\n    \"link\": \"string\",\n    \"publishDate\": \"2023-02-08\",\n    \"publisher\": {\n        \"id\": 1\n    },\n    \"rating\": 5,\n    \"review\": \"Review test\",\n    \"subjectName\": \"Romance\",\n    \"subtitle\": \"teste book subtitle\",\n    \"title\": \"teste book title\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adultsOnly\": false,\n    \"authors\": [\n        {\n            \"id\": 1\n        }\n    ],\n    \"condition\": \"COLLECTABLE\",\n    \"edition\": 1,\n    \"format\": \"AUDIO_BOOK\",\n    \"id\": 0,\n    \"languageName\": \"English\",\n    \"length\": 100,\n    \"link\": \"string\",\n    \"publishDate\": \"2023-02-08\",\n    \"publisher\": {\n        \"id\": 1\n    },\n    \"rating\": 5,\n    \"review\": \"Review test\",\n    \"subjectName\": \"Romance\",\n    \"subtitle\": \"teste book subtitle\",\n    \"title\": \"teste book title 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/49",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"49"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookSubject",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEBookFormat",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"teste\",\n    \"birthdate\": \"2000-01-10\",\n    \"cpf\": \"00788975056\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/formats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"formats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetEBookCondition",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"teste\",\n    \"birthdate\": \"2000-01-10\",\n    \"cpf\": \"00788975056\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/conditions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"conditions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetLanguages",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/books/languages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"languages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Publisher",
+			"item": [
+				{
+					"name": "GetAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/publishers/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"publishers",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindPageable",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n  \"cnpj\": null,\n  \"currentPage\": 1,\n  \"foundationDate\": null,\n  \"id\": null,\n  \"name\": \"edit\",\n  \"offset\": 0,\n  \"rowsPerPage\": 10,\n  \"sort\": \"asc\",\n  \"sortColumn\": \"name\",\n  \"startDate\": \"2000-01-31\",\n  \"finalDate\": \"2010-01-10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/publishers/fetch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"publishers",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/publishers/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"publishers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByName",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/api/v1/publishers/fetch/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"api",
+								"v1",
+								"publishers",
+								"fetch",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": {\n    \"cep\": \"string\",\n    \"city\": {\n      \"country\": {\n        \"id\": 1,\n        \"name\": \"string\"\n      },\n      \"ibgeCode\": \"string\",\n      \"id\": 1,\n      \"name\": \"string\",\n      \"state\": {\n        \"country\": {\n          \"id\": 1,\n          \"name\": \"string\"\n        },\n        \"id\": 1,\n        \"name\": \"string\"\n      }\n    },\n    \"coordination\": \"string\",\n    \"fmtAddress\": \"string\",\n    \"id\": 0,\n    \"logradouro\": \"AVENUE\",\n    \"name\": \"string\",\n    \"neighborhood\": \"string\",\n    \"number\": \"string\",\n    \"referentialPoint\": \"string\",\n    \"updateAt\": \"2023-01-31T22:49:33.868Z\",\n    \"updateBy\": \"string\",\n    \"zipCode\": \"string\"\n  },\n  \"cnpj\": \"82713409000110\",  \n  \"description\": \"string\",\n  \"foundationDate\": \"2000-01-31\",\n  \"id\": 0,\n  \"name\": \"string\"  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/publishers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"publishers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": {\n    \"cep\": \"string\",\n    \"city\": {\n      \"country\": {\n        \"id\": 1,\n        \"name\": \"string\"\n      },\n      \"ibgeCode\": \"string\",\n      \"id\": 1,\n      \"name\": \"string\",\n      \"state\": {\n        \"country\": {\n          \"id\": 1,\n          \"name\": \"string\"\n        },\n        \"id\": 1,\n        \"name\": \"string\"\n      }\n    },\n    \"coordination\": \"string\",\n    \"fmtAddress\": \"string\",\n    \"id\": 0,\n    \"logradouro\": \"AVENUE\",\n    \"name\": \"string\",\n    \"neighborhood\": \"string\",\n    \"number\": \"string\",\n    \"referentialPoint\": \"string\",\n    \"updateAt\": \"2023-01-31T22:49:33.868Z\",\n    \"updateBy\": \"string\",\n    \"zipCode\": \"string\"\n  },\n  \"cnpj\": \"21106538099\",  \n  \"description\": \"string\",\n  \"foundationDate\": \"2000-01-31\",\n  \"id\": 0,\n  \"name\": \"string 2\"  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/publishers/24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"publishers",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/publishers/240",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"publishers",
+								"240"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindPageble",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPage\": 1,\n    \"rowsPerPage\": 10,\n    \"sortColumn\": \"name\",\n    \"sort\": \"asc\",\n    \"name\": \"Paulo\",\n    \"startDate\": null,\n    \"finalDate\": null\n\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users/fetch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByName",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users/fetch/paulo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"fetch",
+								"paulo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {\n        \"cep\": \"string\",\n        \"city\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"ibgeCode\": \"string\",\n            \"id\": 1,\n            \"name\": \"string\",\n            \"state\": {\n                \"country\": {\n                    \"id\": 1,\n                    \"name\": \"string\"\n                },\n                \"id\": 1,\n                \"name\": \"string\"\n            }\n        },\n        \"coordination\": \"string\",\n        \"fmtAddress\": \"string\",\n        \"id\": 0,\n        \"logradouro\": \"AVENUE\",\n        \"name\": \"string\",\n        \"neighborhood\": \"string\",\n        \"number\": \"string\",\n        \"referentialPoint\": \"string\",\n        \"zipCode\": \"string\"\n    },\n    \"birthdate\": \"2023-02-08\",\n    \"cpf\": \"string\",    \n    \"email\": \"string\",\n    \"id\": 0,\n    \"name\": \"string\",\n    \"password\": \"string\",\n    \"roles\": [\n        {\n            \"id\": 1,\n            \"name\": \"ADMIN\"\n        }\n    ],\n    \"sex\": \"M\",\n    \"username\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {\n        \"cep\": \"string\",\n        \"city\": {\n            \"country\": {\n                \"id\": 1,\n                \"name\": \"string\"\n            },\n            \"ibgeCode\": \"string\",\n            \"id\": 1,\n            \"name\": \"string\",\n            \"state\": {\n                \"country\": {\n                    \"id\": 1,\n                    \"name\": \"string\"\n                },\n                \"id\": 1,\n                \"name\": \"string\"\n            }\n        },\n        \"coordination\": \"string\",\n        \"fmtAddress\": \"string\",\n        \"id\": 0,\n        \"logradouro\": \"AVENUE\",\n        \"name\": \"string\",\n        \"neighborhood\": \"string\",\n        \"number\": \"string\",\n        \"referentialPoint\": \"string\",\n        \"zipCode\": \"string\"\n    },\n    \"birthdate\": \"2023-02-08\",\n    \"cpf\": \"string2\",    \n    \"email\": \"string2\",\n    \"id\": 0,\n    \"name\": \"string 2\",\n    \"password\": \"string\",\n    \"roles\": [\n        {\n            \"id\": 1,\n            \"name\": \"ADMIN\"\n        }\n    ],\n    \"sex\": \"M\"    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4080/api/v1/users/34",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"34"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

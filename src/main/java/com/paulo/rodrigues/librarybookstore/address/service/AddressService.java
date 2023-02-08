@@ -21,6 +21,7 @@ import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
+import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.model.City;
@@ -55,6 +56,8 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 @Transactional
 @Log4j2
 public class AddressService {
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -116,11 +119,12 @@ public class AddressService {
         return toDTO(save(addressToEdit));
     }
 
-    public void erase(Long addressId) throws NotFoundException {
+    public void delete(Long addressId) throws NotFoundException {
         Address addressToDelete = findById(addressId);
         log.info("Deleting address id={}, name={}", addressId, addressToDelete.getName());
         personRepository.deleteAddressReference(addressId);
         companyRepository.deleteAddressReference(addressId);
+        userRepository.deleteAddressReference(addressId);
         addressRepository.delete(addressToDelete);
     }
 
@@ -136,27 +140,27 @@ public class AddressService {
 
     public Address getAddressFromDTO (AddressDTO dto) {
         try {
-            return findById(dto.getId());
+            return dto != null ? findById(dto.getId()) : null;
         } catch (Exception e) {
-            log.error("Exception getAddressFromDTO addressDTO={}, message={}", dto, e.getMessage());
+            log.error("Exception on getAddressFromDTO addressDTO={}, message={}", dto, e.getMessage());
             return null;
         }
     }
 
     public City getCityFromDTO (CityDTO dto) {
         try {
-            return cityRepository.findById(dto.getId()).get();
+            return  dto != null ? cityRepository.findById(dto.getId()).get() :  null;
         } catch (Exception e) {
-            log.error("Exception getCityFromDTO CityDTO={}, message={}", dto, e.getMessage());
+            log.error("Exception on getCityFromDTO CityDTO={}, message={}", dto, e.getMessage());
             return null;
         }
     }
 
     public Country getCountryFromDTO (CountryDTO dto) {
         try {
-            return countryRepository.findById(dto.getId()).get();
+            return  dto != null ? countryRepository.findById(dto.getId()).get() : null;
         } catch (Exception e) {
-            log.error("Exception getCountryFromDTO CountryDTO={}, message={}", dto, e.getMessage());
+            log.error("Exception on getCountryFromDTO CountryDTO={}, message={}", dto, e.getMessage());
             return null;
         }
     }
