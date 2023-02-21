@@ -40,6 +40,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -161,6 +162,21 @@ public class PublisherService {
         return publisherToDTO(save(publisherToEdit));
     }
 
+    public List<String> safeDelete(Long publisherId) throws LibraryStoreBooksException, NotFoundException {
+        Publisher publisherToDelete = findById(publisherId);
+        if(publisherToDelete.getAddress() != null){
+            addressService.delete(publisherToDelete.getAddress().getId());
+        }
+        List<Book> books = bookRepository.getBooksFromPublisherId(publisherId);
+        if (!FormatUtils.isEmpty(books)){
+            List<String> booksTitle = books.stream().map(Book::getTitle).collect(Collectors.toList());
+            log.info("There are {} books to delete if the publisher is deleted id={}, name={}, bookTitles={}", books.size(), publisherId, publisherToDelete.getName(), booksTitle);
+            return booksTitle;
+        }
+        log.info("Safe delete publisher is possible id={}, name={}", publisherId, publisherToDelete.getName());
+        return new ArrayList<>();
+    }
+
     public void delete(Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         Publisher publisherToDelete = findById(publisherId);
         if(publisherToDelete.getAddress() != null){
@@ -169,6 +185,12 @@ public class PublisherService {
         List<Book> books = bookRepository.getBooksFromPublisherId(publisherId);
         if (!FormatUtils.isEmpty(books)){
             for (Book book : books) {
+            log.info("Deleting book bookId={}", book.getId());
+                book.getAuthors()
+                        .forEach(author -> {
+                            log.info("Deleting author_books authorId={}, bookId={}", author.getId(), book.getId());
+                            bookRepository.deleteBookAuthor(author.getId(), book.getId());
+                        });
                 bookRepository.delete(book);
             }
         }

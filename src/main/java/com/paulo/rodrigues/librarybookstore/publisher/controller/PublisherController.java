@@ -126,6 +126,16 @@ public class PublisherController {
         }
     }
 
+    @DeleteMapping("/safe/{id}")
+    public List<String> safeDelete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
+        try {
+            return publisherService.safeDelete(publisherId);
+        } catch (Exception e) {
+            log.error("Exception on safeDelete publisherId={}, message={}", publisherId, e.getMessage());
+            e.setStackTrace(new StackTraceElement[0]);
+            throw e;
+        }
+    }
     @DeleteMapping("/{id}")
     public Map<String, Long> delete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         try {

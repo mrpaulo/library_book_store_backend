@@ -284,7 +284,7 @@ ALTER SEQUENCE book_id_seq RESTART WITH 46;
 
 INSERT INTO author_books
     (author_id,
-    books_id
+    book_id
     )
 VALUES
 (1,1),

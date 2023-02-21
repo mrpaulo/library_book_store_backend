@@ -45,14 +45,14 @@ where p.cnpj = '77072141000144';
 
 update publisher set description = 'test' where id = 21;
 
-delete from author_books where books_id in (47,46);
+delete from author_books where book_id in (47,46);
 delete from book where id in (47,46);
 
 
 select a.name, p."name", b.title, b.*
 from book b
 join publisher p on p.id = b.publisher_id
-join author_books ab ON ab.books_id = b.id
+join author_books ab ON ab.book_id = b.id
 join author a on ab.author_id = a.id
 order by a.name;
 
@@ -60,7 +60,7 @@ order by a.name;
   SELECT b.id   , b.title   , b.subtitle   , b.language_id  , b.publisher_id  , b.subject_id  , b.review  , b.link  , b.format  , b.condition  , b.edition  , b.publish_date  , b.rating  , b.length
   FROM BOOK b
   LEFT JOIN  PUBLISHER pu ON pu.id = b.publisher_id
-  join author_books ab ON ab.books_id = b.id
+  join author_books ab ON ab.book_id = b.id
   join author a on ab.author_id = a.id
   WHERE 1 = 1
   AND LOWER(a.name) like LOWER(CONCAT('%ana%'));

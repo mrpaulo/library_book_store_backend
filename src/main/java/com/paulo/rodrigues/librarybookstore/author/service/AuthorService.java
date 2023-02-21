@@ -122,6 +122,21 @@ public class AuthorService {
         if(author.getAddress() != null){
             addressService.delete(author.getAddress().getId());
         }
+        Set<Book> books = author.getBooks();
+        if (!FormatUtils.isEmpty(books)){
+            for (Book book : books) {
+                book.getAuthors().stream()
+                        .filter(author1 -> author1.getId() == authorId)
+                        .forEach(author1 -> {
+                            log.info("Deleting author_books authorId={}, bookId={}", author1.getId(), book.getId());
+                            bookRepository.deleteBookAuthor(author1.getId(), book.getId());
+                        });
+                if(book.getAuthors().size() <= 1) {
+                    log.info("Deleting book bookId={}", book.getId());
+                    bookRepository.delete(book);
+                }
+            }
+        }
         log.info("Deleting author id={}, name={}", authorId, author.getName());
         authorRepository.delete(author);
     }

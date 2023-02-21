@@ -140,8 +140,9 @@ public class BookService {
 
     public void delete(Long bookId) throws LibraryStoreBooksException, NotFoundException {
         Book bookToErase = findById(bookId);
-        bookToErase.getAuthors().stream()
+        bookToErase.getAuthors()
                 .forEach(author -> {
+                    log.info("Deleting author_books authorId={}, bookId={}", author.getId(), bookId);
                     bookRepository.deleteBookAuthor(author.getId(), bookToErase.getId());
                 });
         log.info("Deleting book id={}, title={}", bookId, bookToErase.getTitle());

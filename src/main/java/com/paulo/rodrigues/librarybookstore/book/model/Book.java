@@ -74,11 +74,14 @@ public class Book implements Serializable {
 
     @NotNull(message = "Authors are required")
     @Size(min = 1, message = "The Authors needs at least one item")
-    @OneToMany(targetEntity = Author.class, mappedBy = "books", fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(name = "author_books",
+            joinColumns = { @JoinColumn(name = "book_id") },
+            inverseJoinColumns = { @JoinColumn(name = "author_id") })
     private Set<Author> authors;
 
     @NotNull(message = "Publisher is required")
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
     @JoinColumn(name = "PUBLISHER_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "PUBLISHER_BOOK"))
     private Publisher publisher;
 

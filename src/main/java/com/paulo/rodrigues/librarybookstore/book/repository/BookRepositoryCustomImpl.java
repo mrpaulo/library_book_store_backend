@@ -148,7 +148,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         sql.append(" , b.adults_only ");
         sql.append(" FROM BOOK b  ");
         sql.append(" LEFT JOIN PUBLISHER pu ON pu.id = b.publisher_id ");
-        sql.append(" LEFT JOIN author_books ab ON ab.books_id = b.id ");
+        sql.append(" LEFT JOIN author_books ab ON ab.book_id = b.id ");
         sql.append(" LEFT JOIN author a ON ab.author_id = a.id ");
         sql.append(" WHERE 1 = 1 ");
 
@@ -299,7 +299,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             sql.append(" FROM author p ");
             sql.append(" INNER JOIN author a ON a.id = p.id ");
             sql.append(" INNER JOIN author_books ab ON ab.author_id = a.id ");
-            sql.append(" WHERE AB.books_id = :bookId ");
+            sql.append(" WHERE AB.book_id = :bookId ");
 
             Query query = em.createNativeQuery(sql.toString());
             query.setParameter("bookId", bookId);
@@ -497,7 +497,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
             StringBuilder sql = new StringBuilder();
             sql.append(" DELETE FROM author_books ");
             sql.append("   WHERE author_id = :authorId ");
-            sql.append("  AND books_id = :bookId ");
+            sql.append("  AND book_id = :bookId ");
 
             Query query = em.createNativeQuery(sql.toString());
             query.setParameter("authorId", authorId);

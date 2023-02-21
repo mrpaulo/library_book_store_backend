@@ -20,13 +20,13 @@
  (
     id bigint PRIMARY KEY NOT NULL,  
     description character varying(255),
-    books_id bigint
+    book_id bigint
  );
 
  CREATE TABLE author_books 
  (
     author_id bigint,
-    books_id bigint
+    book_id bigint
  );
 
  CREATE TABLE book 

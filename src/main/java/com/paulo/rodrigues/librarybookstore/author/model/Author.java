@@ -85,7 +85,7 @@ public class Author implements Serializable {
     @Column(length = ConstantsUtil.MAX_SIZE_LONG_TEXT)
     private String description;
 
-    @ManyToMany
+    @ManyToMany(mappedBy="authors")
     @JsonBackReference
     private Set<Book> books;
         
