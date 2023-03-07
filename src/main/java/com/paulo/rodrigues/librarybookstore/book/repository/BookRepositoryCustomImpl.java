@@ -85,31 +85,28 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
             Query query = em.createNativeQuery(sql.toString());
 
-            StringBuilder sqlCount = new StringBuilder();
-            sqlCount.append("SELECT COUNT(*) as total FROM ( ");
-            sqlCount.append(getSqlQuery(filter));
-            sqlCount.append(") as a ");
-            Query queryCount = em.createNativeQuery(sqlCount.toString());
-            queryCount = buildFilterParameter(queryCount, filter);
+            String sqlCount = "SELECT distinct COUNT(*) as total FROM ( " +
+                    getSqlQuery(filter) +
+                    ") as a ";
+            Query queryCount = em.createNativeQuery(sqlCount);
+            buildFilterParameter(queryCount, filter);
 
             query.setFirstResult(filter.getOffset());
             query.setMaxResults(filter.getRowsPerPage());
-            query = buildFilterParameter(query, filter);
+            buildFilterParameter(query, filter);
 
-            List<BookDTO> list = buildListBooksDTO(query.getResultList());
+            Set<BookDTO> list = buildListBooksDTO(query.getResultList());
 
-            Integer total = ((BigInteger) queryCount.getSingleResult()).intValue();
-            Integer totalPaginas = 0;
-            if (total != null && total > 0) {
+            int total = ((BigInteger) queryCount.getSingleResult()).intValue();
+            int totalPaginas = 0;
+            if (total > 0) {
                 totalPaginas = (int) Math.ceil(total / filter.getRowsPerPage() == 0 ? 10 : filter.getRowsPerPage());
                 if (totalPaginas == 0) {
                     totalPaginas = 1;
                 }
-            } else if (total == null) {
-                total = 0;
             }
 
-            return new PagedResult<BookDTO>(list, total, totalPaginas);
+            return new PagedResult<>(new ArrayList<>(list), total, totalPaginas);
 
         } catch (Exception e) {
             LOGGER.log(Level.INFO, e.getMessage());
@@ -131,7 +128,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append(" SELECT b.id  ");
+        sql.append(" SELECT distinct b.id  ");
         sql.append(" , b.title  ");
         sql.append(" , b.subtitle  ");
         sql.append(" , b.language_id ");
@@ -209,8 +206,8 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         return query;
     }
 
-    private List<BookDTO> buildListBooksDTO(List<Object[]> resultList) {
-        List<BookDTO> books = new ArrayList<>();
+    private Set<BookDTO> buildListBooksDTO(List<Object[]> resultList) {
+        Set<BookDTO> books = new HashSet<>();
 
         resultList.forEach(b -> {
             try {

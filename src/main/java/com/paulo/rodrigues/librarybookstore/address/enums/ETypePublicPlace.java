@@ -25,11 +25,9 @@ public enum ETypePublicPlace {
     STREET(0, "Rua"),
     AVENUE(1, "Avenida"),
     SQUARE(2, "Praça"),
-    SV(3, "Servidão"),
-    BC(4, "Beco"),
-    ROD(5, "Rodovia"),
-    EST(6, "Estrada");
-    
+    ALLEY(3, "Beco"),
+    ROAD(4, "Rodovia");
+
     int cod;
     String description;
 

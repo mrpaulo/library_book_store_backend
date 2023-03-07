@@ -28,6 +28,7 @@ import com.paulo.rodrigues.librarybookstore.address.repository.CityRepository
 import com.paulo.rodrigues.librarybookstore.address.repository.CountryRepository
 import com.paulo.rodrigues.librarybookstore.address.repository.StateCountryRepository
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService
+import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository
 import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository
 import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
@@ -50,6 +51,7 @@ class AddressServiceTest extends Specification {
         service.countryRepository = Mock(CountryRepository)
         service.stateCountryRepository = Mock(StateCountryRepository)
         service.cityRepository = Mock(CityRepository)
+        service.userRepository = Mock(UserRepository)
     }
 
     def "Address - findById - happy path"() {
@@ -174,6 +176,7 @@ class AddressServiceTest extends Specification {
         then:
         1 * service.personRepository.deleteAddressReference(_)
         1 * service.companyRepository.deleteAddressReference(_)
+        1 * service.userRepository.deleteAddressReference(_)
         1 * service.addressRepository.delete(_)
     }
 

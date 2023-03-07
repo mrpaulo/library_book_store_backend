@@ -30,6 +30,7 @@ import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthor
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorDTO
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorFilter
 import static groovyx.net.http.ContentType.JSON
+import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 
 @Stepwise
@@ -49,8 +50,8 @@ class AuthorControllerTest extends AbstractLBSSpecification {
                 body : author
         )
 
-        then: "the correct 200 status is expected"
-        response.status == SC_OK
+        then: "the correct 201 status is expected"
+        response.status == SC_CREATED
 
         and: "the response content is not null"
         response.responseData != null

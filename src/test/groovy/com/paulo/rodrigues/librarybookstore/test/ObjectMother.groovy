@@ -52,6 +52,7 @@ import org.springframework.data.domain.PageRequest
 import spock.lang.Specification
 
 import java.time.LocalDate
+import java.util.function.Supplier
 
 class ObjectMother extends Specification {
 
@@ -82,7 +83,10 @@ class ObjectMother extends Specification {
 
         return random.ints(leftLimit, rightLimit + 1)
                 .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+
+                .collect({ -> new StringBuilder() },
+                        { sb, codePoint -> sb.append((char) codePoint) },
+                        { sb1, sb2 -> sb1.append(sb2.toString()) })
                 .toString()
     }
 

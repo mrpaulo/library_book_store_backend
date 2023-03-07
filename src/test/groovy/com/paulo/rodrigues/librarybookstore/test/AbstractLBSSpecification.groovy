@@ -123,8 +123,8 @@ abstract class AbstractLBSSpecification extends Specification {
         def authorResponse = client.get(path : baseAuthorAPI + "/fetch/" + nameToSearch)
 
         if(authorResponse != null && authorResponse.responseData.size() > 0){
-            authorResponse.responseData.forEach(r -> {
-                client.delete(path : baseAuthorAPI + "/" + r.id)
+            authorResponse.responseData.forEach({ r ->
+                client.delete(path: baseAuthorAPI + "/" + r.id)
             })
         }
 
@@ -132,8 +132,8 @@ abstract class AbstractLBSSpecification extends Specification {
         def addressResponse = client.get(path : baseAddressAPI + "/" + nameToSearch + "/name")
 
         if(addressResponse != null && addressResponse.responseData.size() > 0){
-            addressResponse.responseData.forEach(r -> {
-                client.delete(path : baseAddressAPI + "/" + r.id)
+            addressResponse.responseData.forEach({ r ->
+                client.delete(path: baseAddressAPI + "/" + r.id)
             })
         }
     }

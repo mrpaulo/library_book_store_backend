@@ -27,6 +27,7 @@ import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static groovyx.net.http.ContentType.JSON
+import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
 
@@ -47,8 +48,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
                 body : address
         )
 
-        then: "the correct 200 status is expected"
-        response.status == SC_OK
+        then: "the correct 201 status is expected"
+        response.status == SC_CREATED
 
         and: "the response content is not null"
         response.responseData != null

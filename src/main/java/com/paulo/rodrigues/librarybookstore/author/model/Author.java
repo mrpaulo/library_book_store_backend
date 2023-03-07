@@ -103,7 +103,7 @@ public class Author implements Serializable {
         if (name.length() > ConstantsUtil.MAX_SIZE_NAME) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }                       
-        if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F")))) {
+        if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F") && !sex.equals("O") && !sex.equals("N")))) {
             throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
         }
         if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
