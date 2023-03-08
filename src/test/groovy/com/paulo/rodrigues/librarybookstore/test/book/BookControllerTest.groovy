@@ -201,7 +201,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     }
 
     Long getIdCreatedFromTest() {
-        def filter = buildBookFilter(title: buildBook().getTitle(), startDate: null, finalDate: null)
+        def filter = buildBookFilter(title: buildBook().getTitle())
 
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
