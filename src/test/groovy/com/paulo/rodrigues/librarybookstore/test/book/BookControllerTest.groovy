@@ -45,7 +45,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to create a book"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
-                body : book
+                body : objectMapper.writeValueAsString(book)
         )
 
         then: "the correct 201 status is expected"
@@ -63,7 +63,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to create a book"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
-                body : book
+                body : objectMapper.writeValueAsString(book)
         )
 
         then: "throw an Exception"
@@ -112,7 +112,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         when: "a rest PUT call is performed to update a book by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
-                body : book
+                body : objectMapper.writeValueAsString(book)
         )
 
         then: "the correct 200 status is expected"
@@ -131,7 +131,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         when: "a rest PUT call is performed to update a book by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
-                body : book
+                body : objectMapper.writeValueAsString(book)
         )
 
         then: "throw an Exception"
@@ -161,7 +161,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to get a list of books by filter"
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
-                body : filter
+                body : objectMapper.writeValueAsString(filter)
         )
 
         then: "the correct 200 status is expected"
@@ -201,11 +201,11 @@ class BookControllerTest extends AbstractLBSSpecification {
     }
 
     Long getIdCreatedFromTest() {
-        def filter = buildBookFilter(title: buildBook().getTitle())
+        def filter = buildBookFilter(title: buildBook().getTitle(), startDate: null, finalDate: null)
 
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
-                body : filter
+                body : objectMapper.writeValueAsString(filter)
         )
 
         return response.responseData[0].id

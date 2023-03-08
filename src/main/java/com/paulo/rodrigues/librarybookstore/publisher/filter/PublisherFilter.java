@@ -18,6 +18,8 @@
 package com.paulo.rodrigues.librarybookstore.publisher.filter;
 
 import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
+
+import java.time.LocalDate;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,6 @@ import lombok.Setter;
 public class PublisherFilter extends PageableFilter {
 
     private String cnpj;    
-    private Date foundationDate;
+    private LocalDate foundationDate;
 }
 

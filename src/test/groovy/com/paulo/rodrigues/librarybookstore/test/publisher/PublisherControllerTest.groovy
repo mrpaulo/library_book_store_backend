@@ -51,7 +51,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to create a publisher"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
-                body : publisher
+                body : objectMapper.writeValueAsString(publisher)
         )
 
         then: "the correct 201 status is expected"
@@ -69,7 +69,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         when: " a rest POST call is performed to create a publisher"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
-                body : publisher
+                body : objectMapper.writeValueAsString(publisher)
         )
 
         then: "throw an Exception"
@@ -118,7 +118,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         when: "a rest PUT call is performed to update a publisher by id"
         def response = client.put(path : baseAPI + "/" + idToEdit,
                 requestContentType : JSON,
-                body : publisher
+                body : objectMapper.writeValueAsString(publisher)
         )
 
         then: "the correct 200 status is expected"
@@ -137,7 +137,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         when: "a rest PUT call is performed to update a publisher by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
-                body : publisher
+                body : objectMapper.writeValueAsString(publisher)
         )
 
         then: "throw an Exception"
@@ -167,7 +167,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         when: "a rest call is performed to get all publishers by a filter"
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
-                body : filter
+                body : objectMapper.writeValueAsString(filter)
         )
 
         then: "the correct 200 status is expected"

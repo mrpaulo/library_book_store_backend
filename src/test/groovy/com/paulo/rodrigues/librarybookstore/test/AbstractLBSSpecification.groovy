@@ -22,6 +22,7 @@
 package com.paulo.rodrigues.librarybookstore.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.paulo.rodrigues.librarybookstore.LibraryBookStoreApplication
 import groovy.json.JsonOutput
 import groovy.json.JsonParserType
@@ -58,8 +59,8 @@ abstract class AbstractLBSSpecification extends Specification {
     int port
 
     @Autowired
-    ObjectMapper objectMapper
-         
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
+
     @Shared
     def client
 
@@ -74,6 +75,7 @@ abstract class AbstractLBSSpecification extends Specification {
         def password = "teste"
         client = new RESTClient("http://localhost:${port}")        
         client.headers['Authorization'] = "Basic ${"$username:$password".bytes.encodeBase64()}"
+        objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
     }
 
 

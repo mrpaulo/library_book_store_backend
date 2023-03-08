@@ -90,12 +90,16 @@ class ObjectMother extends Specification {
                 .toString()
     }
 
-    /*TODO: Add dates to objectMother
-       Current when I try to set a date I got this error:
-       HttpMessageNotReadableException: JSON parse error: Cannot deserialize value of type `java.util.Date` from Object value (token `JsonToken.START_OBJECT`); nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.util.Date` from Object value (token `JsonToken.START_OBJECT`)<EOL>
-    */
     static buildPastDate () {
-        return LocalDate.of(1999, 12, 31);
+        return LocalDate.parse("1999-12-30");
+    }
+
+    static buildForStartDate () {
+        return LocalDate.parse("1999-12-29");
+    }
+
+    static buildForFinalDate () {
+        return LocalDate.parse("1999-12-31");
     }
 
     static buildPageable () {
@@ -192,8 +196,8 @@ class ObjectMother extends Specification {
                 offset: 0,
                 id: null,
                 name: "GroovySpockTest",
-                //startDate: buildPastDate(),
-                //finalDate: buildPastDate(),
+                startDate: buildForStartDate(),
+                finalDate: buildForFinalDate(),
                 sex: "M"
         ))
     }
@@ -210,7 +214,7 @@ class ObjectMother extends Specification {
         applyProperties(props, new Author(
                 id: genericId,
                 name: nameForTest,
-                //birthdate: buildPastDate(),
+                birthdate: buildPastDate(),
                 sex: "M",
                 email: "test@test.com",
                 birthCity: buildCity(),
@@ -228,7 +232,7 @@ class ObjectMother extends Specification {
         applyProperties(props, new AuthorDTO(
                 id: genericId,
                 name: nameForTest,
-                //birthdate: buildPastDate(),
+                birthdate: buildPastDate(),
                 sex: "M",
                 email: "test@test.com",
                 birthCity: buildCityDTO(),
@@ -250,14 +254,14 @@ class ObjectMother extends Specification {
                 offset: 0,
                 id: null,
                 name: nameForTest,
-                //startDate: buildPastDate(),
-                //finalDate: buildPastDate(),
+                startDate: buildForStartDate(),
+                finalDate: buildForFinalDate(),
                 title: '',
                 author: '',
                 publisher: '',
                 subjectName: '',
-                adultsOnly: null
-                //publishDate: buildPastDate()
+                adultsOnly: null,
+                publishDate: buildPastDate()
 
         ))
     }
@@ -343,10 +347,10 @@ class ObjectMother extends Specification {
                 offset: 0,
                 id: null,
                 name: nameForTest,
-                //startDate: buildPastDate(),
-                //finalDate: buildPastDate(),
+                startDate: buildForStartDate(),
+                finalDate: buildForFinalDate(),
                 cnpj: '',
-                //foundationDate: buildPastDate()
+                foundationDate: buildPastDate()
 
         ))
     }
@@ -364,7 +368,7 @@ class ObjectMother extends Specification {
                 id: genericId,
                 name: nameForTest,
                 cnpj: cnpjToTest,
-                //foundationDate: buildPastDate(),
+                foundationDate: buildPastDate(),
                 address: buildAddress(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))
@@ -379,7 +383,7 @@ class ObjectMother extends Specification {
                 id: genericId,
                 name: nameForTest,
                 cnpj: cnpjToTest,
-                //foundationDate: "test@test.com",
+                foundationDate: buildPastDate(),
                 address: buildAddressDTO(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
         ))

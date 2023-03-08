@@ -21,6 +21,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.test.author
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.paulo.rodrigues.librarybookstore.test.AbstractLBSSpecification
 import groovyx.net.http.HttpResponseException
 import spock.lang.Stepwise
@@ -30,6 +31,7 @@ import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthor
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorDTO
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorFilter
 import static groovyx.net.http.ContentType.JSON
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 
@@ -47,7 +49,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to create an author"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
-                body : author
+                body : objectMapper.writeValueAsString(author)
         )
 
         then: "the correct 201 status is expected"
@@ -65,7 +67,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to create an author"
         def response = client.post(path : baseAPI,
                 requestContentType : JSON,
-                body : author
+                body : objectMapper.writeValueAsString(author)
         )
 
         then: "throw an Exception"
@@ -114,7 +116,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         when: "a rest PUT call is performed to update an author by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
-                body : author
+                body : objectMapper.writeValueAsString(author)
         )
 
         then: "the correct 200 status is expected"
@@ -133,7 +135,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         when: "a rest PUT call is performed to update an author by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
                 requestContentType : JSON,
-                body : author
+                body : objectMapper.writeValueAsString(author)
         )
 
         then: "throw an Exception"
@@ -163,7 +165,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         when: "a rest POST call is performed to get all authors by filter"
         def response = client.post(path : baseAPI + "/fetch",
                 requestContentType : JSON,
-                body : filter
+                body : objectMapper.writeValueAsString(filter)
         )
 
         then: "the correct 200 status is expected"

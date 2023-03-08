@@ -18,6 +18,8 @@
 package com.paulo.rodrigues.librarybookstore.book.filter;
 
 import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
+
+import java.time.LocalDate;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,7 +40,7 @@ public class BookFilter extends PageableFilter {
     private String author;
     private String publisher;
     private String subjectName;
-    private Date publishDate;
+    private LocalDate publishDate;
 
     private Boolean adultsOnly;
 }
