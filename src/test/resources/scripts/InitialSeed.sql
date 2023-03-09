@@ -342,9 +342,19 @@ insert into role (id, name) values
 (3, 'OPERATOR'),
 (2, 'CLIENT');
 
-insert into lbs_user (id, name, username, password, email, create_by, create_at) 
+insert into lbs_user
+    (id,
+     name,
+     username,
+     password,
+     email,
+     birthdate,
+     cpf,
+     sex,
+     create_by,
+     create_at)
 values 
-(1, 'Paulo Rodrigues', 'paulo', '{noop}1', 'teste@teste.com', 'InitialSeed.sql', NOW());
+(1, 'Paulo Rodrigues', 'paulo', '{noop}1', 'teste@paulo.com', '1986-09-27', '52252641070', 'M', 'InitialSeed.sql', NOW());
 
 insert into user_role (user_id, role_id) values
 (1,1);

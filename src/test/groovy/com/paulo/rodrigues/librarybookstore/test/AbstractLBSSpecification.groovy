@@ -134,25 +134,34 @@ abstract class AbstractLBSSpecification extends Specification {
         client.delete(path : baseAPI + "/" + idToDelete)
     }
 
+    def getByNameRestCall (baseAPI, nameToSearch){
+        return client.get(path : baseAPI + "/fetch/" + nameToSearch)
+    }
+
     def cleanupSpec() {
         def baseAuthorAPI = AUTHORS_V1_BASE_API
         def nameToSearch = nameForTest
-        def authorResponse = client.get(path : baseAuthorAPI + "/fetch/" + nameToSearch)
+        def authorResponse = getByNameRestCall(baseAuthorAPI, nameToSearch)
 
         if(authorResponse != null && authorResponse.responseData.size() > 0){
             authorResponse.responseData.forEach({ r ->
-                client.delete(path: baseAuthorAPI + "/" + r.id)
+                deleteItemOnDb(baseAuthorAPI, r.id)
             })
         }
 
         def baseAddressAPI = ADDRESSES_V1_BASE_API
-        def addressResponse = client.get(path : baseAddressAPI + "/fetch/" + nameToSearch)
+        def addressResponse = getByNameRestCall(baseAddressAPI, nameToSearch)
 
         if(addressResponse != null && addressResponse.responseData.size() > 0){
             addressResponse.responseData.forEach({ r ->
-                client.delete(path: baseAddressAPI + "/" + r.id)
+                deleteItemOnDb(baseAddressAPI, r.id)
             })
         }
+
+        def basePublisherAPI = PUBLISHERS_V1_BASE_API
+        def idToDelete2 = getIdCreatedFromTest(basePublisherAPI, buildPublisher().getName())
+        if(idToDelete2)
+            deleteItemOnDb(basePublisherAPI, idToDelete2)
     }
     
 }
