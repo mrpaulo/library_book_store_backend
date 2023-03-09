@@ -23,18 +23,17 @@ package com.paulo.rodrigues.librarybookstore.test.address
 
 import com.paulo.rodrigues.librarybookstore.test.AbstractLBSSpecification
 import groovyx.net.http.HttpResponseException
-import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
 
-@Stepwise
 class AddressControllerTest extends AbstractLBSSpecification {
     
-    String baseAPI = "/api/v1/addresses"
+    String baseAPI = ADDRESSES_V1_BASE_API
     def idNotExist = 99999
 
     @Unroll
@@ -53,6 +52,10 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
         and: "the response content is not null"
         response.responseData != null
+
+        cleanup:
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildAddress().getName())
+        deleteItemOnDb(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -75,8 +78,11 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getById - happy path"() {
-        given: "id just created on method create"
-        def idToGet = getIdCreatedFromTest()
+        given: "creating a address to be used on this test"
+        createItemOnDb(baseAPI, buildAddress())
+
+        and: "id just created on method create"
+        def idToGet = getIdCreatedFromTest(baseAPI, buildAddress().getName())
 
         when: "a rest call is performed to get an address by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
@@ -86,6 +92,9 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
         and: "the response content is not null"
         response.responseData != null
+
+        cleanup:
+        deleteItemOnDb(baseAPI, idToGet)
     }
 
     @Unroll
@@ -105,8 +114,11 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - update - happy path"() {
-        given: "an id and an address object"
-        def idToEdit = getIdCreatedFromTest()
+        given: "creating a address to be used on this test"
+        createItemOnDb(baseAPI, buildAddress())
+
+        and: "an id and an address object"
+        def idToEdit = getIdCreatedFromTest(baseAPI, buildAddress().getName())
         def address = buildAddressDTO(coordination: "test2")
 
         when: "a rest PUT call is performed to update an address by id"
@@ -120,12 +132,18 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
         and: "the response content is not null"
         response.responseData != null
+
+        cleanup:
+        deleteItemOnDb(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Address - update - should throw an exception"() {
-        given: "an id and an address object"
-        def idToEdit = getIdCreatedFromTest()
+        given: "creating a address to be used on this test"
+        createItemOnDb(baseAPI, buildAddress())
+
+        and: "an id and an address object"
+        def idToEdit = getIdCreatedFromTest(baseAPI, buildAddress().getName())
         def address = buildAddressDTO(name: null)
 
         when: "a rest PUT call is performed to update an address by id"
@@ -139,12 +157,18 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
         and:
         response == null
+
+        cleanup:
+        deleteItemOnDb(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Address - delete - happy path"() {
-        given: "id just created on method create"
-        def idToDelete = getIdCreatedFromTest()
+        given: "creating a address to be used on this test"
+        createItemOnDb(baseAPI, buildAddress())
+
+        and: "id just created on method create"
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildAddress().getName())
 
         when: "a rest DELETE call is performed to delete an address by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
@@ -153,11 +177,12 @@ class AddressControllerTest extends AbstractLBSSpecification {
         response.status == SC_OK
 
         and: "the response content is not null"
+        response.responseData != null
     }
 
     @Unroll
     def "Address - delete - should throw an exception"() {
-        given: "id just created on method create"
+        given: "id not exist"
         def idToDelete = idNotExist
 
         when: "a rest DELETE call is performed to delete an address by id"
@@ -173,7 +198,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllCountries - happy path"() {
         when: "a rest GET call is performed to get a list of countries"
-        def response = client.get(path : baseAPI + "/countries")
+        def response = client.get(path : baseAPI + GET_COUNTRIES_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -221,7 +246,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllCities - should throw an exception given an invalid input"() {
         when: "a rest GET call is performed with an invalid abc input"
-        def response = client.get(path : baseAPI + "1/abc/cities")
+        def response = client.get(path : baseAPI + "/1/abc/cities")
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -233,20 +258,13 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getETypePublicPlace - happy path"() {
         when: "a rest GET call is performed to get all types of public place enum"
-        def response = client.get(path : baseAPI + "/logradouros")
+        def response = client.get(path : baseAPI + GET_TYPE_PUBLIC_PLACE_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
 
         and: "the response content is not null"
         response.responseData != null
-    }
-
-    Long getIdCreatedFromTest() {
-        def nameToSearch = buildAddress().getName()
-        def response = client.get(path : baseAPI + "/" + nameToSearch + "/name")
-
-        return response.responseData[0].id
     }
 }
 

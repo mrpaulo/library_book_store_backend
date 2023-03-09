@@ -34,5 +34,27 @@ public class ConstantsUtil {
     
     public static final int MAX_SIZE_CNPJ = 14;
     public static final int MAX_SIZE_CPF = 11;
-    
+
+    public static final String ADDRESSES_V1_BASE_API = "/api/v1/addresses";
+    public static final String AUTHORS_V1_BASE_API = "/api/v1/authors";
+    public static final String BOOKS_V1_BASE_API = "/api/v1/books";
+    public static final String PUBLISHERS_V1_BASE_API = "/api/v1/publishers";
+    public static final String USERS_V1_BASE_API = "/api/v1/users";
+    public static final String GET_ALL_PATH = "/all";
+    public static final String FIND_PAGEABLE_PATH = "/fetch";
+    public static final String GET_BY_ID_PATH = "/{id}";
+    public static final String GET_BY_NAME_PATH = "/fetch/{name}";
+    public static final String UPDATE_PATH = "/{id}";
+    public static final String DELETE_PATH = "/{id}";
+    public static final String SAFE_DELETE_PATH = "/safe/{id}";
+    public static final String GET_SUBJECTS_PATH = "/subjects";
+    public static final String GET_FORMATS_PATH = "/formats";
+    public static final String GET_CONDITIONS_PATH = "/conditions";
+    public static final String GET_LANGUAGES_PATH = "/languages";
+    public static final String GET_TYPE_PUBLIC_PLACE_PATH = "/logradouros";
+    public static final String GET_CITIES_PATH = "/{country}/{state}/cities";
+    public static final String GET_STATES_PATH = "/{country}/states";
+    public static final String GET_COUNTRIES_PATH = "/countries";
+    public static final String UPDATE_USER_PATH = "/update";
+    public static final String GET_ROLES_PATH = "/roles";
 }

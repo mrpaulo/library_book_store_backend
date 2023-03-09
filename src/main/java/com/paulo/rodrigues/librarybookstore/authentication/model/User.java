@@ -117,15 +117,32 @@ public class User {
     
 
     public void validation() throws LibraryStoreBooksException {
+
         if (!FormatUtils.isEmptyOrNull(name) && name.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NAME_NOT_INFORMED"));
-        }                             
-        if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F") && !sex.equals("O")))) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }
+        if (FormatUtils.isEmptyOrNull(username)) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USERNAME_NOT_INFORMED"));
+        }
+        if (!FormatUtils.isEmptyOrNull(username) && username.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USERNAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }
+        if (FormatUtils.isEmptyOrNull(password)) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_PASSWORD_NOT_INFORMED"));
+        }
+        if (!FormatUtils.isEmptyOrNull(password) && password.length() > ConstantsUtil.MAX_SIZE_NAME) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_PASSWORD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }
+        if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F") && !sex.equals("O") && !sex.equals("N")))) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_SEX_INVALID"));
         }
         if (!FormatUtils.isEmptyOrNull(email) && email.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
-        } 
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_EMAIL_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+        }
+        String nuCpf = FormatUtils.removeFormatCPF(cpf);
+        if (nuCpf != null && !nuCpf.isEmpty() && !FormatUtils.isCPF(nuCpf)) {
+            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_CPF_INVALID"));
+        }
     }
 
     public void persistAt() {

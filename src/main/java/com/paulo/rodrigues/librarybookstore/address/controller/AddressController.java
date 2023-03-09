@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
 /**
  *
  * @author paulo.rodrigues
@@ -61,7 +62,7 @@ import org.springframework.web.bind.annotation.RestController;
         @ApiResponse(code = 403, message = "Insufficient scope"),
         @ApiResponse(code = 404, message = "Not found"),
         @ApiResponse(code = 500, message = "Something Unexpected Happened"),})
-@RequestMapping("/api/v1/addresses")
+@RequestMapping(ADDRESSES_V1_BASE_API)
 public class AddressController {
     
     @Autowired
@@ -69,7 +70,7 @@ public class AddressController {
 
     @ApiOperation(value = "Get the address by id",
             notes = "It returns the address given an Id")
-    @GetMapping("/{id}")
+    @GetMapping(GET_BY_ID_PATH)
     public ResponseEntity<Address> getById(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok().body(addressService.findById(addressId));
@@ -80,7 +81,7 @@ public class AddressController {
         }
     }
 
-    @GetMapping("/{name}/name")
+    @GetMapping(GET_BY_NAME_PATH)
     public ResponseEntity<List<Address>> getByName(@PathVariable(value = "name") String addressName) {
         try {
             return ResponseEntity.ok().body(addressService.findByName(addressName));
@@ -102,7 +103,7 @@ public class AddressController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(UPDATE_PATH)
     public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDTO) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok(addressService.edit(addressId, addressDTO));
@@ -113,7 +114,7 @@ public class AddressController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(DELETE_PATH)
     public Map<String, Boolean> delete(@PathVariable(value = "id") Long addressId) throws LibraryStoreBooksException, NotFoundException {
         try {
             addressService.delete(addressId);
@@ -127,7 +128,7 @@ public class AddressController {
         }
     }
     
-    @GetMapping("/logradouros")
+    @GetMapping(GET_TYPE_PUBLIC_PLACE_PATH)
     public ResponseEntity<List<Map<String, String>>> getETypePublicPlace() {
         try {
             return ResponseEntity.ok().body(addressService.getETypePublicPlace());
@@ -138,7 +139,7 @@ public class AddressController {
         }
     }
     
-    @GetMapping("/{country}/{state}/cities")
+    @GetMapping(GET_CITIES_PATH)
     public ResponseEntity<List<City>> getAllCities(@PathVariable(value = "country") Long countryId, @PathVariable(value = "state") Long stateId) {
         try {
             return ResponseEntity.ok().body(addressService.getAllCities(countryId, stateId));
@@ -149,7 +150,7 @@ public class AddressController {
         }
     }
     
-    @GetMapping("/{country}/states")
+    @GetMapping(GET_STATES_PATH)
     public ResponseEntity<List<StateCountry>> getAllStates(@PathVariable(value = "country") Long countryId) {
         try {
             return ResponseEntity.ok().body(addressService.getAllStates(countryId));
@@ -160,7 +161,7 @@ public class AddressController {
         }
     }
     
-    @GetMapping("/countries")
+    @GetMapping(GET_COUNTRIES_PATH)
     public ResponseEntity<List<Country>> getAllCountries() {
         try {
             return ResponseEntity.ok().body(addressService.getAllCountries());

@@ -21,24 +21,21 @@
  */
 package com.paulo.rodrigues.librarybookstore.test.author
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.paulo.rodrigues.librarybookstore.test.AbstractLBSSpecification
 import groovyx.net.http.HttpResponseException
-import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthor
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorDTO
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorFilter
 import static groovyx.net.http.ContentType.JSON
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
 
-@Stepwise
 class AuthorControllerTest extends AbstractLBSSpecification {
     
-    String baseAPI = "/api/v1/authors"
+    String baseAPI = AUTHORS_V1_BASE_API
     def idNotExist = 99999
 
     @Unroll
@@ -57,6 +54,10 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
         and: "the response content is not null"
         response.responseData != null
+
+        cleanup: "deleting the author"
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
+        deleteItemOnDb(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -79,8 +80,11 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Author - getById - happy path"() {
-        given: "id just created on method create"
-        def idToGet = getIdCreatedFromTest()
+        given: "creating an author to be used on this test"
+        createItemOnDb(baseAPI, buildAuthor())
+
+        and: "id just created on method create"
+        def idToGet = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
 
         when: "a rest GET call is performed to get an author by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
@@ -90,6 +94,9 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
         and: "the response content is not null"
         response.responseData != null
+
+        cleanup: "deleting the author"
+        deleteItemOnDb(baseAPI, idToGet)
     }
 
     @Unroll
@@ -109,8 +116,11 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Author - update - happy path"() {
-        given: "an id and an author object"
-        def idToEdit = getIdCreatedFromTest()
+        given: "creating a author to be used on this test"
+        createItemOnDb(baseAPI, buildAuthor())
+
+        and: "an id and an author object"
+        def idToEdit = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
         def author = buildAuthorDTO(description: "test2")
 
         when: "a rest PUT call is performed to update an author by id"
@@ -124,12 +134,18 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
         and: "the response content is not null"
         response.responseData != null
+
+        cleanup: "deleting the author"
+        deleteItemOnDb(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Author - update - should throw an exception"() {
-        given: "an id and an author object"
-        def idToEdit = getIdCreatedFromTest()
+        given: "creating a author to be used on this test"
+        createItemOnDb(baseAPI, buildAuthor())
+
+        and: "an id and an author object"
+        def idToEdit = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
         def author = buildAuthorDTO(name: null)
 
         when: "a rest PUT call is performed to update an author by id"
@@ -143,12 +159,15 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
         and:
         response == null
+
+        cleanup: "deleting the author"
+        deleteItemOnDb(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Author - getAll - happy path"() {
         when: "a rest GET call is performed to get all authors"
-        def response = client.get(path : baseAPI + "/all")
+        def response = client.get(path : baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -163,7 +182,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def filter = buildAuthorFilter()
 
         when: "a rest POST call is performed to get all authors by filter"
-        def response = client.post(path : baseAPI + "/fetch",
+        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
                 requestContentType : JSON,
                 body : objectMapper.writeValueAsString(filter)
         )
@@ -192,8 +211,11 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Author - delete - happy path"() {
-        given: "id just created on method create"
-        def idToDelete = getIdCreatedFromTest()
+        given: "creating a author to be used on this test"
+        createItemOnDb(baseAPI, buildAuthor())
+
+        and: "id just created on method create"
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
 
         when: "a rest DELETE call is performed to delete an author by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
@@ -202,6 +224,10 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         response.status == SC_OK
 
         and: "the response content is not null"
+        response.responseData != null
+
+        and: "the deleted id is the expected"
+        response.responseData.id == idToDelete
     }
 
     @Unroll
@@ -217,13 +243,6 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
         and:
         response == null
-    }
-
-    Long getIdCreatedFromTest() {
-        def nameToSearch = buildAuthor().getName()
-        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
-
-        return response.responseData[0].id
     }
 }
 

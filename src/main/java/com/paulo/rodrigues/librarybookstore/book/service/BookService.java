@@ -233,7 +233,11 @@ public class BookService {
     }
 
     public List<Language> getAllBookLanguagesSorted() {
-        return languageRepository.findAll()
+        List<Language> languages = languageRepository.findAll();
+        if (FormatUtils.isEmpty(languages)) {
+            throw new RuntimeException("Language list is null");
+        }
+        return languages
                 .stream()
                 .sorted(Comparator.comparing(Language::getName))
                 .collect(Collectors.toList());

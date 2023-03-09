@@ -48,6 +48,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
+
 /**
  *
  * @author paulo.rodrigues
@@ -55,13 +57,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/authors")
+@RequestMapping(AUTHORS_V1_BASE_API)
 public class AuthorController {
+
 
     @Autowired
     private AuthorService authorService;
 
-    @GetMapping("/all")
+    @GetMapping(GET_ALL_PATH)
     public ResponseEntity<List<AuthorDTO>> getAll() {
         try {
             List<AuthorDTO> authors = authorService.findAll();
@@ -74,7 +77,7 @@ public class AuthorController {
         }
     }
 
-    @PostMapping("/fetch")
+    @PostMapping(FIND_PAGEABLE_PATH)
     public ResponseEntity<List<AuthorDTO>> findPageable(@RequestBody AuthorFilter filter, HttpServletRequest req, HttpServletResponse res) {
         try {
             Pageable pageable = FormatUtils.getPageRequest(filter);
@@ -89,7 +92,7 @@ public class AuthorController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(GET_BY_ID_PATH)
     public ResponseEntity<Author> getById(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok().body(authorService.findById(authorId));
@@ -100,7 +103,7 @@ public class AuthorController {
         }
     }
     
-    @GetMapping("/fetch/{name}")
+    @GetMapping(GET_BY_NAME_PATH)
     public ResponseEntity<List<AuthorDTO>> getByName(@PathVariable(value = "name") String authorName) throws LibraryStoreBooksException {
         try {
             return ResponseEntity.ok().body(authorService.findByName(authorName));
@@ -122,7 +125,7 @@ public class AuthorController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(UPDATE_PATH)
     public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDTO) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok().body(authorService.edit(authorId, authorDTO));
@@ -133,7 +136,7 @@ public class AuthorController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(DELETE_PATH)
     public Map<String, Long> delete(@PathVariable(value = "id") Long authorId) throws LibraryStoreBooksException, NotFoundException {
         try {
             authorService.delete(authorId);

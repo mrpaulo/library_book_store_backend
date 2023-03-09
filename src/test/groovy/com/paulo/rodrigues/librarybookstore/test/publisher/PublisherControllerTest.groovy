@@ -23,26 +23,25 @@ package com.paulo.rodrigues.librarybookstore.test.publisher
 
 import com.paulo.rodrigues.librarybookstore.test.AbstractLBSSpecification
 import groovyx.net.http.HttpResponseException
-import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
 import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
 
-@Stepwise
 class PublisherControllerTest extends AbstractLBSSpecification {
     
-    String baseAPI = "/api/v1/publishers"
+    String baseAPI = PUBLISHERS_V1_BASE_API
     def idNotExist = 99999
 
     @Unroll
     def "Publisher - create - happy path"() {
         given: "a check if we already have an object with same name"
-        def idToDelete = getIdCreatedFromTest()
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
         if (idToDelete){
-            client.delete(path : baseAPI + "/" + idToDelete)
+            deleteItemOnDb(baseAPI, idToDelete)
         }
 
         and: "a publisher object"
@@ -57,8 +56,12 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "the correct 201 status is expected"
         response.status == SC_CREATED
 
-        and: "the response content is not null"
-        response.responseData != null
+        and: "the response content must be as expected"
+        response.responseData.name == publisher.getName()
+
+        cleanup: "deleting the publisher"
+        def idToDelete2 = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
+        deleteItemOnDb(baseAPI, idToDelete2)
     }
 
     @Unroll
@@ -75,14 +78,17 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "throw an Exception"
         thrown(HttpResponseException)
 
-        and:
+        and: "the response content is null"
         response == null
     }
 
     @Unroll
     def "Publisher - getById - happy path"() {
-        given: "id just created on method create"
-        def idToGet = getIdCreatedFromTest()
+        given: "creating a publisher to be used on this test"
+        createItemOnDb(baseAPI, buildPublisher())
+
+        and: "id just created on method create"
+        def idToGet = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
 
         when: "a rest GET call is performed to get a publisher by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
@@ -90,8 +96,11 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "the correct 200 status is expected"
         response.status == SC_OK
 
-        and: "the response content is not null"
-        response.responseData != null
+        and: "the response content must be as expected"
+        response.responseData.id == idToGet
+
+        cleanup: "deleting the publisher"
+        deleteItemOnDb(baseAPI, idToGet)
     }
 
     @Unroll
@@ -105,14 +114,17 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "throw an Exception"
         thrown(HttpResponseException)
 
-        and:
+        and: "the response content is null"
         response == null
     }
 
     @Unroll
     def "Publisher - update - happy path"() {
-        given: "an id and a publisher object"
-        def idToEdit = getIdCreatedFromTest()
+        given: "creating a publisher to be used on this test"
+        createItemOnDb(baseAPI, buildPublisher())
+
+        and: "an id and a publisher object"
+        def idToEdit = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
         def publisher = buildPublisherDTO(description: "test2")
 
         when: "a rest PUT call is performed to update a publisher by id"
@@ -124,14 +136,20 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "the correct 200 status is expected"
         response.status == SC_OK
 
-        and: "the response content is not null"
-        response.responseData != null
+        and: "the response content must be as expected"
+        response.responseData.description == publisher.getDescription()
+
+        cleanup: "deleting the publisher"
+        deleteItemOnDb(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Publisher - update - should throw an exception"() {
-        given: "an id and a publisher object"
-        def idToEdit = getIdCreatedFromTest()
+        given: "creating a publisher to be used on this test"
+        createItemOnDb(baseAPI, buildPublisher())
+
+        and: "an id and a publisher object"
+        def idToEdit = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
         def publisher = buildPublisherDTO(name: null)
 
         when: "a rest PUT call is performed to update a publisher by id"
@@ -143,14 +161,17 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "throw an Exception"
         thrown(HttpResponseException)
 
-        and:
+        and: "the response content is null"
         response == null
+
+        cleanup: "deleting the publisher"
+        deleteItemOnDb(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Publisher - getAll - happy path"() {
         when: "a rest GET call is performed to get all publishers"
-        def response = client.get(path : baseAPI + "/all")
+        def response = client.get(path : baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -165,7 +186,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def filter = buildPublisherFilter()
 
         when: "a rest call is performed to get all publishers by a filter"
-        def response = client.post(path : baseAPI + "/fetch",
+        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
                 requestContentType : JSON,
                 body : objectMapper.writeValueAsString(filter)
         )
@@ -179,7 +200,10 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Publisher - getByName - happy path"() {
-        given: "a name to search"
+        given: "creating a publisher to be used on this test"
+        createItemOnDb(baseAPI, buildPublisher())
+
+        and: "a name to search"
         def nameToSearch = buildPublisher().getName()
 
         when: "a rest call is performed to get a publishers by name"
@@ -188,14 +212,42 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "the correct 200 status is expected"
         response.status == SC_OK
 
-        and: "the response content is not null"
-        response.responseData != null
+        and: "the response content must be as expected"
+        response.responseData[0].name == nameToSearch
+
+        cleanup: "deleting the publisher"
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
+        deleteItemOnDb(baseAPI, idToDelete)
+    }
+
+    @Unroll
+    def "Publisher - safeDelete - happy path"() {
+        given: "creating a publisher to be used on this test"
+        createItemOnDb(baseAPI, buildPublisher())
+
+        and: "id just created on method create"
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
+
+        when: "a rest call is performed to delete a publisher by id"
+        def response = client.delete(path : baseAPI + "/safe/" + idToDelete)
+
+        then: "the correct 200 status is expected"
+        response.status == SC_OK
+
+        and: "the response content is zero because this publisher has no books"
+        response.responseData.size() == 0
+
+        cleanup: "deleting the publisher"
+        deleteItemOnDb(baseAPI, idToDelete)
     }
 
     @Unroll
     def "Publisher - delete - happy path"() {
-        given: "id just created on method create"
-        def idToDelete = getIdCreatedFromTest()
+        given: "creating a publisher to be used on this test"
+        createItemOnDb(baseAPI, buildPublisher())
+
+        and: "id just created on method create"
+        def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
 
         when: "a rest call is performed to delete a publisher by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
@@ -203,7 +255,8 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         then: "the correct 200 status is expected"
         response.status == SC_OK
 
-        and: "the response content is not null"
+        and: "the deleted id is the expected"
+        response.responseData.id == idToDelete
     }
 
     @Unroll
@@ -219,13 +272,6 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
         and:
         response == null
-    }
-
-    Long getIdCreatedFromTest() {
-        def nameToSearch = buildPublisher().getName()
-        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
-
-        return response.responseData.size > 0 ? response.responseData[0].id : null
     }
 }
 

@@ -184,7 +184,7 @@ class AuthorServiceTest extends Specification {
 
         where:
         scenario                               | author                                                                             | message
-        'sex is different of M of F'           | buildAuthor(sex: 'X')                                                              | MessageUtil.getMessage("AUTHOR_SEX_INVALID")
+        'sex is different of F, M, O or N'     | buildAuthor(sex: 'X')                                                              | MessageUtil.getMessage("AUTHOR_SEX_INVALID")
         'sex is bigger than max size'          | buildAuthor(sex: buildRandomString(2))                                             | MessageUtil.getMessage("AUTHOR_SEX_INVALID")
         'description is bigger than max size'  | buildAuthor(description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT + 1)) | MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + "")
     }
@@ -285,7 +285,6 @@ class AuthorServiceTest extends Specification {
         service.authorRepository.findById(_) >> Optional.of(buildAuthor())
         service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
 
-
         when:
         service.saveBookAuthor(book, author)
 
@@ -299,7 +298,6 @@ class AuthorServiceTest extends Specification {
         def authorsDTO = buildAuthorsDTO()
         service.authorRepository.findById(_) >> Optional.of(buildAuthor())
         service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
-
 
         when:
         def response = service.saveBookAuthorsFromDTOs(book, authorsDTO)
@@ -316,7 +314,6 @@ class AuthorServiceTest extends Specification {
         def authors = Sets.newHashSet(buildAuthors())
         service.authorRepository.findById(_) >> Optional.of(buildAuthor())
         service.bookRepository.getBooksFromAuthorName(_) >> buildBooks()
-
 
         when:
         def response = service.saveAuthors(authors)

@@ -48,6 +48,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
+
 /**
  *
  * @author paulo.rodrigues
@@ -55,20 +57,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/publishers")
+@RequestMapping(PUBLISHERS_V1_BASE_API)
 public class PublisherController {
 
     @Autowired
     private PublisherService publisherService;
 
-    @GetMapping("/all")
+    @GetMapping(GET_ALL_PATH)
     public List<PublisherDTO> getAll() {
         List<PublisherDTO> publishersList = publisherService.findAll();
 
         return publishersList.stream().sorted(Comparator.comparing(PublisherDTO::getName)).collect(Collectors.toList());
     }
 
-    @PostMapping("/fetch")
+    @PostMapping(FIND_PAGEABLE_PATH)
     public List<PublisherDTO> findPageable(@RequestBody PublisherFilter filter, HttpServletRequest req, HttpServletResponse res) {
         try {
             Pageable pageable = FormatUtils.getPageRequest(filter);
@@ -82,7 +84,7 @@ public class PublisherController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(GET_BY_ID_PATH)
     public ResponseEntity<Publisher> getById(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok().body(publisherService.findById(publisherId));
@@ -93,7 +95,7 @@ public class PublisherController {
         }
     }
     
-    @GetMapping("/fetch/{name}")
+    @GetMapping(GET_BY_NAME_PATH)
     public ResponseEntity<List<PublisherDTO>> findByName(@PathVariable(value = "name") String publisherName) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok().body(publisherService.findByName(publisherName));
@@ -115,7 +117,7 @@ public class PublisherController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(UPDATE_PATH)
     public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDTO) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok(publisherService.edit(publisherId, publisherDTO));
@@ -126,7 +128,7 @@ public class PublisherController {
         }
     }
 
-    @DeleteMapping("/safe/{id}")
+    @DeleteMapping(SAFE_DELETE_PATH)
     public List<String> safeDelete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         try {
             return publisherService.safeDelete(publisherId);
@@ -136,7 +138,7 @@ public class PublisherController {
             throw e;
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping(DELETE_PATH)
     public Map<String, Long> delete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
         try {
             publisherService.delete(publisherId);

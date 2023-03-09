@@ -24,14 +24,11 @@ package com.paulo.rodrigues.librarybookstore.test
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.paulo.rodrigues.librarybookstore.LibraryBookStoreApplication
-import groovy.json.JsonOutput
-import groovy.json.JsonParserType
 import groovy.sql.Sql
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import spock.lang.Specification
-import groovy.json.JsonSlurper
 import groovyx.net.http.RESTClient
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
@@ -39,9 +36,13 @@ import org.springframework.test.context.TestPropertySource
 import spock.lang.Shared
 import spock.lang.Unroll
 
+import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAddress
+import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildPublisher
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.nameForTest
+import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.URLENC
 import static org.apache.http.HttpStatus.SC_OK
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
 
 @ActiveProfiles(["Test"])
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
@@ -77,8 +78,6 @@ abstract class AbstractLBSSpecification extends Specification {
         client.headers['Authorization'] = "Basic ${"$username:$password".bytes.encodeBase64()}"
         objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
     }
-
-
 
     def createUser() {
         Map dbConnParams = [
@@ -119,8 +118,24 @@ abstract class AbstractLBSSpecification extends Specification {
         deleteUserAndClose() == null
     }
 
+    def createItemOnDb(baseAPI, item) {
+        client.post(path : baseAPI,
+                requestContentType : JSON,
+                body : objectMapper.writeValueAsString(item)
+        )
+    }
+
+    def getIdCreatedFromTest(baseAPI, nameToSearch) {
+        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
+        return response.responseData.size > 0 ? response.responseData[0].id : null
+    }
+
+    def deleteItemOnDb(baseAPI, idToDelete) {
+        client.delete(path : baseAPI + "/" + idToDelete)
+    }
+
     def cleanupSpec() {
-        def baseAuthorAPI = "/api/v1/authors"
+        def baseAuthorAPI = AUTHORS_V1_BASE_API
         def nameToSearch = nameForTest
         def authorResponse = client.get(path : baseAuthorAPI + "/fetch/" + nameToSearch)
 
@@ -130,8 +145,8 @@ abstract class AbstractLBSSpecification extends Specification {
             })
         }
 
-        def baseAddressAPI = "/api/v1/addresses"
-        def addressResponse = client.get(path : baseAddressAPI + "/" + nameToSearch + "/name")
+        def baseAddressAPI = ADDRESSES_V1_BASE_API
+        def addressResponse = client.get(path : baseAddressAPI + "/fetch/" + nameToSearch)
 
         if(addressResponse != null && addressResponse.responseData.size() > 0){
             addressResponse.responseData.forEach({ r ->

@@ -31,6 +31,10 @@ import com.paulo.rodrigues.librarybookstore.address.model.Address
 import com.paulo.rodrigues.librarybookstore.address.model.City
 import com.paulo.rodrigues.librarybookstore.address.model.Country
 import com.paulo.rodrigues.librarybookstore.address.model.StateCountry
+import com.paulo.rodrigues.librarybookstore.authentication.dto.UserDTO
+import com.paulo.rodrigues.librarybookstore.authentication.filter.UserFilter
+import com.paulo.rodrigues.librarybookstore.authentication.model.Role
+import com.paulo.rodrigues.librarybookstore.authentication.model.User
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter
 import com.paulo.rodrigues.librarybookstore.author.model.Author
@@ -386,6 +390,72 @@ class ObjectMother extends Specification {
                 foundationDate: buildPastDate(),
                 address: buildAddressDTO(),
                 description: buildRandomString(ConstantsUtil.MAX_SIZE_LONG_TEXT)
+        ))
+    }
+
+    /*
+    User
+    */
+    static buildUserFilter (props = null) {
+        applyProperties(props, new UserFilter(
+                currentPage: 1,
+                rowsPerPage: 10,
+                sortColumn: 'name',
+                sort: 'asc',
+                offset: 0,
+                id: null,
+                name: "GroovySpockTest",
+                startDate: buildForStartDate(),
+                finalDate: buildForFinalDate()
+        ))
+    }
+
+    static buildUsers (props = null) {
+        applyProperties(props, Arrays.asList(buildUser()))
+    }
+
+    static buildUsersPage (props = null) {
+        applyProperties(props, new PageImpl<>(buildUsers(), buildPageable (), 1l))
+    }
+
+    static buildUser (props = null) {
+        applyProperties(props, new User(
+                id: genericId,
+                name: nameForTest + "b",
+                username: nameForTest + "b",
+                password: "secret_password",
+                birthdate: buildPastDate(),
+                cpf: "50069735018",
+                sex: "M",
+                email: "test@test.com",
+                address: buildAddress(),
+                roles: buildRoles()
+        ))
+    }
+
+    static buildUsersDTO (props = null) {
+        applyProperties(props, Arrays.asList(buildUserDTO()))
+    }
+
+    static buildUserDTO (props = null) {
+        applyProperties(props, new UserDTO(
+                id: genericId,
+                name: nameForTest + "b",
+                username: nameForTest + "b",
+                birthdate: buildPastDate(),
+                sex: "M",
+                email: "test@test.com"
+        ))
+    }
+
+    static buildRoles (props = null) {
+        applyProperties(props, Arrays.asList(buildRole()))
+    }
+
+    static buildRole (props = null) {
+        applyProperties(props, new Role(
+                id: 1,
+                name: "ADMIN",
         ))
     }
 }

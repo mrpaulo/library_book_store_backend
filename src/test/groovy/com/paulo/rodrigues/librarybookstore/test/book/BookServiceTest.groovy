@@ -34,6 +34,7 @@ import com.paulo.rodrigues.librarybookstore.book.service.BookService
 import com.paulo.rodrigues.librarybookstore.publisher.service.PublisherService
 import com.paulo.rodrigues.librarybookstore.utils.*
 import org.modelmapper.ModelMapper
+import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
@@ -56,90 +57,90 @@ class BookServiceTest extends Specification {
     )
 
     def "Book - findAll - happy path"() {
-        given:
+        given: "a list of books"
         def books = buildBooks()
 
-        when:
+        when: "the service method findAll() is called"
         def response = service.findAll()
 
-        then:
+        then: "the repository method findAll() is called once and returns a list of books"
         1 * bookRepository.findAll() >> books
 
-        and:
-        response.size() == 1
+        and: "the response has same as expected"
+        response.size() == books.size()
     }
 
     def "Book - findPageable - happy path"() {
-        given:
+        given: "a list of books and a book filter"
         def booksPage = buildBooksPage()
         def filter = buildBookFilter()
 
-        when:
+        when: "the service method findPageable(filter) is called"
         def response = service.findPageable(filter)
 
-        then:
+        then: "the repository method findPageable() is called once with the filter parameter and returns a Page object containing the list of books"
         1 * bookRepository.findPageable(*_) >> booksPage
 
-        and:
+        and: "the response is not null"
         response != null
     }
 
     def "Book - findById - happy path"() {
-        given:
+        given: "a book object, an id, and a method stub for the author service"
         def book = buildBook()
         def id = 1
         authorService.authorsFromDTOs(_) >> buildAuthors()
 
-        when:
+        when: "the service method findById(id) is called"
         def response = service.findById(id)
 
-        then:
+        then: "the repository method findById(id) is called once with the id parameter and returns an Optional containing the book object"
         1 * bookRepository.findById(id) >> Optional.of(book)
 
-        and:
+        and: "the response is equal to the book object"
         response == book
     }
 
     def "Book - findById - should throw an exception"() {
-        given:
+        given: "an id"
         def id = 1
 
-        when:
+        when: "the service method findById(id) is called"
         service.findById(id)
 
-        then:
+        then: "a NotFoundException is thrown"
         def e = thrown(NotFoundException)
 
-        and:
+        and: "the exception message is not null and is equal to the expected message"
         e.getMessage() != null
         e.getMessage() == MessageUtil.getMessage("BOOK_NOT_FOUND") + " ID: " + id
     }
 
     def "Book - create - happy path"() {
-        given:
+        given: "a bookDTO object, a book object, and a method stub for the author service"
         def bookDTO = buildBookDTO()
         def book = buildBook()
         authorService.authorsFromDTOs(_) >> buildAuthors()
 
-        when:
+        when: "the service method create(bookDTO) is called"
         def response = service.create(bookDTO)
 
-        then:
+        then: "the repository method saveAndFlush() is called once with the book object as parameter"
         1 * bookRepository.saveAndFlush(_) >> book
 
-        and:
+        and: "the response is not null and has a title equal to the title of the bookDTO object"
         response != null
         response.getTitle() == bookDTO.getTitle()
     }
 
     def "Book - save - happy path"() {
-        given:
+        given: "a book"
         def book = buildBook()
 
-        when:
+        when: "we call the save method"
         service.save(book)
 
-        then:
+        then: "the correct method is called"
         1 * bookRepository.saveAndFlush(book) >>
                 {
                     arguments -> def createAt = arguments.get(0).getCreateAt()
@@ -148,27 +149,27 @@ class BookServiceTest extends Specification {
     }
 
     def "Book - save validation - should throw an exception when name #scenario"() {
-        given:
+        given: "a book with a title that is null or too long"
         def book = buildBook(title: value)
 
-        when:
+        when: "we call the save method"
         service.save(book)
 
-        then:
+        then: "a LibraryStoreBooksException is thrown with the correct message"
         def e = thrown(LibraryStoreBooksException)
         e.getMessage() == message
 
         where:
         scenario                    | value                                                | message
         'is null'                   | null                                                 | MessageUtil.getMessage("BOOK_TITLE_NOT_INFORMED")
-        'is bigger than max size'   | buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1)   | MessageUtil.getMessage("BOOK_TITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
+        'is longer than max size'   | buildRandomString(ConstantsUtil.MAX_SIZE_NAME + 1)   | MessageUtil.getMessage("BOOK_TITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + "")
     }
 
     def "Book - save validation - should throw an exception when #scenario"() {
-        when:
+        when: "we call the save method with a custom book object created for different scenarios"
         service.save(book)
 
-        then:
+        then: "a LibraryStoreBooksException is thrown with the correct message"
         def e = thrown(LibraryStoreBooksException)
         e.getMessage() == message
 
@@ -180,46 +181,50 @@ class BookServiceTest extends Specification {
     }
 
     def "Book - checkAndSaveReference - happy path"() {
-        given:
+        given: "a book"
         def book = buildBook()
 
-        when:
+        when: "we call the checkAndSaveReference method"
         def response = service.checkAndSaveReference(book)
 
-        then:
+        then: "the author description from the response must be the same as the author description from book"
         response.getAuthors().getAt(0).description == book.authors.getAt(0).description
 
-        and:
+        and: "the description from the response must be the same as the book description"
         response.getPublisher().description == book.publisher.description
     }
 
     def "Book - edit - happy path"() {
-        given:
+        given: "a book, a bookDTO and an id"
         def book = buildBook()
         def bookDTO = buildBookDTO()
         def id = 99
+
+        and: "and a method stub for the author service, book repository and a modelMapper"
         authorService.authorsFromDTOs(_) >> buildAuthors()
         bookRepository.findById(id) >> Optional.of(book)
         modelMapper.map(bookDTO, Book.class) >> book
 
-        when:
+        when: "we call edit method"
         service.edit(id, bookDTO)
 
-        then:
+        then: "the repository method saveAndFlush is called once"
         1 * bookRepository.saveAndFlush(_)
     }
 
     def "Book - delete - happy path"() {
-        given:
+        given: "a book and an id"
         def book = buildBook()
         def id = 99
+
+        and: "and a method stub for the author service, and book repository"
         authorService.authorsFromDTOs(_) >> buildAuthors()
         bookRepository.findById(id) >> Optional.of(book)
 
-        when:
+        when: "we call the delete method"
         service.delete(id)
 
-        then:
+        then: "the repository method delete is called once"
         1 * bookRepository.delete(_)
     }
 
@@ -315,31 +320,33 @@ class BookServiceTest extends Specification {
         1 * languageRepository.findByName(name) >> buildLanguage()
     }
 
-    //TO DO:
-//    def "Book - getBookSubject - happy path"() {
-//        given:
-//        def book = buildBookDTO()
-//        publisherService.fromDTO(_) >> buildPublisher()
-//        authorService.getListAuthorsByListDTO(_) >> buildAuthors()
-//
-//        when:
-//        def response = service.fromDTO(book)
-//
-//        then:
-//        response.getTitle() == buildBookDTO().getTitle()
-//    }
+    def "Book - getAllBookSubjectsSorted - happy path"() {
+        given:
+        def subjects = Arrays.asList(buildBookSubject())
 
-    //TO DO:
-//    def "Book - getAllBookLanguagesSorted - happy path"() {
-//        given:
-//        languageRepository.findAll() >> Arrays.asList(buildLanguage())
-//
-//        when:
-//        service.getAllBookLanguagesSorted()
-//
-//        then:
-//        1 * languageRepository.findAll()
-//    }
+        when:
+        def response = service.getAllBookSubjectsSorted()
+
+        then:
+        1 * bookSubjectRepository.findAll() >> subjects
+
+        and:
+        response.size() == subjects.size()
+    }
+
+    def "Book - getAllBookLanguagesSorted - happy path"() {
+        given: "A list of languages"
+        def languages = Arrays.asList(buildLanguage())
+
+        when: "we call the method and get the result"
+        def result = service.getAllBookLanguagesSorted()
+
+        then: "we check if the if the correct method was called"
+        1 * languageRepository.findAll() >> languages
+
+        and: "the result is the size as expected"
+        result.size() == languages.size()
+    }
 
     def "Book - getAllEBookFormats - happy path"() {
         given:
@@ -367,6 +374,5 @@ class BookServiceTest extends Specification {
 
         and:
         response.get(0).label == used.description
-
     }
 }

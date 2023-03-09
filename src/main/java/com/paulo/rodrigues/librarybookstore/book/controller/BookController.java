@@ -47,6 +47,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
+
 /**
  *
  * @author paulo.rodrigues
@@ -54,13 +56,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/books")
+@RequestMapping(BOOKS_V1_BASE_API)
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @GetMapping("/all")
+    @GetMapping(GET_ALL_PATH)
     public ResponseEntity<List<BookDTO>> getAll() {
         try {
             List<BookDTO> books = bookService.findAll();
@@ -73,7 +75,7 @@ public class BookController {
         }
     }
 
-    @PostMapping("/fetch")
+    @PostMapping(FIND_PAGEABLE_PATH)
     public ResponseEntity<List<BookDTO>> findPageable(@RequestBody BookFilter filter, HttpServletRequest req, HttpServletResponse res) {
         try {
             PagedResult<BookDTO> books = bookService.findPageable(FormatUtils.setOffSet(filter));
@@ -87,7 +89,7 @@ public class BookController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(GET_BY_ID_PATH)
     public ResponseEntity<Book> getById(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok().body(bookService.findById(bookId));
@@ -109,7 +111,7 @@ public class BookController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(UPDATE_PATH)
     public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDTO) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok(bookService.edit(bookId, bookDTO));
@@ -120,7 +122,7 @@ public class BookController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(DELETE_PATH)
     public Map<String, Long> delete(@PathVariable(value = "id") Long bookId) throws LibraryStoreBooksException, NotFoundException {
         try {
             bookService.delete(bookId);
@@ -134,7 +136,7 @@ public class BookController {
         }
     }
     
-    @GetMapping("/subjects")
+    @GetMapping(GET_SUBJECTS_PATH)
     public ResponseEntity<List<BookSubject>> getBookSubject() {
         try {
             return ResponseEntity.ok().body(bookService.getAllBookSubjectsSorted());
@@ -145,7 +147,7 @@ public class BookController {
         }
     }
     
-    @GetMapping("/formats")
+    @GetMapping(GET_FORMATS_PATH)
     public ResponseEntity<List<Map<String, String>>> getEBookFormat() {
         try {
             return ResponseEntity.ok().body(bookService.getAllEBookFormats());
@@ -156,7 +158,7 @@ public class BookController {
         }
     }
     
-    @GetMapping("/conditions")
+    @GetMapping(GET_CONDITIONS_PATH)
     public ResponseEntity<List<Map<String, String>>> getEBookCondition() {
         try {
             return ResponseEntity.ok().body(bookService.getAllEBookConditions());
@@ -167,7 +169,7 @@ public class BookController {
         }
     }
     
-    @GetMapping("/languages")
+    @GetMapping(GET_LANGUAGES_PATH)
     public ResponseEntity<List<Language>> getLanguages() {
         try {
             return ResponseEntity.ok().body(bookService.getAllBookLanguagesSorted());

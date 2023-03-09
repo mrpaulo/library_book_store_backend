@@ -29,10 +29,8 @@ import com.paulo.rodrigues.librarybookstore.authentication.repository.UserReposi
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
 import javax.transaction.Transactional;
 
 import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
@@ -66,7 +64,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public List<UserDTO> findAll() {
-        return toListDTO(userRepository.findAll());
+        return usersToDTOs(userRepository.findAll());
     }
 
     public Page<User> findPageable(UserFilter filter, Pageable pageable) {
@@ -79,26 +77,23 @@ public class UserService {
                 pageable);
     }
 
-    public User findById(Long userId) throws LibraryStoreBooksException {
+    public User findById(Long userId) throws NotFoundException {
         log.info("Finding user by userId={}", userId);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user == null || !user.isPresent()) {
             log.error("User not found by userId={}", userId);
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_NOT_FOUND") + " ID: " + userId);
+            throw new NotFoundException(MessageUtil.getMessage("USER_NOT_FOUND") + " ID: " + userId);
         }
-        user.setPassword(null);
-        return user;
+        return user.get();
     }
 
     public List<UserDTO> findByName(String name) {
         log.info("Finding user by name={}", name);
-        return toListDTO(userRepository.findByName(name));
+        return usersToDTOs(userRepository.findByName(name));
     }
 
     public UserDTO create(User user) throws LibraryStoreBooksException {
-        if (user == null) {
-            return null;
-        }
+        assert user != null : MessageUtil.getMessage("USER_IS_NULL");
         if (FormatUtils.isEmpty(user.getRoles())) {
             Role role = roleRepository.findByName(Login.ROLE_CLIENT);
             if (role == null) {
@@ -113,7 +108,7 @@ public class UserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         log.info("Creating user name={}", user.getName());
-        return toDTO(save(user));
+        return userToDTO(save(user));
     }
 
     public User save(User user) throws LibraryStoreBooksException {
@@ -123,9 +118,8 @@ public class UserService {
         return userRepository.saveAndFlush(user);
     }
 
-    public UserDTO edit(Long userId, UserDTO userDetail) throws LibraryStoreBooksException {
+    public UserDTO edit(Long userId, UserDTO userDetail) throws LibraryStoreBooksException, NotFoundException {
         User userToEdit = findById(userId);
-        //User volta com o pass null, encontrar forma de retornar não sobreescrever isso
         String pw = userToEdit.getPassword();
         Date createAt = userToEdit.getCreateAt();
         String createBy = userToEdit.getCreateBy();
@@ -138,7 +132,7 @@ public class UserService {
         userToEdit.setCreateBy(createBy);
         userToEdit.setPassword(pw);
         log.info("Updating id={}, userName={}", userToEdit.getId(), userToEdit.getName());
-        return toDTO(save(userToEdit));
+        return userToDTO(save(userToEdit));
     }
 
     public void delete(Long userId) throws LibraryStoreBooksException, NotFoundException {
@@ -150,7 +144,7 @@ public class UserService {
         userRepository.delete(userToDelete);
     }
 
-    public UserDTO toDTO(User user) {
+    public UserDTO userToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -162,19 +156,18 @@ public class UserService {
                 .build();
     }
 
-    public User fromDTO(UserDTO dto) throws LibraryStoreBooksException {
+    public User userFromDTO(UserDTO dto) {
         return User.builder()
                 .name(dto.getName())
                 .username(dto.getUsername())
                 .cpf(dto.getCpf())
                 .birthdate(dto.getBirthdate())
                 .email(dto.getEmail())
-                // .address(dto.getAddress() != null ? addressService.findById(dto.getAddress().getId()) : null)
                 .build();
     }
 
-    public List<UserDTO> toListDTO(List<User> users) {
-        return users.stream().map(this::toDTO).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public List<UserDTO> usersToDTOs(List<User> users) {
+        return users.stream().map(this::userToDTO).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public List<Role> getAllRoles() {

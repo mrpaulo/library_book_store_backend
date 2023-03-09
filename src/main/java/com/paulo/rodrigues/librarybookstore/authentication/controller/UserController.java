@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
 /**
  *
  * @author paulo.rodrigues
@@ -57,13 +58,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/users")
+@RequestMapping(USERS_V1_BASE_API)
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/all")
+        @GetMapping(GET_ALL_PATH)
     public List<UserDTO> getAll() {
         try {
             List<UserDTO> usersList = userService.findAll();
@@ -75,13 +76,13 @@ public class UserController {
         }
     }
 
-    @PostMapping("/fetch")
+    @PostMapping(FIND_PAGEABLE_PATH)
     public List<UserDTO> findPageable(@RequestBody UserFilter filter, HttpServletRequest req, HttpServletResponse res) {
         try {
             Pageable pageable = FormatUtils.getPageRequest(filter);
             Page<User> result = userService.findPageable(filter, pageable);
             res.addHeader("totalCount", String.valueOf(result.getTotalElements()));
-            return userService.toListDTO(result.getContent()).stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
+            return userService.usersToDTOs(result.getContent()).stream().sorted(Comparator.comparing(UserDTO::getUsername)).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Exception on findPageable message={}", e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
@@ -89,10 +90,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException {
+    @GetMapping(GET_BY_ID_PATH)
+    public ResponseEntity<User> getById(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException, NotFoundException {
         try {
-            return ResponseEntity.ok().body(userService.findById(userId));
+            User user = userService.findById(userId);
+            user.setPassword(null);
+            return ResponseEntity.ok().body(user);
         } catch (Exception e) {
             log.error("Exception on getById bookId={}, message={}", userId, e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
@@ -100,7 +103,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/fetch/{name}")
+    @GetMapping(GET_BY_NAME_PATH)
     public ResponseEntity<List<UserDTO>> getByName(@PathVariable(value = "name") String nameOfUser) throws LibraryStoreBooksException {
         try {
             return ResponseEntity.ok().body(userService.findByName(nameOfUser));
@@ -112,9 +115,9 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserDTO create(@RequestBody User user) throws LibraryStoreBooksException {
+    public ResponseEntity<UserDTO> create(@RequestBody User user) throws LibraryStoreBooksException {
         try {
-            return userService.create(user);
+            return new ResponseEntity<>(userService.create(user), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Exception on create user={}, message={}", user, e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
@@ -122,8 +125,8 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO) throws LibraryStoreBooksException {
+    @PutMapping(UPDATE_PATH)
+    public ResponseEntity<UserDTO> update(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO) throws LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok(userService.edit(userId, userDTO));
         } catch (Exception e) {
@@ -133,7 +136,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(DELETE_PATH)
     public Map<String, Long> delete(@PathVariable(value = "id") Long userId) throws LibraryStoreBooksException, NotFoundException {
         try {
             userService.delete(userId);
@@ -147,7 +150,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/update")
+    @PostMapping(UPDATE_USER_PATH)
     public ResponseEntity<String> changeUserPassword(@RequestBody UpdatePassword updatePassword) throws LibraryStoreBooksException {
         try {
             userService.changeUserPassword(updatePassword);
@@ -159,7 +162,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/roles")
+    @GetMapping(GET_ROLES_PATH)
     public ResponseEntity<List<Role>> getAllRoles() throws LibraryStoreBooksException {
         try {
             return ResponseEntity.ok().body(userService.getAllRoles());

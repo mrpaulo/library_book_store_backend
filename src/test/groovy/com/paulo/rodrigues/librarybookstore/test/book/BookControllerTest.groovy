@@ -30,11 +30,12 @@ import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
 import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
+import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
 
 @Stepwise
 class BookControllerTest extends AbstractLBSSpecification {
     
-    String baseAPI = "/api/v1/books"
+    String baseAPI = BOOKS_V1_BASE_API
     def idNotExist = 99999
 
     @Unroll
@@ -76,7 +77,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getById - happy path"() {
         given: "id just created on method create"
-        def idToGet = getIdCreatedFromTest()
+        def idToGet = getBookIdCreatedFromTest()
 
         when: "a rest GET call is performed to get a book by id"
         def response = client.get(path : baseAPI + "/" + idToGet)
@@ -106,7 +107,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - update - happy path"() {
         given: "an id and a book object"
-        def idToEdit = getIdCreatedFromTest()
+        def idToEdit = getBookIdCreatedFromTest()
         def book = buildBookDTO(id: idToEdit, review: "test2")
 
         when: "a rest PUT call is performed to update a book by id"
@@ -125,8 +126,8 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - update - should throw an exception"() {
         given: "an id and a book object"
-        def idToEdit = getIdCreatedFromTest()
-        def book = buildBookDTO(title: null)
+        def idToEdit = getBookIdCreatedFromTest()
+        def book = buildBookDTO(title: null, id: idToEdit)
 
         when: "a rest PUT call is performed to update a book by id"
         def response = client.put(path : baseAPI+ "/" + idToEdit,
@@ -144,7 +145,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getAll - happy path"() {
         when: "a rest GET call is performed to get all books"
-        def response = client.get(path : baseAPI + "/all")
+        def response = client.get(path : baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -159,7 +160,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def filter = buildBookFilter()
 
         when: "a rest POST call is performed to get a list of books by filter"
-        def response = client.post(path : baseAPI + "/fetch",
+        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
                 requestContentType : JSON,
                 body : objectMapper.writeValueAsString(filter)
         )
@@ -174,7 +175,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - delete - happy path"() {
         given: "id just created on method create"
-        def idToDelete = getIdCreatedFromTest()
+        def idToDelete = getBookIdCreatedFromTest()
 
         when: "a rest DELETE call is performed to delete a book by id"
         def response = client.delete(path : baseAPI + "/" + idToDelete)
@@ -200,14 +201,61 @@ class BookControllerTest extends AbstractLBSSpecification {
         response == null
     }
 
-    Long getIdCreatedFromTest() {
+    @Unroll
+    def "Book - getBookSubject - happy path"() {
+        when: "a rest GET call is performed to get a list of subjects"
+        def response = client.get(path : baseAPI + GET_SUBJECTS_PATH)
+
+        then: "the correct status is expected"
+        response.status == SC_OK
+
+        and: "the response content is not null"
+        response.responseData != null
+    }
+
+    @Unroll
+    def "Book - getLanguages - happy path"() {
+        when: "a rest GET call is performed to get a list of languages"
+        def response = client.get(path : baseAPI + GET_LANGUAGES_PATH)
+
+        then: "the correct status is expected"
+        response.status == SC_OK
+
+        and: "the response content is not null"
+        response.responseData != null
+    }
+
+    @Unroll
+    def "Book - getEBookFormat - happy path"() {
+        when: "a rest GET call is performed to get all book formats enum"
+        def response = client.get(path : baseAPI + GET_FORMATS_PATH)
+
+        then: "the correct status is expected"
+        response.status == SC_OK
+
+        and: "the response content is not null"
+        response.responseData != null
+    }
+
+    @Unroll
+    def "Book - getEBookCondition - happy path"() {
+        when: "a rest GET call is performed to get all book conditions enum"
+        def response = client.get(path : baseAPI + GET_CONDITIONS_PATH)
+
+        then: "the correct status is expected"
+        response.status == SC_OK
+
+        and: "the response content is not null"
+        response.responseData != null
+    }
+
+    Long getBookIdCreatedFromTest() {
         def filter = buildBookFilter(title: buildBook().getTitle())
 
-        def response = client.post(path : baseAPI + "/fetch",
+        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
                 requestContentType : JSON,
                 body : objectMapper.writeValueAsString(filter)
         )
-
         return response.responseData[0].id
     }
 }

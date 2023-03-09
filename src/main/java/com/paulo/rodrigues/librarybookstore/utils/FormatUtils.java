@@ -54,6 +54,9 @@ public class FormatUtils {
 //    }
 
     public static String removeFormatCPF(String CPF) {
+        if(isEmptyOrNull(CPF)){
+            return null;
+        }
         return CPF.replace(".", "").replace("-", "");
     }
 
