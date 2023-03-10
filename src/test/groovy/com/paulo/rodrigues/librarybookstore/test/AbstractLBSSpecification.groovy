@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.paulo.rodrigues.librarybookstore.LibraryBookStoreApplication
 import groovy.sql.Sql
+import org.apache.http.HttpResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -36,7 +37,6 @@ import org.springframework.test.context.TestPropertySource
 import spock.lang.Shared
 import spock.lang.Unroll
 
-import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAddress
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildPublisher
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.nameForTest
 import static groovyx.net.http.ContentType.JSON
@@ -118,24 +118,43 @@ abstract class AbstractLBSSpecification extends Specification {
         deleteUserAndClose() == null
     }
 
-    def createItemOnDb(baseAPI, item) {
-        client.post(path : baseAPI,
+    def createItemOnDb(pathAPI, item) {
+        postRestCall(pathAPI, item)
+    }
+
+    def getIdCreatedFromTest(pathAPI, nameToSearch) {
+        def response = client.get(path : pathAPI + "/fetch/" + nameToSearch)
+        return response.responseData.size > 0 ? response.responseData[0].id : null
+    }
+
+    HttpResponse deleteByIdRestCall(pathAPI, idToDelete) {
+        client.delete(path : pathAPI + "/" + idToDelete)
+    }
+
+    HttpResponse getByNameRestCall (pathAPI, nameToSearch){
+        return client.get(path : pathAPI + "/fetch/" + nameToSearch)
+    }
+
+    HttpResponse getByIdRestCall (pathAPI, id){
+        return client.get(path : pathAPI + "/" + id)
+    }
+
+    HttpResponse getRestCall(pathAPI){
+        return client.get(path : pathAPI)
+    }
+
+    HttpResponse postRestCall (pathAPI, item){
+        return client.post(path : pathAPI,
                 requestContentType : JSON,
                 body : objectMapper.writeValueAsString(item)
         )
     }
 
-    def getIdCreatedFromTest(baseAPI, nameToSearch) {
-        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
-        return response.responseData.size > 0 ? response.responseData[0].id : null
-    }
-
-    def deleteItemOnDb(baseAPI, idToDelete) {
-        client.delete(path : baseAPI + "/" + idToDelete)
-    }
-
-    def getByNameRestCall (baseAPI, nameToSearch){
-        return client.get(path : baseAPI + "/fetch/" + nameToSearch)
+    HttpResponse putWithIdRestCall(pathAPI, id, item){
+        return client.put(path : pathAPI + "/" + id,
+                requestContentType : JSON,
+                body : objectMapper.writeValueAsString(item)
+        )
     }
 
     def cleanupSpec() {
@@ -145,7 +164,7 @@ abstract class AbstractLBSSpecification extends Specification {
 
         if(authorResponse != null && authorResponse.responseData.size() > 0){
             authorResponse.responseData.forEach({ r ->
-                deleteItemOnDb(baseAuthorAPI, r.id)
+                deleteByIdRestCall(baseAuthorAPI, r.id)
             })
         }
 
@@ -154,14 +173,14 @@ abstract class AbstractLBSSpecification extends Specification {
 
         if(addressResponse != null && addressResponse.responseData.size() > 0){
             addressResponse.responseData.forEach({ r ->
-                deleteItemOnDb(baseAddressAPI, r.id)
+                deleteByIdRestCall(baseAddressAPI, r.id)
             })
         }
 
         def basePublisherAPI = PUBLISHERS_V1_BASE_API
         def idToDelete2 = getIdCreatedFromTest(basePublisherAPI, buildPublisher().getName())
         if(idToDelete2)
-            deleteItemOnDb(basePublisherAPI, idToDelete2)
+            deleteByIdRestCall(basePublisherAPI, idToDelete2)
     }
     
 }

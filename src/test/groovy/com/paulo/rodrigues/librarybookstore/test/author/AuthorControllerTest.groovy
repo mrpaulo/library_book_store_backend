@@ -28,7 +28,6 @@ import spock.lang.Unroll
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthor
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorDTO
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.buildAuthorFilter
-import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
@@ -44,10 +43,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def author = buildAuthor()
 
         when: "a rest POST call is performed to create an author"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(author)
-        )
+        def response = postRestCall(baseAPI, author)
 
         then: "the correct 201 status is expected"
         response.status == SC_CREATED
@@ -57,7 +53,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
 
         cleanup: "deleting the author"
         def idToDelete = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -66,10 +62,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def author = buildAuthor(name: null)
 
         when: "a rest POST call is performed to create an author"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(author)
-        )
+        def response = postRestCall(baseAPI, author)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -87,7 +80,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def idToGet = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
 
         when: "a rest GET call is performed to get an author by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -96,7 +89,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         response.responseData != null
 
         cleanup: "deleting the author"
-        deleteItemOnDb(baseAPI, idToGet)
+        deleteByIdRestCall(baseAPI, idToGet)
     }
 
     @Unroll
@@ -105,7 +98,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def idToGet = idNotExist
 
         when: "a rest GET call is performed to get an author by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -124,10 +117,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def author = buildAuthorDTO(description: "test2")
 
         when: "a rest PUT call is performed to update an author by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(author)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, author)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -136,7 +126,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         response.responseData != null
 
         cleanup: "deleting the author"
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
@@ -149,10 +139,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def author = buildAuthorDTO(name: null)
 
         when: "a rest PUT call is performed to update an author by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(author)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, author)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -161,13 +148,13 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         response == null
 
         cleanup: "deleting the author"
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Author - getAll - happy path"() {
         when: "a rest GET call is performed to get all authors"
-        def response = client.get(path : baseAPI + GET_ALL_PATH)
+        def response = getRestCall(baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -182,10 +169,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def filter = buildAuthorFilter()
 
         when: "a rest POST call is performed to get all authors by filter"
-        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(filter)
-        )
+        def response = postRestCall(baseAPI + FIND_PAGEABLE_PATH, filter)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -200,7 +184,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def nameToSearch = buildAuthor().getName()
 
         when: "a rest GET call is performed to get a list of authors by name"
-        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
+        def response = getByNameRestCall(baseAPI, nameToSearch)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -218,7 +202,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def idToDelete = getIdCreatedFromTest(baseAPI, buildAuthor().getName())
 
         when: "a rest DELETE call is performed to delete an author by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -236,7 +220,7 @@ class AuthorControllerTest extends AbstractLBSSpecification {
         def idToDelete = idNotExist
 
         when: "a rest DELETE call is performed to delete an author by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "throw an Exception"
         thrown(HttpResponseException)

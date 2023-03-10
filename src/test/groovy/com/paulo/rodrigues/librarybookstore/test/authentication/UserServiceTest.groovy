@@ -23,6 +23,7 @@
 package com.paulo.rodrigues.librarybookstore.test.authentication
 
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService
+import com.paulo.rodrigues.librarybookstore.authentication.repository.RoleRepository
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository
 import com.paulo.rodrigues.librarybookstore.authentication.service.UserService
 import com.paulo.rodrigues.librarybookstore.utils.*
@@ -40,6 +41,7 @@ class UserServiceTest extends Specification {
         service.userRepository = Mock(UserRepository)
         service.addressService = Mock(AddressService)
         service.passwordEncoder = Mock(PasswordEncoder)
+        service.roleRepository = Mock(RoleRepository)
     }
 
     def "User - findAll - happy path"() {
@@ -245,5 +247,42 @@ class UserServiceTest extends Specification {
 
         then:
         response.size() == 1
+    }
+
+    def "User - getAllRoles - happy path"() {
+        when:
+        service.getAllRoles()
+
+        then:
+        1 * service.roleRepository.findAll()
+    }
+
+    def "User - changeUserPassword - happy path"() {
+        given:
+        def updatePassword = buildUpdatePassword()
+        def user = buildUser()
+        service.userRepository.findByEmail(_) >> user
+        service.passwordEncoder.matches(*_) >> true
+
+        when:
+        service.changeUserPassword(updatePassword)
+
+        then:
+        1 * service.userRepository.save(_) >> user
+    }
+
+    def "User - changeUserPassword - should thrown an exception"() {
+        given:
+        def updatePassword = buildUpdatePassword()
+        def user = buildUser()
+        service.userRepository.findByEmail(_) >> user
+        service.passwordEncoder.matches(*_) >> false
+
+        when:
+        service.changeUserPassword(updatePassword)
+
+        then: "should thrown an exception the passwords don't match"
+        def e = thrown(LibraryStoreBooksException)
+        e.getMessage() == MessageUtil.getMessage("INCORRECT_PASSWORD")
     }
 }

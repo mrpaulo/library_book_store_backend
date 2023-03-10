@@ -26,7 +26,6 @@ import groovyx.net.http.HttpResponseException
 import spock.lang.Unroll
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
-import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
@@ -41,17 +40,14 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         given: "a check if we already have an object with same name"
         def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
         if (idToDelete){
-            deleteItemOnDb(baseAPI, idToDelete)
+            deleteByIdRestCall(baseAPI, idToDelete)
         }
 
         and: "a publisher object"
         def publisher = buildPublisher()
 
         when: "a rest POST call is performed to create a publisher"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(publisher)
-        )
+        def response = postRestCall(baseAPI, publisher)
 
         then: "the correct 201 status is expected"
         response.status == SC_CREATED
@@ -61,7 +57,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
         cleanup: "deleting the publisher"
         def idToDelete2 = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
-        deleteItemOnDb(baseAPI, idToDelete2)
+        deleteByIdRestCall(baseAPI, idToDelete2)
     }
 
     @Unroll
@@ -70,10 +66,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def publisher = buildPublisher(name: null)
 
         when: " a rest POST call is performed to create a publisher"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(publisher)
-        )
+        def response = postRestCall(baseAPI, publisher)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -91,7 +84,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def idToGet = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
 
         when: "a rest GET call is performed to get a publisher by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -100,7 +93,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         response.responseData.id == idToGet
 
         cleanup: "deleting the publisher"
-        deleteItemOnDb(baseAPI, idToGet)
+        deleteByIdRestCall(baseAPI, idToGet)
     }
 
     @Unroll
@@ -109,7 +102,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def idToGet = idNotExist
 
         when: "a rest GET call is performed to get a publisher by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -128,10 +121,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def publisher = buildPublisherDTO(description: "test2")
 
         when: "a rest PUT call is performed to update a publisher by id"
-        def response = client.put(path : baseAPI + "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(publisher)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, publisher)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -140,7 +130,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         response.responseData.description == publisher.getDescription()
 
         cleanup: "deleting the publisher"
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
@@ -153,10 +143,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def publisher = buildPublisherDTO(name: null)
 
         when: "a rest PUT call is performed to update a publisher by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(publisher)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, publisher)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -165,13 +152,13 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         response == null
 
         cleanup: "deleting the publisher"
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
     def "Publisher - getAll - happy path"() {
         when: "a rest GET call is performed to get all publishers"
-        def response = client.get(path : baseAPI + GET_ALL_PATH)
+        def response = getRestCall(baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -186,10 +173,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def filter = buildPublisherFilter()
 
         when: "a rest call is performed to get all publishers by a filter"
-        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(filter)
-        )
+        def response = postRestCall(baseAPI + FIND_PAGEABLE_PATH, filter)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -207,7 +191,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def nameToSearch = buildPublisher().getName()
 
         when: "a rest call is performed to get a publishers by name"
-        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
+        def response = getByNameRestCall(baseAPI, nameToSearch)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -217,7 +201,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
 
         cleanup: "deleting the publisher"
         def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -229,7 +213,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
 
         when: "a rest call is performed to delete a publisher by id"
-        def response = client.delete(path : baseAPI + "/safe/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI + "/safe/", idToDelete)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -238,7 +222,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         response.responseData.size() == 0
 
         cleanup: "deleting the publisher"
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -250,7 +234,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def idToDelete = getIdCreatedFromTest(baseAPI, buildPublisher().getName())
 
         when: "a rest call is performed to delete a publisher by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -265,7 +249,7 @@ class PublisherControllerTest extends AbstractLBSSpecification {
         def idToDelete = idNotExist
 
         when: "a rest call is performed to delete a publisher by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "throw an Exception"
         thrown(HttpResponseException)

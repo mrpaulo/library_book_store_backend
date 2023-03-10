@@ -27,7 +27,6 @@ import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
-import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
@@ -44,10 +43,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def book = buildBookDTO()
 
         when: "a rest POST call is performed to create a book"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(book)
-        )
+        def response = postRestCall(baseAPI, book)
 
         then: "the correct 201 status is expected"
         response.status == SC_CREATED
@@ -62,10 +58,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def book = buildBook(title: null)
 
         when: "a rest POST call is performed to create a book"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(book)
-        )
+        def response = postRestCall(baseAPI, book)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -80,7 +73,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def idToGet = getBookIdCreatedFromTest()
 
         when: "a rest GET call is performed to get a book by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -95,7 +88,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def idToGet = idNotExist
 
         when: "a rest GET call is performed to get a book by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -111,10 +104,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def book = buildBookDTO(id: idToEdit, review: "test2")
 
         when: "a rest PUT call is performed to update a book by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(book)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, book)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -130,10 +120,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def book = buildBookDTO(title: null, id: idToEdit)
 
         when: "a rest PUT call is performed to update a book by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(book)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, book)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -145,7 +132,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getAll - happy path"() {
         when: "a rest GET call is performed to get all books"
-        def response = client.get(path : baseAPI + GET_ALL_PATH)
+        def response = getRestCall(baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -160,10 +147,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def filter = buildBookFilter()
 
         when: "a rest POST call is performed to get a list of books by filter"
-        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(filter)
-        )
+        def response = postRestCall(baseAPI + FIND_PAGEABLE_PATH, filter)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -178,7 +162,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def idToDelete = getBookIdCreatedFromTest()
 
         when: "a rest DELETE call is performed to delete a book by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -192,7 +176,7 @@ class BookControllerTest extends AbstractLBSSpecification {
         def idToDelete = idNotExist
 
         when: "a rest DELETE call is performed to delete a book by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -204,7 +188,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getBookSubject - happy path"() {
         when: "a rest GET call is performed to get a list of subjects"
-        def response = client.get(path : baseAPI + GET_SUBJECTS_PATH)
+        def response = getRestCall(baseAPI + GET_SUBJECTS_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -216,7 +200,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getLanguages - happy path"() {
         when: "a rest GET call is performed to get a list of languages"
-        def response = client.get(path : baseAPI + GET_LANGUAGES_PATH)
+        def response = getRestCall(baseAPI + GET_LANGUAGES_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -228,7 +212,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getEBookFormat - happy path"() {
         when: "a rest GET call is performed to get all book formats enum"
-        def response = client.get(path : baseAPI + GET_FORMATS_PATH)
+        def response = getRestCall(baseAPI + GET_FORMATS_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -240,7 +224,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Book - getEBookCondition - happy path"() {
         when: "a rest GET call is performed to get all book conditions enum"
-        def response = client.get(path : baseAPI + GET_CONDITIONS_PATH)
+        def response = getRestCall(baseAPI + GET_CONDITIONS_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -252,10 +236,7 @@ class BookControllerTest extends AbstractLBSSpecification {
     Long getBookIdCreatedFromTest() {
         def filter = buildBookFilter(title: buildBook().getTitle())
 
-        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(filter)
-        )
+        def response = postRestCall(baseAPI + FIND_PAGEABLE_PATH, filter)
         return response.responseData[0].id
     }
 }

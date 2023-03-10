@@ -31,6 +31,7 @@ import com.paulo.rodrigues.librarybookstore.address.model.Address
 import com.paulo.rodrigues.librarybookstore.address.model.City
 import com.paulo.rodrigues.librarybookstore.address.model.Country
 import com.paulo.rodrigues.librarybookstore.address.model.StateCountry
+import com.paulo.rodrigues.librarybookstore.authentication.dto.UpdatePassword
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UserDTO
 import com.paulo.rodrigues.librarybookstore.authentication.filter.UserFilter
 import com.paulo.rodrigues.librarybookstore.authentication.model.Role
@@ -111,6 +112,7 @@ class ObjectMother extends Specification {
     }
 
     static genericId = 99
+    static secretPassword = "secret_password"
 
     /*
     Address
@@ -423,7 +425,7 @@ class ObjectMother extends Specification {
                 id: genericId,
                 name: nameForTest + "b",
                 username: nameForTest + "b",
-                password: "secret_password",
+                password: secretPassword,
                 birthdate: buildPastDate(),
                 cpf: "50069735018",
                 sex: "M",
@@ -456,6 +458,13 @@ class ObjectMother extends Specification {
         applyProperties(props, new Role(
                 id: 1,
                 name: "ADMIN",
+        ))
+    }
+
+    static buildUpdatePassword (props = null) {
+        applyProperties(props, new UpdatePassword(
+                newPassword: secretPassword + "b",
+                currentPassword: secretPassword
         ))
     }
 }

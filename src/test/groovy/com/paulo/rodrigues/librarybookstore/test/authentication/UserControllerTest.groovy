@@ -27,7 +27,6 @@ import spock.lang.Unroll
 
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
 import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*
-import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 
@@ -42,10 +41,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def user = buildUser()
 
         when: "a rest POST call is performed to create an user"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(user)
-        )
+        def response = postRestCall(baseAPI, user)
 
         then: "the correct 201 status is expected"
         response.status == SC_CREATED
@@ -55,7 +51,7 @@ class UserControllerTest extends AbstractLBSSpecification {
 
         cleanup:
         def idToDelete = getIdCreatedFromTest(baseAPI, buildUser().getName())
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -64,10 +60,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def user = buildUser(username: null)
 
         when: "a rest POST call is performed to create an user"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(user)
-        )
+        def response = postRestCall(baseAPI, user)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -85,7 +78,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def idToGet = getIdCreatedFromTest(baseAPI, buildUser().getName())
 
         when: "a rest GET call is performed to get an user by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -94,7 +87,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         response.responseData != null
 
         cleanup: "deleting the user"
-        deleteItemOnDb(baseAPI, idToGet)
+        deleteByIdRestCall(baseAPI, idToGet)
     }
 
     @Unroll
@@ -103,7 +96,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def idToGet = idNotExist
 
         when: "a rest GET call is performed to get an user by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -115,7 +108,7 @@ class UserControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "User - getAll - happy path"() {
         when: "a rest GET call is performed to get all users"
-        def response = client.get(path : baseAPI + GET_ALL_PATH)
+        def response = getRestCall(baseAPI + GET_ALL_PATH)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -133,10 +126,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def filter = buildUserFilter()
 
         when: "a rest POST call is performed to get all users by filter"
-        def response = client.post(path : baseAPI + FIND_PAGEABLE_PATH,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(filter)
-        )
+        def response = postRestCall(baseAPI + FIND_PAGEABLE_PATH, filter)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -146,7 +136,7 @@ class UserControllerTest extends AbstractLBSSpecification {
 
         cleanup: "deleting the user"
         def idToDelete = getIdCreatedFromTest(baseAPI, buildUser().getName())
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -158,7 +148,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def nameToSearch = buildUser().getName()
 
         when: "a rest GET call is performed to get a list of users by name"
-        def response = client.get(path : baseAPI + "/fetch/" + nameToSearch)
+        def response = getByNameRestCall(baseAPI, nameToSearch)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -168,7 +158,7 @@ class UserControllerTest extends AbstractLBSSpecification {
 
         cleanup: "deleting the user"
         def idToDelete = getIdCreatedFromTest(baseAPI, buildUser().getName())
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -181,10 +171,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def user = buildUserDTO(sex: "O", id: idToEdit)
 
         when: "a rest PUT call is performed to update an user by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(user)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit,  user)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -193,7 +180,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         response.responseData != null
 
         cleanup: "deleting the user"
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
@@ -206,10 +193,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def user = buildUserDTO(username: null, id: idToEdit)
 
         when: "a rest PUT call is performed to update an user by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : objectMapper.writeValueAsString(user)
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit,  user)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -218,7 +202,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         response == null
 
         cleanup: "deleting the user"
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
@@ -230,7 +214,7 @@ class UserControllerTest extends AbstractLBSSpecification {
         def idToDelete = getIdCreatedFromTest(baseAPI, buildUser().getName())
 
         when: "a rest DELETE call is performed to delete an user by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -248,13 +232,40 @@ class UserControllerTest extends AbstractLBSSpecification {
         def idToDelete = idNotExist
 
         when: "a rest DELETE call is performed to delete an user by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
 
         and:
         response == null
+    }
+
+    @Unroll
+    def "User - changeUserPassword - should throw an exception"() {
+        given: "an user updatePassword object"
+        def updatePassword = buildUpdatePassword()
+
+        when: "a rest GET call is performed to update the user password"
+        def response = postRestCall(baseAPI + UPDATE_USER_PATH, updatePassword)
+
+        then: "throw an Exception because the logged user is not the same"
+        thrown(HttpResponseException)
+
+        and:
+        response == null
+    }
+
+    @Unroll
+    def "User - getAllRoles - happy path"() {
+        when: "a rest GET call is performed to get all user roles"
+        def response = getRestCall(baseAPI + GET_ROLES_PATH)
+
+        then: "the correct status is expected"
+        response.status == SC_OK
+
+        and: "the response content is not null"
+        response.responseData != null
     }
 }
 

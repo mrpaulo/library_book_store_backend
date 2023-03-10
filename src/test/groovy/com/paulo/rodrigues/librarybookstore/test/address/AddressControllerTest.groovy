@@ -25,7 +25,6 @@ import com.paulo.rodrigues.librarybookstore.test.AbstractLBSSpecification
 import groovyx.net.http.HttpResponseException
 import spock.lang.Unroll
 
-import static groovyx.net.http.ContentType.JSON
 import static org.apache.http.HttpStatus.SC_CREATED
 import static org.apache.http.HttpStatus.SC_OK
 import static com.paulo.rodrigues.librarybookstore.test.ObjectMother.*
@@ -42,10 +41,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def address = buildAddress()
 
         when: "a rest POST call is performed to create an address"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : address
-        )
+        def response = postRestCall(baseAPI, address)
 
         then: "the correct 201 status is expected"
         response.status == SC_CREATED
@@ -55,7 +51,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
         cleanup:
         def idToDelete = getIdCreatedFromTest(baseAPI, buildAddress().getName())
-        deleteItemOnDb(baseAPI, idToDelete)
+        deleteByIdRestCall(baseAPI, idToDelete)
     }
 
     @Unroll
@@ -64,10 +60,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def address = buildAddress(name: null)
 
         when: "a rest POST call is performed to create an address"
-        def response = client.post(path : baseAPI,
-                requestContentType : JSON,
-                body : address
-        )
+        def response = postRestCall(baseAPI, address)
 
         then: "throw an Exception"
         HttpResponseException e = thrown()
@@ -85,7 +78,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def idToGet = getIdCreatedFromTest(baseAPI, buildAddress().getName())
 
         when: "a rest call is performed to get an address by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -94,7 +87,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         response.responseData != null
 
         cleanup:
-        deleteItemOnDb(baseAPI, idToGet)
+        deleteByIdRestCall(baseAPI, idToGet)
     }
 
     @Unroll
@@ -103,7 +96,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def idToGet = idNotExist
 
         when: "a rest call is performed to get an address by id"
-        def response = client.get(path : baseAPI + "/" + idToGet)
+        def response = getByIdRestCall(baseAPI, idToGet)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -122,10 +115,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def address = buildAddressDTO(coordination: "test2")
 
         when: "a rest PUT call is performed to update an address by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : address
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, address)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -134,7 +124,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         response.responseData != null
 
         cleanup:
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
@@ -147,10 +137,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def address = buildAddressDTO(name: null)
 
         when: "a rest PUT call is performed to update an address by id"
-        def response = client.put(path : baseAPI+ "/" + idToEdit,
-                requestContentType : JSON,
-                body : address
-        )
+        def response = putWithIdRestCall(baseAPI, idToEdit, address)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -159,7 +146,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         response == null
 
         cleanup:
-        deleteItemOnDb(baseAPI, idToEdit)
+        deleteByIdRestCall(baseAPI, idToEdit)
     }
 
     @Unroll
@@ -171,7 +158,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def idToDelete = getIdCreatedFromTest(baseAPI, buildAddress().getName())
 
         when: "a rest DELETE call is performed to delete an address by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "the correct 200 status is expected"
         response.status == SC_OK
@@ -186,7 +173,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
         def idToDelete = idNotExist
 
         when: "a rest DELETE call is performed to delete an address by id"
-        def response = client.delete(path : baseAPI + "/" + idToDelete)
+        def response = deleteByIdRestCall(baseAPI, idToDelete)
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -198,7 +185,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllCountries - happy path"() {
         when: "a rest GET call is performed to get a list of countries"
-        def response = client.get(path : baseAPI + GET_COUNTRIES_PATH)
+        def response = getRestCall(baseAPI + GET_COUNTRIES_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -210,7 +197,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllStates - happy path"() {
         when: "a rest GET call is performed to get all states given a country with id 1"
-        def response = client.get(path : baseAPI + "/1/states")
+        def response = getRestCall(baseAPI + "/1/states")
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -222,7 +209,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllStates - should throw an exception given an invalid input"() {
         when: "a rest GET call is performed with an invalid abc input"
-        def response = client.get(path : baseAPI + "/abc/states")
+        def response = getRestCall(baseAPI + "/abc/states")
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -234,7 +221,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllCities - happy path"() {
         when: "a rest GET call is performed to get all cities given a country 1 and state 1"
-        def response = client.get(path : baseAPI + "/1/1/cities")
+        def response = getRestCall(baseAPI + "/1/1/cities")
 
         then: "the correct status is expected"
         response.status == SC_OK
@@ -246,7 +233,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getAllCities - should throw an exception given an invalid input"() {
         when: "a rest GET call is performed with an invalid abc input"
-        def response = client.get(path : baseAPI + "/1/abc/cities")
+        def response = getRestCall(baseAPI + "/1/abc/cities")
 
         then: "throw an Exception"
         thrown(HttpResponseException)
@@ -258,7 +245,7 @@ class AddressControllerTest extends AbstractLBSSpecification {
     @Unroll
     def "Address - getETypePublicPlace - happy path"() {
         when: "a rest GET call is performed to get all types of public place enum"
-        def response = client.get(path : baseAPI + GET_TYPE_PUBLIC_PLACE_PATH)
+        def response = getRestCall(baseAPI + GET_TYPE_PUBLIC_PLACE_PATH)
 
         then: "the correct status is expected"
         response.status == SC_OK

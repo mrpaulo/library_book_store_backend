@@ -183,7 +183,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
-        return passwordEncoder.matches(oldPassword, user.getPassword());
+    private boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+        return user!= null && passwordEncoder.matches(oldPassword, user.getPassword());
     }
 }

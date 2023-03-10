@@ -163,7 +163,7 @@ public class UserController {
     }
 
     @GetMapping(GET_ROLES_PATH)
-    public ResponseEntity<List<Role>> getAllRoles() throws LibraryStoreBooksException {
+    public ResponseEntity<List<Role>> getAllRoles() {
         try {
             return ResponseEntity.ok().body(userService.getAllRoles());
         } catch (Exception e) {
