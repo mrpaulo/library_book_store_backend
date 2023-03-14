@@ -2,21 +2,21 @@
 This project is the backend for a library book store application. It provides an API for managing books, authors, and users, as well as handling user authentication and authorization. The API is built using Java Spring Boot and includes unit and integration tests written in Groovy Spock.
 
 ## Technologies Used
-- Java 11: A programming language that runs on a virtual machine and provides a wide range of features for building applications.
-- Spring Boot: A framework for building web applications that simplifies the setup and configuration of a Spring-based application.
-- Groovy Spock: A testing framework that uses Groovy syntax and provides a highly readable and expressive way to write tests.
-- Maven: A build automation tool used for managing dependencies and building Java projects.
-- PostgreSQL: An open-source relational database management system that is widely used in production environments.
-- Spring Data JPA: A ORM framework that provides a simple and consistent way to interact with databases using Java Persistence API (JPA) specifications.
-- Spring Data Security: A Spring module that provides security features such as authentication and authorization.
-- OAuth2: A protocol used for authorization that allows applications to access user data from other applications.
-- Basic Auth: A simple authentication scheme that sends a username and password in the request header.
-- Bcrypt: A password hashing function used for securing passwords in databases.
-- Lombok: A Java library that provides annotations to generate boilerplate code for Java classes.
-- Flyway Migrations: A database migration tool used for versioning and managing database schema changes.
-- Swagger: A set of tools used for documenting and testing RESTful APIs.
-- Model Mapper: A Java library used for mapping objects between different data models.
-- Log4j2: A Java-based logging utility used for generating logs during application execution.
+- **Java 11**: A programming language that runs on a virtual machine and provides a wide range of features for building applications.
+- **Spring Boot**: A framework for building web applications that simplifies the setup and configuration of a Spring-based application.
+- **Groovy Spock**: A testing framework that uses Groovy syntax and provides a highly readable and expressive way to write tests.
+- **Maven**: A build automation tool used for managing dependencies and building Java projects.
+- **PostgreSQL**: An open-source relational database management system that is widely used in production environments.
+- **Spring Data JPA**: A framework that provides a simple and consistent way to interact with databases using Java Persistence API (JPA) specifications.
+- **Spring Data Security**: A Spring module that provides security features such as authentication and authorization.
+- **OAuth2**: A protocol used for authorization that allows applications to access user data from other applications.
+- **Basic Auth**: A simple authentication scheme that sends a username and password in the request header.
+- **Bcrypt**: A password hashing function used for securing passwords in databases.
+- **Lombok**: A Java library that provides annotations to generate boilerplate code for Java classes.
+- **Flyway** Migrations: A database migration tool used for versioning and managing database schema changes.
+- **Swagger**: A set of tools used for documenting and testing RESTful APIs.
+- **Model** Mapper: A Java library used for mapping objects between different data models.
+- **Log4j2**: A Java-based logging utility used for generating logs during application execution.
 
 ## Features
 - User authentication and authorization using JWT tokens
