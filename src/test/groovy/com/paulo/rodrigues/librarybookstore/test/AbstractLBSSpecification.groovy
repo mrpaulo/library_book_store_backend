@@ -103,10 +103,10 @@ abstract class AbstractLBSSpecification extends Specification {
 
     @Unroll
     def "Login - testing"() {
-        given:
+        given: "an user created on DB"
         createUser()
         
-        when: "a rest call is performed to the status page"
+        when: "a rest call is performed to login"
         def response = client.post(
             path : "/oauth/token",
             requestContentType : URLENC,
@@ -115,6 +115,8 @@ abstract class AbstractLBSSpecification extends Specification {
 
         then: "the correct message is expected"
         response.status == SC_OK
+
+        and: "delete the user and close the DB connection"
         deleteUserAndClose() == null
     }
 

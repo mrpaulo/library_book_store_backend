@@ -54,12 +54,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 public class AuthenticationController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    
    @Resource(name = "tokenServices")
     ConsumerTokenServices tokenServices;
     
@@ -73,32 +67,7 @@ public class AuthenticationController {
         }
         return true;
     }
-    
-    @Secured({Login.ROLE_ADMIN})    
-    @PostMapping("/save")
-    public ResponseEntity<User> save(@RequestBody User user){
-        log.info("Saving id={}, userName={}", user.getId(), user.getName());
-        user = this.userRepository.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 
-    @Secured({Login.ROLE_ADMIN})
-    @PutMapping("/edit")
-    public ResponseEntity<User> edit(@RequestBody User user){
-        log.info("Updating id={}, user={}", user.getId(), user.getName());
-        user = this.userRepository.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @Secured({Login.ROLE_CLIENT, Login.ROLE_ADMIN})
-    @GetMapping("/users")
-    public ResponseEntity<Page<User>> list(
-            @RequestParam("page") int page,
-            @RequestParam("size") int size){
-        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-        return new ResponseEntity<>(userRepository.findAll(pageable), HttpStatus.OK);
-    }
-    
     @ResponseBody
     @Secured({Login.ROLE_CLIENT, Login.ROLE_ADMIN})
     @GetMapping("/user-auth")

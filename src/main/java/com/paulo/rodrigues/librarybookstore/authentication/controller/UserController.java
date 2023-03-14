@@ -20,6 +20,7 @@ package com.paulo.rodrigues.librarybookstore.authentication.controller;
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UpdatePassword;
 import com.paulo.rodrigues.librarybookstore.authentication.dto.UserDTO;
 import com.paulo.rodrigues.librarybookstore.authentication.filter.UserFilter;
+import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
 import com.paulo.rodrigues.librarybookstore.authentication.model.Role;
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.authentication.service.UserService;
@@ -40,6 +41,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +66,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-        @GetMapping(GET_ALL_PATH)
+    @GetMapping(GET_ALL_PATH)
     public List<UserDTO> getAll() {
         try {
             List<UserDTO> usersList = userService.findAll();

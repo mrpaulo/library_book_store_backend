@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.paulo.rodrigues.librarybookstore</groupId>
     <artifactId>LibraryBookStore</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>LibraryBookStore</name>
-    <description>Backend project for a Library and Book Store in Java Spring</description>
+    <description>Backend project for a Library and Book Store in Java Spring Boot</description>
 
     <packaging>jar</packaging>
             
