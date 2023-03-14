@@ -13,9 +13,9 @@ This project is the backend for a library book store application. It provides an
 - **Basic Auth**: A simple authentication scheme that sends a username and password in the request header.
 - **Bcrypt**: A password hashing function used for securing passwords in databases.
 - **Lombok**: A Java library that provides annotations to generate boilerplate code for Java classes.
-- **Flyway** Migrations: A database migration tool used for versioning and managing database schema changes.
+- **Flyway**: A database migration tool used for versioning and managing database schema changes.
 - **Swagger**: A set of tools used for documenting and testing RESTful APIs.
-- **Model** Mapper: A Java library used for mapping objects between different data models.
+- **Model Mapper**: A Java library used for mapping objects between different data models.
 - **Log4j2**: A Java-based logging utility used for generating logs during application execution.
 
 ## Features
