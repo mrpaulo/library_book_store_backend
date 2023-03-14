@@ -1,5 +1,4 @@
-# library_book_store_backend
-Library Book Store Backend
+# Library Book Store Backend
 This project is the backend for a library book store application. It provides an API for managing books, authors, and users, as well as handling user authentication and authorization. The API is built using Java Spring Boot and includes unit and integration tests written in Groovy Spock.
 
 ## Technologies Used
