@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: library_book_store
+    ports:
+      - "4089:5432"
+  backend:
+    build: .
+    ports:
+      - "4080:4080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/library_book_store
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+  frontend:
+    build: ./library_book_store_frontend
+    ports:
+      - "9090:3000"
+    stdin_open: true
+    depends_on:
+      - backend
+    environment:
+      REACT_APP_BACKEND_URL: http://backend:4080
+    extra_hosts:
+      - "backend:172.18.0.2"
+    dns:
+      - 8.8.8.8

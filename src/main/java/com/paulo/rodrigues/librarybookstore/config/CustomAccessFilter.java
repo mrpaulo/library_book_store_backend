@@ -26,6 +26,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.log4j.Log4j2;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
@@ -37,6 +39,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Log4j2
 public class CustomAccessFilter implements Filter {
 
     @Override
@@ -55,6 +58,7 @@ public class CustomAccessFilter implements Filter {
         response.setHeader("Access-Control-Expose-Headers", "totalCount");
     
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            log.debug("Received OPTIONS request from origin: {}", request.getHeader("Origin"));
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             chain.doFilter(req, res);
