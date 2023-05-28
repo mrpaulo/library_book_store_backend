@@ -81,7 +81,7 @@ abstract class AbstractLBSSpecification extends Specification {
 
     def createUser() {
         Map dbConnParams = [
-                url: 'jdbc:postgresql://localhost:5432/test2_library_book_store',
+                url: 'jdbc:postgresql://localhost:5432/library_book_store_db',
                 user: 'postgres',
                 password: 'postgres',
                 driver: 'org.postgresql.Driver']

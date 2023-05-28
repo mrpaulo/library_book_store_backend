@@ -1,29 +1,21 @@
-# Use a imagem do openjdk 11 como base
+# Use the openjdk 11 image as the base
 FROM openjdk:11-jdk-slim
-
-# Define um diretório para a aplicação
+# Define a directory for the application
 WORKDIR /app
-
-# Copia o pom.xml e o arquivo de configuração do Maven para o diretório da aplicação
+# Copy the pom.xml and Maven configuration file to the application directory
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
-
-# Copia o código-fonte do projeto para o diretório da aplicação
+# Copy the source code of the project to the application directory
 COPY src src
-
-# Define as permissões do arquivo mvnw para que ele possa ser executado dentro do container
+# Set permissions for the mvnw file to make it executable inside the container
 RUN chmod +x mvnw
-
-# Executa o comando 'mvn clean package' dentro do container para compilar e construir o pacote .jar
+# Run the 'mvn clean package' command inside the container to compile and build the .jar package
 RUN ./mvnw clean package -DskipTests
-
-# Copia o jar do projeto para o diretório da aplicação
+# Copy the project's jar file to the application directory
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
-
-# Expõe a porta 4080 para o host
+# Expose port 4080 to the host
 EXPOSE 4080
-
-# Define o comando para rodar a aplicação
+# Define the command to run the application
 CMD ["java", "-jar", "/app/app.jar"]
 

@@ -1,5 +1,3 @@
-
-
 --selects
 select * from address a;
 
@@ -57,14 +55,30 @@ join author a on ab.author_id = a.id
 order by a.name;
 
 
-  SELECT b.id   , b.title   , b.subtitle   , b.language_id  , b.publisher_id  , b.subject_id  , b.review  , b.link  , b.format  , b.condition  , b.edition  , b.publish_date  , b.rating  , b.length
-  FROM BOOK b
-  LEFT JOIN  PUBLISHER pu ON pu.id = b.publisher_id
-  join author_books ab ON ab.book_id = b.id
-  join author a on ab.author_id = a.id
-  WHERE 1 = 1
-  AND LOWER(a.name) like LOWER(CONCAT('%ana%'));
+SELECT b.id   , b.title   , b.subtitle   , b.language_id  , b.publisher_id  , b.subject_id  , b.review  , b.link  , b.format  , b.condition  , b.edition  , b.publish_date  , b.rating  , b.length
+FROM BOOK b
+LEFT JOIN  PUBLISHER pu ON pu.id = b.publisher_id
+join author_books ab ON ab.book_id = b.id
+join author a on ab.author_id = a.id
+WHERE 1 = 1
+AND LOWER(a.name) like LOWER(CONCAT('%ana%'));
 
+delete from user_role where user_id = 99999
 delete from lbs_user where id = 99999
 
 DROP TABLE IF EXISTS person;
+
+create table person (id integer not null, name varchar(50), url varchar(100))
+
+SELECT CURRENT_TIME;
+
+SELECT distinct  b.id  ,ab.book_id , b.title   , b.subtitle   , b.language_id  , b.publisher_id  , b.subject_id  , b.review  , b.link  , b.format  , b.condition  , b.edition  , b.publish_date  , b.rating  , b.length  , b.adults_only
+FROM BOOK b
+LEFT JOIN PUBLISHER pu ON pu.id = b.publisher_id
+ LEFT JOIN author_books ab ON ab.book_id = b.id
+LEFT  JOIN author a ON ab.author_id = a.id
+WHERE 1 = 1
+--AND b.adults_only = true
+ORDER BY title asc
+
+SELECT distinct b.id   , b.title   , b.subtitle   , b.language_id  , b.publisher_id  , b.subject_id  , b.review  , b.link  , b.format  , b.condition  , b.edition  , b.publish_date  , b.rating  , b.length  , b.adults_only  FROM BOOK b   LEFT JOIN PUBLISHER pu ON pu.id = b.publisher_id  LEFT JOIN author_books ab ON ab.book_id = b.id  LEFT JOIN author a ON ab.author_id = a.id  WHERE 1 = 1  ORDER BY title ASC

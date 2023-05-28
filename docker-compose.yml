@@ -21,7 +21,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
   frontend:
-    build: ./library_book_store_frontend
+    build: ../library_book_store_frontend
     ports:
       - "9090:3000"
     stdin_open: true
