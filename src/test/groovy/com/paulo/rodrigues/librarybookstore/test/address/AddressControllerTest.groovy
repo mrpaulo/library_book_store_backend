@@ -37,6 +37,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - create - happy path"() {
+        println("Address - create - happy path")
+
         given: "an address object"
         def address = buildAddress()
 
@@ -56,6 +58,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - create - should throw an exception"() {
+        println("Address - create - should throw an exception")
+
         given: "an address object with invalid field value"
         def address = buildAddress(name: null)
 
@@ -71,6 +75,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getById - happy path"() {
+        println("Address - getById - happy path")
+
         given: "creating a address to be used on this test"
         createItemOnDb(baseAPI, buildAddress())
 
@@ -92,6 +98,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getById - should throw an exception"() {
+        println("Address - getById - should throw an exception")
+
         given: "id that I hope not exist"
         def idToGet = idNotExist
 
@@ -107,6 +115,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - update - happy path"() {
+        println("Address - update - happy path")
+
         given: "creating a address to be used on this test"
         createItemOnDb(baseAPI, buildAddress())
 
@@ -129,6 +139,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - update - should throw an exception"() {
+        println("Address - update - should throw an exception")
+
         given: "creating a address to be used on this test"
         createItemOnDb(baseAPI, buildAddress())
 
@@ -151,6 +163,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - delete - happy path"() {
+        println("Address - delete - happy path")
+
         given: "creating a address to be used on this test"
         createItemOnDb(baseAPI, buildAddress())
 
@@ -169,6 +183,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - delete - should throw an exception"() {
+        println("Address - delete - should throw an exception")
+
         given: "id not exist"
         def idToDelete = idNotExist
 
@@ -184,6 +200,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllCountries - happy path"() {
+        println("Address - getAllCountries - happy path")
+
         when: "a rest GET call is performed to get a list of countries"
         def response = getRestCall(baseAPI + GET_COUNTRIES_PATH)
 
@@ -196,6 +214,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllStates - happy path"() {
+        println("Address - getAllStates - happy path")
+
         when: "a rest GET call is performed to get all states given a country with id 1"
         def response = getRestCall(baseAPI + "/1/states")
 
@@ -208,6 +228,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllStates - should throw an exception given an invalid input"() {
+        println("Address - getAllStates - should throw an exception given an invalid input")
+
         when: "a rest GET call is performed with an invalid abc input"
         def response = getRestCall(baseAPI + "/abc/states")
 
@@ -220,6 +242,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllCities - happy path"() {
+        println("Address - getAllCities - happy path")
+
         when: "a rest GET call is performed to get all cities given a country 1 and state 1"
         def response = getRestCall(baseAPI + "/1/1/cities")
 
@@ -232,6 +256,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getAllCities - should throw an exception given an invalid input"() {
+        println("Address - getAllCities - should throw an exception given an invalid input")
+
         when: "a rest GET call is performed with an invalid abc input"
         def response = getRestCall(baseAPI + "/1/abc/cities")
 
@@ -244,6 +270,8 @@ class AddressControllerTest extends AbstractLBSSpecification {
 
     @Unroll
     def "Address - getETypePublicPlace - happy path"() {
+        println("Address - getETypePublicPlace - happy path")
+
         when: "a rest GET call is performed to get all types of public place enum"
         def response = getRestCall(baseAPI + GET_TYPE_PUBLIC_PLACE_PATH)
 
@@ -254,4 +282,3 @@ class AddressControllerTest extends AbstractLBSSpecification {
         response.responseData != null
     }
 }
-

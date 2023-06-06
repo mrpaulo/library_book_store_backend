@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 import java.util.TimeZone;
 
 @SpringBootApplication
@@ -33,6 +35,30 @@ import java.util.TimeZone;
 public class LibraryBookStoreApplication {
 
 	public static void main(String[] args) {
+		String folderPath = "./app-logs";
+		String filePath = "./app-logs/library-book-store.log";
+		File folder = new File(folderPath);
+		if (!folder.exists()) {
+			boolean created = folder.mkdirs();
+			if (!created) {
+				System.err.println("Failed to create folder: " + folderPath);
+				return;
+			}
+		}
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				boolean created = file.createNewFile();
+				if (!created) {
+					System.err.println("Failed to create file: " + filePath);
+					return;
+				}
+			} catch (IOException e) {
+				System.err.println("Failed to create file: " + filePath);
+				e.printStackTrace();
+				return;
+			}
+		}
 		SpringApplication.run(LibraryBookStoreApplication.class, args);
 	}
 

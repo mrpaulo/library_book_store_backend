@@ -86,7 +86,7 @@ public class AddressController {
         try {
             return ResponseEntity.ok().body(addressService.findByName(addressName));
         } catch (Exception e) {
-            log.error("Exception on getById addressName={}, message={}", addressName, e.getMessage());
+            log.error("Exception on getByName addressName={}, message={}", addressName, e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
             throw e;
         }
@@ -97,7 +97,7 @@ public class AddressController {
         try {
             return new ResponseEntity<>(addressService.create(address), HttpStatus.CREATED);
         } catch (Exception e) {
-            log.error("Exception on getById address={}, message={}", address, e.getMessage());
+            log.error("Exception on create address={}, message={}", address, e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
             throw e;
         }
