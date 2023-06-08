@@ -184,9 +184,6 @@ public class Address implements Serializable {
         if (neighborhood != null && !neighborhood.isEmpty()) {
             sb.append("neighborhood='").append(neighborhood).append('\'').append(", ");
         }
-        if (neighborhood != null && !neighborhood.isEmpty()) {
-            sb.append("neighborhood='").append(neighborhood).append('\'').append(", ");
-        }
         if (coordination != null && !coordination.isEmpty()) {
             sb.append("coordination='").append(coordination).append('\'').append(", ");
         }

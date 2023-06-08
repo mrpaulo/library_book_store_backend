@@ -130,7 +130,7 @@ public class AuthorService {
                             bookRepository.deleteBookAuthor(author1.getId(), book.getId());
                         });
                 if(book.getAuthors().size() <= 1) {
-                    log.info("Deleting book bookId={}", book.getId());
+                    log.info("Deleting book id={}, title={}", book.getId(), book.getTitle());
                     bookRepository.delete(book);
                 }
             }

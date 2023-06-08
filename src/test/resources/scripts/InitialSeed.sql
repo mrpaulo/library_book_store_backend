@@ -346,8 +346,8 @@ VALUES
 --User
 insert into role (id, name) values
 (1, 'ADMIN'),
-(3, 'OPERATOR'),
-(2, 'CLIENT');
+(2, 'CLIENT'),
+(3, 'OPERATOR');
 
 insert into lbs_user
     (id,
@@ -361,9 +361,15 @@ insert into lbs_user
      create_by,
      create_at)
 values 
-(1, 'Paulo Rodrigues', 'paulo', '{noop}1', 'teste@paulo.com', '1986-09-27', '52252641070', 'M', 'InitialSeed.sql', NOW());
+(1, 'Paulo Rodrigues', 'paulo', '{noop}1', 'teste@paulo.com', '1986-09-27', '52252641070', 'M', 'InitialSeed.sql', NOW()),
+(2, 'Admin', 'admin', '{noop}123', 'teste@admin.com', NOW(), '45804502050', 'M', 'InitialSeed.sql', NOW()),
+(3, 'Operator', 'operator', '{noop}123', 'operator@admin.com', NOW(), '07888952062', 'M', 'InitialSeed.sql', NOW()),
+(4, 'Client Test', 'clientTest', '{noop}123', 'clientetest@admin.com', NOW(), '53632647062', 'M', 'InitialSeed.sql', NOW());
 
 insert into user_role (user_id, role_id) values
-(1,1);
+(1,1),
+(2,1),
+(3,3),
+(4,2);
 
-ALTER SEQUENCE user_id_seq RESTART WITH 2;
+ALTER SEQUENCE user_id_seq RESTART WITH 5;

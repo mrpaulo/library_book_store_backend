@@ -129,7 +129,7 @@ public class UserService {
         userToEdit.setCreateAt(createAt);
         userToEdit.setCreateBy(createBy);
         userToEdit.setPassword(pw);
-        log.info("Updating id={}, userName={}", userToEdit.getId(), userToEdit.getName());
+        log.info("Updating user id={}, userName={}", userToEdit.getId(), userToEdit.getName());
         return userToDTO(save(userToEdit));
     }
 

@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.desformatCnpj;
+
 /**
  *
  * @author paulo.rodrigues
@@ -66,7 +68,7 @@ public class PublisherService {
         return publisherRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
-                filter.getCnpj(),
+                desformatCnpj(filter.getCnpj()),
                 filter.getStartDate(),
                 filter.getFinalDate(),
                 pageable);
@@ -183,7 +185,7 @@ public class PublisherService {
         List<Book> books = bookRepository.getBooksFromPublisherId(publisherId);
         if (!FormatUtils.isEmpty(books)){
             for (Book book : books) {
-            log.info("Deleting book bookId={}", book.getId());
+            log.info("Deleting book id={}, title={}", book.getId(), book.getTitle());
                 book.getAuthors()
                         .forEach(author -> {
                             log.info("Deleting author_books authorId={}, bookId={}", author.getId(), book.getId());

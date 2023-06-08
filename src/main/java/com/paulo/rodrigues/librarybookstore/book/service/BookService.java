@@ -128,12 +128,14 @@ public class BookService {
     public BookDTO edit(Long bookId, BookDTO bookDetail) throws InvalidRequestException, NotFoundException, LibraryStoreBooksException {
         Book bookToEdit = findById(bookId);
         String createBy = bookToEdit.getCreateBy();
+        Date createAt = bookToEdit.getCreateAt();
         bookToEdit = modelMapper.map(bookDetail, Book.class);
         bookToEdit.setAuthors(authorService.saveBookAuthorsFromDTOs(bookToEdit, bookDetail.getAuthors()));
         bookToEdit.setSubject(getSubjectFromName(bookDetail.getSubjectName()));
         bookToEdit.setLanguage(getLanguageFromName(bookDetail.getLanguageName()));
         bookToEdit.setPublisher(publisherService.publisherFromDTO(bookDetail.getPublisher()));
         bookToEdit.setCreateBy(createBy);
+        bookToEdit.setCreateAt(createAt);
         bookToEdit.setId(bookId);
         log.info("Updating book id={}, title={}", bookId, bookToEdit.getTitle());
         return bookToDTO(save(bookToEdit));
