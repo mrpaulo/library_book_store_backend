@@ -41,6 +41,29 @@ public class BookFilter extends PageableFilter {
     private String publisher;
     private String subjectName;
     private LocalDate publishDate;
-
     private Boolean adultsOnly;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("BookFilter{");
+        if (title != null && !title.isEmpty()) {
+            sb.append("title='").append(title).append('\'').append(", ");
+        }
+        if (author != null && !author.isEmpty()) {
+            sb.append("author='").append(author).append('\'').append(", ");
+        }
+        if (publisher != null && !publisher.isEmpty()) {
+            sb.append("publisher='").append(publisher).append('\'').append(", ");
+        }
+        if (subjectName != null && !subjectName.isEmpty()) {
+            sb.append("subjectName='").append(subjectName).append('\'').append(", ");
+        }
+        if (publishDate != null) {
+            sb.append("publishDate=").append(publishDate).append(", ");
+        }
+        if (adultsOnly != null) {
+            sb.append("adultsOnly=").append(adultsOnly).append(", ");
+        }
+        return toStringSuper(sb).toString();
+    }
 }

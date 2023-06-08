@@ -25,10 +25,7 @@ import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherRepository;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
-import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
+import com.paulo.rodrigues.librarybookstore.utils.*;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +62,7 @@ public class PublisherService {
     }
 
     public Page<Publisher> findPageable(PublisherFilter filter, Pageable pageable) {
+        log.info("Finding pageable publishers by filter={}", filter);
         return publisherRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
@@ -103,7 +101,7 @@ public class PublisherService {
         return publishersToDTOs(publisherRepository.findByName(name));
     }
 
-    public PublisherDTO create(Publisher publisher) throws LibraryStoreBooksException {
+    public PublisherDTO create(Publisher publisher) throws InvalidRequestException, LibraryStoreBooksException {
         assert publisher != null : MessageUtil.getMessage("PUBLISHER_IS_NULL");
         if(publisher.getAddress() != null){
             addressService.create(publisher.getAddress());
@@ -112,14 +110,14 @@ public class PublisherService {
         return publisherToDTO(save(publisher));
     }
 
-    public Publisher save(Publisher publisher) throws LibraryStoreBooksException {
+    public Publisher save(Publisher publisher) throws InvalidRequestException {
         publisher.validation();
         publisher.persistAt();
         log.info("Saving publisher={}", publisher);
         return publisherRepository.saveAndFlush(publisher);
     }
 
-    public Publisher checkAndSave(Publisher publisher) throws LibraryStoreBooksException {
+    public Publisher checkAndSave(Publisher publisher) throws InvalidRequestException {
         try {
             return findByCnpj(publisher.getCnpj());
         } catch (NotFoundException e) {
@@ -130,7 +128,7 @@ public class PublisherService {
         }
     }
 
-    public Publisher checkAndSave(PublisherDTO dto) throws LibraryStoreBooksException {
+    public Publisher checkAndSave(PublisherDTO dto) throws InvalidRequestException {
         try {
             return findByCnpj(dto.getCnpj());
         } catch (NotFoundException e) {
@@ -147,7 +145,7 @@ public class PublisherService {
         }
     }
 
-    public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws LibraryStoreBooksException, NotFoundException {
+    public PublisherDTO edit(Long publisherId, PublisherDTO publisherDetail) throws InvalidRequestException, NotFoundException {
         Publisher publisherToEdit = findById(publisherId);
         String createBy = publisherToEdit.getCreateBy();
         var createAt = publisherToEdit.getCreateAt();
@@ -162,7 +160,7 @@ public class PublisherService {
         return publisherToDTO(save(publisherToEdit));
     }
 
-    public List<String> safeDelete(Long publisherId) throws LibraryStoreBooksException, NotFoundException {
+    public List<String> safeDelete(Long publisherId) throws NotFoundException {
         Publisher publisherToDelete = findById(publisherId);
         if(publisherToDelete.getAddress() != null){
             addressService.delete(publisherToDelete.getAddress().getId());

@@ -16,11 +16,10 @@
  */
 package com.paulo.rodrigues.librarybookstore.authentication.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 
 import java.time.LocalDate;
@@ -116,32 +115,32 @@ public class User {
     }
     
 
-    public void validation() throws LibraryStoreBooksException {
+    public void validation() throws InvalidRequestException {
 
         if (!FormatUtils.isEmptyOrNull(name) && name.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("USER_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (FormatUtils.isEmptyOrNull(username)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USERNAME_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("USERNAME_NOT_INFORMED"));
         }
         if (!FormatUtils.isEmptyOrNull(username) && username.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USERNAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("USERNAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (FormatUtils.isEmptyOrNull(password)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_PASSWORD_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("USER_PASSWORD_NOT_INFORMED"));
         }
         if (!FormatUtils.isEmptyOrNull(password) && password.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_PASSWORD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("USER_PASSWORD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F") && !sex.equals("O") && !sex.equals("N")))) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_SEX_INVALID"));
+            throw new InvalidRequestException(MessageUtil.getMessage("USER_SEX_INVALID"));
         }
         if (!FormatUtils.isEmptyOrNull(email) && email.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_EMAIL_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("USER_EMAIL_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         String nuCpf = FormatUtils.removeFormatCPF(cpf);
         if (nuCpf != null && !nuCpf.isEmpty() && !FormatUtils.isCPF(nuCpf)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("USER_CPF_INVALID"));
+            throw new InvalidRequestException(MessageUtil.getMessage("USER_CPF_INVALID"));
         }
     }
 

@@ -101,7 +101,7 @@ public class BookController {
     }
     
     @PostMapping()
-    public ResponseEntity<BookDTO> create(@RequestBody BookDTO bookDTO) throws LibraryStoreBooksException, NotFoundException {
+    public ResponseEntity<BookDTO> create(@RequestBody BookDTO bookDTO) throws InvalidRequestException, NotFoundException {
         try {
             return new ResponseEntity<>(bookService.create(bookDTO), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class BookController {
     }
 
     @PutMapping(UPDATE_PATH)
-    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDTO) throws LibraryStoreBooksException, NotFoundException {
+    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long bookId, @RequestBody BookDTO bookDTO) throws InvalidRequestException, LibraryStoreBooksException, NotFoundException {
         try {
             return ResponseEntity.ok(bookService.edit(bookId, bookDTO));
         } catch (Exception e) {

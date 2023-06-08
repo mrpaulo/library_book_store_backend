@@ -26,14 +26,11 @@ import com.paulo.rodrigues.librarybookstore.authentication.model.Role;
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.RoleRepository;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
-import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
+import com.paulo.rodrigues.librarybookstore.utils.*;
 
 import java.util.*;
 import javax.transaction.Transactional;
 
-import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +65,7 @@ public class UserService {
     }
 
     public Page<User> findPageable(UserFilter filter, Pageable pageable) {
+        log.info("Finding pageable users by filter={}", filter);
         return userRepository.findPageable(
                 filter.getId(),
                 filter.getName(),
@@ -92,7 +90,7 @@ public class UserService {
         return usersToDTOs(userRepository.findByName(name));
     }
 
-    public UserDTO create(User user) throws LibraryStoreBooksException {
+    public UserDTO create(User user) throws InvalidRequestException {
         assert user != null : MessageUtil.getMessage("USER_IS_NULL");
         if (FormatUtils.isEmpty(user.getRoles())) {
             Role role = roleRepository.findByName(Login.ROLE_CLIENT);
@@ -111,14 +109,14 @@ public class UserService {
         return userToDTO(save(user));
     }
 
-    public User save(User user) throws LibraryStoreBooksException {
+    public User save(User user) throws InvalidRequestException {
         user.validation();
         user.persistAt();
         log.info("Saving id={}, userName={}", user.getId(), user.getName());
         return userRepository.saveAndFlush(user);
     }
 
-    public UserDTO edit(Long userId, UserDTO userDetail) throws LibraryStoreBooksException, NotFoundException {
+    public UserDTO edit(Long userId, UserDTO userDetail) throws InvalidRequestException, NotFoundException {
         User userToEdit = findById(userId);
         String pw = userToEdit.getPassword();
         Date createAt = userToEdit.getCreateAt();

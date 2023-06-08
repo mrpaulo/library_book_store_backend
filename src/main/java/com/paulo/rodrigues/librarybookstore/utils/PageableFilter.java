@@ -27,6 +27,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
+
 /**
  *
  * @author paulo.rodrigues
@@ -46,8 +48,32 @@ public class PageableFilter {
     
     private Long id;
     private String name;
-    
     private LocalDate startDate;
-    
     private LocalDate finalDate;
+    public StringBuilder toStringSuper(StringBuilder sb){
+        sb.append("currentPage=").append(getCurrentPage()).append(", ");
+        sb.append("rowsPerPage=").append(getRowsPerPage()).append(", ");
+        if (getSortColumn() != null && !getSortColumn().isEmpty()) {
+            sb.append("sortColumn='").append(getSortColumn()).append('\'').append(", ");
+        }
+        if (getSort() != null && !getSort().isEmpty()) {
+            sb.append("sort='").append(getSort()).append('\'').append(", ");
+        }
+        sb.append("offset=").append(getOffset()).append(", ");
+        if (getId() != null) {
+            sb.append("id=").append(getId()).append(", ");
+        }
+        if (getName() != null && !getName().isEmpty()) {
+            sb.append("name='").append(getName()).append('\'').append(", ");
+        }
+        if (getStartDate() != null) {
+            sb.append("startDate=").append(getStartDate()).append(", ");
+        }
+        if (getFinalDate() != null) {
+            sb.append("finalDate=").append(getFinalDate()).append(", ");
+        }
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb;
+    }
 }

@@ -38,5 +38,17 @@ public class PublisherFilter extends PageableFilter {
 
     private String cnpj;    
     private LocalDate foundationDate;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("PublisherFilter{");
+        if (cnpj != null && !cnpj.isEmpty()) {
+            sb.append("cnpj='").append(cnpj).append('\'').append(", ");
+        }
+        if (foundationDate != null) {
+            sb.append("foundationDate='").append(foundationDate).append('\'').append(", ");
+        }
+        return toStringSuper(sb).toString();
+    }
 }
 

@@ -24,6 +24,7 @@ import com.paulo.rodrigues.librarybookstore.authentication.model.Login;
 import com.paulo.rodrigues.librarybookstore.authentication.model.Role;
 import com.paulo.rodrigues.librarybookstore.authentication.model.User;
 import com.paulo.rodrigues.librarybookstore.authentication.service.UserService;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import java.util.Comparator;
@@ -117,7 +118,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<UserDTO> create(@RequestBody User user) throws LibraryStoreBooksException {
+    public ResponseEntity<UserDTO> create(@RequestBody User user) throws InvalidRequestException {
         try {
             return new ResponseEntity<>(userService.create(user), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -128,7 +129,7 @@ public class UserController {
     }
 
     @PutMapping(UPDATE_PATH)
-    public ResponseEntity<UserDTO> update(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO) throws LibraryStoreBooksException, NotFoundException {
+    public ResponseEntity<UserDTO> update(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO) throws InvalidRequestException, NotFoundException {
         try {
             return ResponseEntity.ok(userService.edit(userId, userDTO));
         } catch (Exception e) {

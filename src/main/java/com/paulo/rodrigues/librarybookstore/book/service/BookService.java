@@ -82,6 +82,7 @@ public class BookService {
     }
 
     public PagedResult<BookDTO> findPageable(BookFilter filter) {
+        log.info("Finding pageable books by filter={}", filter);
         return bookRepository.findPageable(filter);
     }
 
@@ -96,7 +97,7 @@ public class BookService {
         return book.get();
     }
 
-    public BookDTO create(BookDTO dto) throws LibraryStoreBooksException, NotFoundException {
+    public BookDTO create(BookDTO dto) throws InvalidRequestException, NotFoundException {
         Book book = bookFromDTO(dto);
         book = save(book);
         saveBookAuthor(book);
@@ -104,7 +105,7 @@ public class BookService {
         return bookToDTO(book);
     }
 
-    public Book save(Book book) throws LibraryStoreBooksException {
+    public Book save(Book book) throws InvalidRequestException {
         book.validation();
         book.persistAt();
         book = checkAndSaveReference(book);
@@ -112,7 +113,7 @@ public class BookService {
         return bookRepository.saveAndFlush(book);
     }
 
-    public Book checkAndSaveReference(Book book) throws LibraryStoreBooksException {
+    public Book checkAndSaveReference(Book book) throws InvalidRequestException {
         Set<Author> authors = authorService.saveAuthors(book.getAuthors());
         if(!FormatUtils.isEmpty(authors)){
             book.setAuthors(authors);
@@ -124,7 +125,7 @@ public class BookService {
         return book;
     }
 
-    public BookDTO edit(Long bookId, BookDTO bookDetail) throws NotFoundException, LibraryStoreBooksException {
+    public BookDTO edit(Long bookId, BookDTO bookDetail) throws InvalidRequestException, NotFoundException, LibraryStoreBooksException {
         Book bookToEdit = findById(bookId);
         String createBy = bookToEdit.getCreateBy();
         bookToEdit = modelMapper.map(bookDetail, Book.class);
@@ -172,7 +173,7 @@ public class BookService {
                 .build();
     }
 
-    public Book bookFromDTO(BookDTO dto) throws LibraryStoreBooksException {
+    public Book bookFromDTO(BookDTO dto) {
         return Book.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
@@ -196,7 +197,7 @@ public class BookService {
         return books.stream().map(b -> bookToDTO(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public List<Book> booksFromDTOs(List<BookDTO> books) throws LibraryStoreBooksException {
+    public List<Book> booksFromDTOs(List<BookDTO> books) {
         List<Book> result = new ArrayList<>();
 
         for (BookDTO book : books) {

@@ -22,7 +22,7 @@ import com.paulo.rodrigues.librarybookstore.address.dto.CityDTO;
 import com.paulo.rodrigues.librarybookstore.address.dto.CountryDTO;
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
 import com.paulo.rodrigues.librarybookstore.authentication.repository.UserRepository;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.model.City;
 import com.paulo.rodrigues.librarybookstore.address.model.Country;
@@ -94,19 +94,19 @@ public class AddressService {
         return address.get();
     }
 
-    public AddressDTO create(Address address) throws LibraryStoreBooksException {
+    public AddressDTO create(Address address) throws InvalidRequestException {
         log.info("Creating address name={}", address.getName());
         return toDTO(save(address));
     }
 
-    public Address save(Address address) throws LibraryStoreBooksException {
+    public Address save(Address address) throws InvalidRequestException {
         address.addressValidation();
         address.persistAt();
         log.info("Saving address={}", address);
         return addressRepository.saveAndFlush(address);
     }
 
-    public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws LibraryStoreBooksException, NotFoundException {
+    public AddressDTO edit(Long addressId, AddressDTO addressDetail) throws InvalidRequestException, NotFoundException {
         Address addressToEdit = findById(addressId);
         String createBy = addressToEdit.getCreateBy();
         var createAt = addressToEdit.getCreateAt();

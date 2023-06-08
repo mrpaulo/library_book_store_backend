@@ -160,7 +160,7 @@ class UserServiceTest extends Specification {
         service.save(user)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:
@@ -174,7 +174,7 @@ class UserServiceTest extends Specification {
         service.save(user)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:

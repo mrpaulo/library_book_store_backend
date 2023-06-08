@@ -15,31 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.paulo.rodrigues.librarybookstore.author.filter;
+package com.paulo.rodrigues.librarybookstore.utils;
 
-import com.paulo.rodrigues.librarybookstore.utils.PageableFilter;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author paulo.rodrigues
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class AuthorFilter extends PageableFilter {
-    
-    private String sex;
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("AuthorFilter{");
-        if (sex != null && !sex.isEmpty()) {
-            sb.append("sex='").append(sex).append('\'').append(", ");
-        }
-        return toStringSuper(sb).toString();
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+public class InvalidRequestException extends Exception {
+
+    public InvalidRequestException(String message){
+        super(message);
     }
 }

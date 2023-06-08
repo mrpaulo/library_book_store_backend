@@ -155,8 +155,8 @@ class BookServiceTest extends Specification {
         when: "we call the save method"
         service.save(book)
 
-        then: "a LibraryStoreBooksException is thrown with the correct message"
-        def e = thrown(LibraryStoreBooksException)
+        then: "a InvalidRequestException is thrown with the correct message"
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:
@@ -169,8 +169,8 @@ class BookServiceTest extends Specification {
         when: "we call the save method with a custom book object created for different scenarios"
         service.save(book)
 
-        then: "a LibraryStoreBooksException is thrown with the correct message"
-        def e = thrown(LibraryStoreBooksException)
+        then: "a InvalidRequestException is thrown with the correct message"
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:

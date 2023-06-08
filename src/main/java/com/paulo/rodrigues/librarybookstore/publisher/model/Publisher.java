@@ -18,7 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.publisher.model;
 
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
@@ -33,6 +33,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.printUpdateControl;
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
 
 /**
  *
@@ -84,22 +87,22 @@ public class Publisher implements Serializable {
     private Date updateAt;
     private String updateBy;
 
-    public void validation() throws LibraryStoreBooksException {
+    public void validation() throws InvalidRequestException {
         if (FormatUtils.isEmpty(name)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NAME_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_NAME_NOT_INFORMED"));
         }
         if (name.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }        
         String nuCnpj = FormatUtils.desformatCnpj(cnpj);
         if (nuCnpj != null && nuCnpj.isEmpty()) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_CNPJ_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_CNPJ_NOT_INFORMED"));
         }
         if (!FormatUtils.isCNPJ(nuCnpj)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_CNPJ_INVALID"));
+            throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_CNPJ_INVALID"));
         }
          if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("PUBLISHER_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
         } 
     }
     
@@ -111,5 +114,30 @@ public class Publisher implements Serializable {
             setUpdateAt(new Date());
             setUpdateBy(FormatUtils.getUsernameLogged());
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Publisher{");
+        sb.append("id='").append(id).append('\'').append(", ");
+        if (name != null && !name.isEmpty()) {
+            sb.append("name='").append(name).append('\'').append(", ");
+        }
+        if (cnpj != null && !cnpj.isEmpty()) {
+            sb.append("cnpj='").append(cnpj).append('\'').append(", ");
+        }
+        if (address != null) {
+            sb.append("address='").append(address).append('\'').append(", ");
+        }
+        if (foundationDate != null) {
+            sb.append("foundationDate='").append(foundationDate).append('\'').append(", ");
+        }
+        if (description != null && !description.isEmpty()) {
+            sb.append("description='").append(description).append('\'').append(", ");
+        }
+        sb = printUpdateControl(sb, createAt, createBy, updateAt, updateBy);
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb.toString();
     }
 }

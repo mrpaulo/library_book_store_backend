@@ -29,6 +29,7 @@ import com.paulo.rodrigues.librarybookstore.author.repository.AuthorRepository
 import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
 import com.paulo.rodrigues.librarybookstore.utils.NotFoundException
@@ -165,7 +166,7 @@ class AuthorServiceTest extends Specification {
         service.save(author)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:
@@ -179,7 +180,7 @@ class AuthorServiceTest extends Specification {
         service.save(author)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:

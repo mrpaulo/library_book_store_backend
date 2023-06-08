@@ -18,11 +18,9 @@
 package com.paulo.rodrigues.librarybookstore.utils;
 
 import com.paulo.rodrigues.librarybookstore.book.filter.BookFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -349,6 +347,29 @@ public class FormatUtils {
         } else {
             return Long.toString(i);
         }
+    }
+
+    public  static StringBuilder printUpdateControl(StringBuilder sb, Date createAt, String createBy, Date updateAt, String updateBy){
+        if (createAt != null) {
+            sb.append("createAt=").append(createAt).append(", ");
+        }
+        if (createBy != null && !createBy.isEmpty()) {
+            sb.append("createBy='").append(createBy).append('\'').append(", ");
+        }
+        if (updateAt != null) {
+            sb.append("updateAt=").append(updateAt).append(", ");
+        }
+        if (updateBy != null && !updateBy.isEmpty()) {
+            sb.append("updateBy='").append(updateBy).append('\'').append(", ");
+        }
+        return sb;
+    }
+    public static StringBuilder removeLastComma(StringBuilder sb) {
+        int length = sb.length();
+        if (length > 2 && sb.charAt(length - 2) == ',' && sb.charAt(length - 1) == ' ') {
+            sb.setLength(length - 2);
+        }
+        return sb;
     }
 
 }

@@ -27,6 +27,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.printUpdateControl;
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
+
 /**
  *
  * @author paulo.rodrigues
@@ -68,5 +71,26 @@ public class City implements Serializable{
     
     public CityDTO toDTO(){
         return CityDTO.builder().id(id).name(name).build();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("City{");
+        sb.append("id='").append(id).append('\'').append(", ");
+        if (name != null && !name.isEmpty()) {
+            sb.append("name='").append(name).append('\'').append(", ");
+        }
+        if (state != null) {
+            sb.append("state='").append(state).append('\'').append(", ");
+        }
+        if (country != null) {
+            sb.append("country='").append(country).append('\'').append(", ");
+        }
+        if (ibgeCode != null && !ibgeCode.isEmpty()) {
+            sb.append("ibgeCode='").append(ibgeCode).append('\'').append(", ");
+        }
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb.toString();
     }
 }

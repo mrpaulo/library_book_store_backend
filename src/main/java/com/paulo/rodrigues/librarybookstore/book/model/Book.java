@@ -17,7 +17,7 @@
  */
 package com.paulo.rodrigues.librarybookstore.book.model;
 
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.book.enums.EBookCondition;
@@ -38,6 +38,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.printUpdateControl;
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
 
 /**
  * {@code Book} class represents properties of book objects
@@ -127,23 +130,23 @@ public class Book implements Serializable {
      * Validate a object with the basic requirements.
      * 
      * If something isn't right it
-     * @throws LibraryStoreBooksException 
+     * @throws InvalidRequestException 
      */
-    public void validation() throws LibraryStoreBooksException {
+    public void validation() throws InvalidRequestException {
         if (FormatUtils.isEmpty(title)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_TITLE_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("BOOK_TITLE_NOT_INFORMED"));
         }
         if (title.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_TITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("BOOK_TITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (!FormatUtils.isEmptyOrNull(subtitle) && subtitle.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_SUBTITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("BOOK_SUBTITLE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (!FormatUtils.isEmptyOrNull(link) && link.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("BOOK_LINK_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
         }
         if (!FormatUtils.isEmptyOrNull(review) && review.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("BOOK_REVIEW_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("BOOK_REVIEW_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
 
         }
     }
@@ -157,5 +160,61 @@ public class Book implements Serializable {
             setUpdateBy(FormatUtils.getUsernameLogged());
         }
     }
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Book{");
+        sb.append("id='").append(id).append('\'').append(", ");
+        if (title != null && !title.isEmpty()) {
+            sb.append("title='").append(title).append('\'').append(", ");
+        }
+        if (!authors.isEmpty()) {
+            sb.append("authors=[");
+            StringBuilder finalSb = sb;
+            authors.forEach(a -> finalSb.append("{id:'").append(a.getId()).append('\'')
+                    .append(", name:'").append(a.getName()).append('\'')
+                    .append("}, "));
+            sb.append("], ");
+        }
+        if (publisher != null) {
+            sb.append("publisher={id:'").append(publisher.getId()).append('\'')
+                    .append(", name:'").append(publisher.getName()).append('\'')
+                    .append("}, ");
+        }
+        if (language != null) {
+            sb.append("language={id:'").append(language.getId()).append('\'')
+                    .append(", name:'").append(language.getName()).append('\'')
+                    .append("}, ");
+        }
+        if (subject != null) {
+            sb.append("subject={id:'").append(subject.getId()).append('\'')
+                    .append(", name:'").append(subject.getName()).append('\'')
+                    .append("}, ");
+        }
+        if (subtitle != null && !subtitle.isEmpty()) {
+            sb.append("subtitle='").append(subtitle).append('\'').append(", ");
+        }
+        if (review != null && !review.isEmpty()) {
+            sb.append("review='").append(review).append('\'').append(", ");
+        }
+        if (link != null && !link.isEmpty()) {
+            sb.append("link='").append(link).append('\'').append(", ");
+        }
+        if (format != null) {
+            sb.append("format='").append(format).append('\'').append(", ");
+        }
+        if (condition != null) {
+            sb.append("condition='").append(condition).append('\'').append(", ");
+        }
+        if (publishDate != null) {
+            sb.append("publishDate='").append(publishDate).append('\'').append(", ");
+        }
+        sb.append("edition='").append(edition).append('\'').append(", ");
+        sb.append("rating='").append(rating).append('\'').append(", ");
+        sb.append("length='").append(length).append('\'').append(", ");
+        sb.append("adultsOnly='").append(adultsOnly).append('\'').append(", ");
+        sb = printUpdateControl(sb, createAt, createBy, updateAt, updateBy);
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb.toString();
+    }
 }

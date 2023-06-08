@@ -28,6 +28,7 @@ import com.paulo.rodrigues.librarybookstore.publisher.repository.PublisherReposi
 import com.paulo.rodrigues.librarybookstore.publisher.service.PublisherService
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil
 import com.paulo.rodrigues.librarybookstore.utils.NotFoundException
@@ -191,7 +192,7 @@ class PublisherServiceTest extends Specification {
         service.save(publisher)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:
@@ -205,7 +206,7 @@ class PublisherServiceTest extends Specification {
         service.save(publisher)
 
         then:
-        def e = thrown(LibraryStoreBooksException)
+        def e = thrown(InvalidRequestException)
         e.getMessage() == message
 
         where:

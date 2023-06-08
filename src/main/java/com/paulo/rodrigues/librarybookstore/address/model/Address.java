@@ -18,7 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.address.model;
 
 import com.paulo.rodrigues.librarybookstore.address.enums.ETypePublicPlace;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
@@ -31,6 +31,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.printUpdateControl;
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
 
 /**
  *
@@ -94,7 +97,6 @@ public class Address implements Serializable {
     private String updateBy;
 
     public String formatAddress() {
-
         String formattedAddress = "";
         if (city != null) {
             formattedAddress = city.getName();
@@ -106,7 +108,6 @@ public class Address implements Serializable {
                 }
             }
         }
-
         if(!FormatUtils.isEmpty(number)){
             formattedAddress = number + ". " + formattedAddress;
         }
@@ -116,34 +117,33 @@ public class Address implements Serializable {
         if(logradouro != null && !FormatUtils.isEmpty(logradouro.getDescription())){
             formattedAddress = logradouro.getDescription() + " " + formattedAddress;
         }
-
         return formattedAddress;
     }
 
-    public void addressValidation() throws LibraryStoreBooksException {
+    public void addressValidation() throws InvalidRequestException {
         if (FormatUtils.isEmpty(name)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NAME_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_NAME_NOT_INFORMED"));
         }
         if (name.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (!FormatUtils.isEmptyOrNull(number) && number.length() > ConstantsUtil.MAX_SIZE_ADDRESS_NUMBER) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NUMBER_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_NUMBER + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_NUMBER_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_NUMBER + ""));
         }
         if (!FormatUtils.isEmptyOrNull(cep) && cep.length() > ConstantsUtil.MAX_SIZE_ADDRESS_CEP) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_CEP_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_CEP + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_CEP_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_CEP + ""));
         }
         if (!FormatUtils.isEmptyOrNull(zipCode) && zipCode.length() > ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_ZIPCODE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_ZIPCODE_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_ZIPCODE + ""));
         }
         if (!FormatUtils.isEmptyOrNull(neighborhood) && neighborhood.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_NEIGHBORHOOD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_NEIGHBORHOOD_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         if (!FormatUtils.isEmptyOrNull(coordination) && coordination.length() > ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_COORDINATION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_COORDINATION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_ADDRESS_COORDINATION + ""));
         }
         if (!FormatUtils.isEmptyOrNull(referentialPoint) && referentialPoint.length() > ConstantsUtil.MAX_SIZE_SHORT_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("ADDRESS_REFERENTIAL_POINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("ADDRESS_REFERENTIAL_POINT_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_SHORT_TEXT + ""));
         }
     }
 
@@ -157,4 +157,48 @@ public class Address implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Address{");
+        sb.append("id='").append(id).append('\'').append(", ");
+        if (logradouro != null) {
+            sb.append("logradouro='").append(logradouro).append('\'').append(", ");
+        }
+        if (city != null) {
+            sb.append("city={id:'").append(city.getId()).append('\'')
+                    .append(", name:'").append(city.getName()).append('\'')
+                    .append("}, ");
+        }
+        if (name != null && !name.isEmpty()) {
+            sb.append("name='").append(name).append('\'').append(", ");
+        }
+        if (number != null && !number.isEmpty()) {
+            sb.append("number='").append(number).append('\'').append(", ");
+        }
+        if (cep != null && !cep.isEmpty()) {
+            sb.append("cep='").append(cep).append('\'').append(", ");
+        }
+        if (zipCode != null && !zipCode.isEmpty()) {
+            sb.append("zipCode='").append(zipCode).append('\'').append(", ");
+        }
+        if (neighborhood != null && !neighborhood.isEmpty()) {
+            sb.append("neighborhood='").append(neighborhood).append('\'').append(", ");
+        }
+        if (neighborhood != null && !neighborhood.isEmpty()) {
+            sb.append("neighborhood='").append(neighborhood).append('\'').append(", ");
+        }
+        if (coordination != null && !coordination.isEmpty()) {
+            sb.append("coordination='").append(coordination).append('\'').append(", ");
+        }
+        if (referentialPoint != null && !referentialPoint.isEmpty()) {
+            sb.append("referentialPoint='").append(referentialPoint).append('\'').append(", ");
+        }
+        if (fmtAddress != null && !fmtAddress.isEmpty()) {
+            sb.append("fmtAddress='").append(fmtAddress).append('\'').append(", ");
+        }
+        sb = printUpdateControl(sb, createAt, createBy, updateAt, updateBy);
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.address.controller;
 
 import com.paulo.rodrigues.librarybookstore.address.dto.AddressDTO;
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.model.City;
@@ -93,7 +94,7 @@ public class AddressController {
     }
 
     @PostMapping()
-    public ResponseEntity<AddressDTO> create(@RequestBody Address address) throws LibraryStoreBooksException {
+    public ResponseEntity<AddressDTO> create(@RequestBody Address address) throws InvalidRequestException {
         try {
             return new ResponseEntity<>(addressService.create(address), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -104,7 +105,7 @@ public class AddressController {
     }
 
     @PutMapping(UPDATE_PATH)
-    public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDTO) throws LibraryStoreBooksException, NotFoundException {
+    public ResponseEntity<AddressDTO> update(@PathVariable(value = "id") Long addressId, @RequestBody AddressDTO addressDTO) throws InvalidRequestException, NotFoundException {
         try {
             return ResponseEntity.ok(addressService.edit(addressId, addressDTO));
         } catch (Exception e) {

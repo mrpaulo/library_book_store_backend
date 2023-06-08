@@ -36,4 +36,16 @@ public class UserFilter extends PageableFilter {
 
     private String cpf;    
     private Date birthdate;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("UserFilter{");
+        if (cpf != null && !cpf.isEmpty()) {
+            sb.append("cpf='").append(cpf).append('\'').append(", ");
+        }
+        if (birthdate != null) {
+            sb.append("birthdate='").append(birthdate).append('\'').append(", ");
+        }
+        return toStringSuper(sb).toString();
+    }
 }

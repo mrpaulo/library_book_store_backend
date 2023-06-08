@@ -34,6 +34,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
+
 /**
  *
  * @author paulo.rodrigues
@@ -63,5 +65,16 @@ public class Country implements Serializable{
     public CountryDTO toDTO () {
         return CountryDTO.builder().id(id).name(name).build();
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Country{");
+        sb.append("id='").append(id).append('\'').append(", ");
+        if (name != null && !name.isEmpty()) {
+            sb.append("name='").append(name).append('\'').append(", ");
+        }
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb.toString();
+    }
 }

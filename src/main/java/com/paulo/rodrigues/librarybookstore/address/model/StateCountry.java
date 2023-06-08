@@ -25,6 +25,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeLastComma;
+
 /**
  *
  * @author paulo.rodrigues
@@ -54,4 +56,21 @@ public class StateCountry implements Serializable {
     @OneToOne
     @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "COUNTRY_STATE"))
     private Country country;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("City{");
+        sb.append("id='").append(id).append('\'').append(", ");
+        if (name != null && !name.isEmpty()) {
+            sb.append("name='").append(name).append('\'').append(", ");
+        }
+        if (country != null) {
+            sb.append("country={id:'").append(country.getId()).append('\'')
+                    .append(", name:'").append(country.getName()).append('\'')
+                    .append("}, ");
+        }
+        sb = removeLastComma(sb);
+        sb.append('}');
+        return sb.toString();
+    }
 }

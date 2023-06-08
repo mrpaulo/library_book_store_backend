@@ -20,19 +20,16 @@ package com.paulo.rodrigues.librarybookstore.author.service;
 import com.paulo.rodrigues.librarybookstore.address.service.AddressService;
 import com.google.common.collect.Sets;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.*;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
 import com.paulo.rodrigues.librarybookstore.book.repository.BookRepository;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
 
 import java.util.*;
 import javax.transaction.Transactional;
 
-import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +61,7 @@ public class AuthorService {
     }
 
     public Page<Author> findPageable(AuthorFilter filter, Pageable pageable) {
+        log.info("Finding pageable authors by filter={}", filter);
         return authorRepository.findPageble(
                 filter.getId(),
                 filter.getName(),
@@ -87,7 +85,7 @@ public class AuthorService {
         return authorsToDTOs(authorRepository.findByName(name));
     }
 
-    public AuthorDTO create(Author author) throws LibraryStoreBooksException {
+    public AuthorDTO create(Author author) throws InvalidRequestException {
         assert author != null : MessageUtil.getMessage("AUTHOR_IS_NULL");
         if(author.getAddress() != null){
             addressService.create(author.getAddress());
@@ -96,14 +94,14 @@ public class AuthorService {
         return authorToDTO(save(author));
     }
 
-    public Author save(Author author) throws LibraryStoreBooksException {
+    public Author save(Author author) throws InvalidRequestException {
         author.validation();
         author.persistAt();
         log.info("Saving author={}", author);
         return authorRepository.saveAndFlush(author);
     }
 
-    public AuthorDTO edit(Long authorId, AuthorDTO authorEdited) throws LibraryStoreBooksException, NotFoundException {
+    public AuthorDTO edit(Long authorId, AuthorDTO authorEdited) throws InvalidRequestException, NotFoundException {
         Author authorToEdit = findById(authorId);
         String createBy = authorToEdit.getCreateBy();
         var createAt = authorToEdit.getCreateAt();
@@ -187,7 +185,7 @@ public class AuthorService {
         return result;
     }
 
-    public Author saveBookAuthorDTO(Book book, AuthorDTO dto) throws LibraryStoreBooksException {
+    public Author saveBookAuthorDTO(Book book, AuthorDTO dto) throws InvalidRequestException, LibraryStoreBooksException {
         Author author = null;
         try {
             author = findById(dto.getId());
@@ -216,7 +214,7 @@ public class AuthorService {
         return author;
     }
     
-    public Set<Author> saveBookAuthorsFromDTOs(Book book, List<AuthorDTO> authorsDTO) throws LibraryStoreBooksException {
+    public Set<Author> saveBookAuthorsFromDTOs(Book book, List<AuthorDTO> authorsDTO) throws InvalidRequestException, LibraryStoreBooksException {
         Set<Author> authors = new HashSet<>();
         for(AuthorDTO author: authorsDTO){
             authors.add(saveBookAuthorDTO(book, author));
@@ -224,7 +222,7 @@ public class AuthorService {
         return authors;
     }
 
-    public Set<Author> saveAuthors(Set<Author> authors) throws LibraryStoreBooksException {
+    public Set<Author> saveAuthors(Set<Author> authors) throws InvalidRequestException {
         Set<Author> newAuthors =  new HashSet<>();
             if(!FormatUtils.isEmpty(authors)){
                 for (Author author: authors) {

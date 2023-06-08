@@ -18,6 +18,7 @@
 package com.paulo.rodrigues.librarybookstore.publisher.controller;
 
 import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
@@ -118,7 +119,7 @@ public class PublisherController {
     }
 
     @PutMapping(UPDATE_PATH)
-    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDTO) throws LibraryStoreBooksException, NotFoundException {
+    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDTO) throws InvalidRequestException, NotFoundException {
         try {
             return ResponseEntity.ok(publisherService.edit(publisherId, publisherDTO));
         } catch (Exception e) {
@@ -129,7 +130,7 @@ public class PublisherController {
     }
 
     @DeleteMapping(SAFE_DELETE_PATH)
-    public List<String> safeDelete(@PathVariable(value = "id") Long publisherId) throws LibraryStoreBooksException, NotFoundException {
+    public List<String> safeDelete(@PathVariable(value = "id") Long publisherId) throws NotFoundException {
         try {
             return publisherService.safeDelete(publisherId);
         } catch (Exception e) {

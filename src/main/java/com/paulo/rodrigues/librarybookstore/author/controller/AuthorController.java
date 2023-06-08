@@ -19,6 +19,7 @@ package com.paulo.rodrigues.librarybookstore.author.controller;
 
 import com.paulo.rodrigues.librarybookstore.author.dto.AuthorDTO;
 import com.paulo.rodrigues.librarybookstore.author.service.AuthorService;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
 import com.paulo.rodrigues.librarybookstore.author.model.Author;
 import com.paulo.rodrigues.librarybookstore.author.filter.AuthorFilter;
@@ -115,7 +116,7 @@ public class AuthorController {
     }
 
     @PostMapping()
-    public ResponseEntity<AuthorDTO> create(@RequestBody Author author) throws LibraryStoreBooksException {
+    public ResponseEntity<AuthorDTO> create(@RequestBody Author author) throws InvalidRequestException {
         try {
             return new ResponseEntity<>(authorService.create(author), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -126,7 +127,7 @@ public class AuthorController {
     }
 
     @PutMapping(UPDATE_PATH)
-    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDTO) throws LibraryStoreBooksException, NotFoundException {
+    public ResponseEntity<AuthorDTO> update(@PathVariable(value = "id") Long authorId, @RequestBody AuthorDTO authorDTO) throws InvalidRequestException, NotFoundException {
         try {
             return ResponseEntity.ok().body(authorService.edit(authorId, authorDTO));
         } catch (Exception e) {

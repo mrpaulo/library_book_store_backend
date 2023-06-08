@@ -22,7 +22,7 @@ import com.paulo.rodrigues.librarybookstore.address.model.Country;
 import com.paulo.rodrigues.librarybookstore.address.model.Address;
 import com.paulo.rodrigues.librarybookstore.address.model.City;
 import com.paulo.rodrigues.librarybookstore.book.model.Book;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
 import com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil;
 import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
 import com.paulo.rodrigues.librarybookstore.utils.MessageUtil;
@@ -96,18 +96,18 @@ public class Author implements Serializable {
     private Date updateAt;
     private String updateBy;
 
-    public void validation() throws LibraryStoreBooksException {
+    public void validation() throws InvalidRequestException {
         if (FormatUtils.isEmpty(name)) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NAME_NOT_INFORMED"));
+            throw new InvalidRequestException(MessageUtil.getMessage("AUTHOR_NAME_NOT_INFORMED"));
         }
         if (name.length() > ConstantsUtil.MAX_SIZE_NAME) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("AUTHOR_NAME_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }                       
         if (!FormatUtils.isEmptyOrNull(sex) && (sex.length() > 1 || (!sex.equals("M") && !sex.equals("F") && !sex.equals("O") && !sex.equals("N")))) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
+            throw new InvalidRequestException(MessageUtil.getMessage("AUTHOR_SEX_INVALID"));
         }
         if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
-            throw new LibraryStoreBooksException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
+            throw new InvalidRequestException(MessageUtil.getMessage("AUTHOR_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
         }  
     }
 
