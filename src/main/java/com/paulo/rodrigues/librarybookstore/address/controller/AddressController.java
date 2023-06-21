@@ -58,7 +58,7 @@ import static com.paulo.rodrigues.librarybookstore.utils.ConstantsUtil.*;
 @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Ok success"),
         @ApiResponse(code = 201, message = "Address created"),
-        @ApiResponse(code = 400, message = "Validation Error Response", response = LibraryStoreBooksException.class),
+        @ApiResponse(code = 400, message = "Validation Error Response", response = InvalidRequestException.class),
         @ApiResponse(code = 401, message = "Full Authentication Required or Invalid access token"),
         @ApiResponse(code = 403, message = "Insufficient scope"),
         @ApiResponse(code = 404, message = "Not found"),

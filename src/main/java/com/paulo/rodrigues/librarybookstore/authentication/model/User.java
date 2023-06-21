@@ -139,8 +139,11 @@ public class User {
             throw new InvalidRequestException(MessageUtil.getMessage("USER_EMAIL_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_NAME + ""));
         }
         String nuCpf = FormatUtils.removeFormatCPF(cpf);
-        if (nuCpf != null && !nuCpf.isEmpty() && !FormatUtils.isCPF(nuCpf)) {
-            throw new InvalidRequestException(MessageUtil.getMessage("USER_CPF_INVALID"));
+        if (nuCpf != null && !nuCpf.isEmpty()) {
+            if( !FormatUtils.isCPF(nuCpf)) {
+                throw new InvalidRequestException(MessageUtil.getMessage("USER_CPF_INVALID"));
+            }
+            cpf = nuCpf;
         }
     }
 

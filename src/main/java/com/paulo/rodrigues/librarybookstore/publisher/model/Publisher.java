@@ -101,6 +101,7 @@ public class Publisher implements Serializable {
         if (!FormatUtils.isCNPJ(nuCnpj)) {
             throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_CNPJ_INVALID"));
         }
+        cnpj = nuCnpj;
          if (!FormatUtils.isEmptyOrNull(description) && description.length() > ConstantsUtil.MAX_SIZE_LONG_TEXT) {
             throw new InvalidRequestException(MessageUtil.getMessage("PUBLISHER_DESCRIPTION_OUT_OF_BOUND", ConstantsUtil.MAX_SIZE_LONG_TEXT + ""));
         } 

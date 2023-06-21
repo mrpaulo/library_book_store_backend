@@ -39,6 +39,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.paulo.rodrigues.librarybookstore.utils.FormatUtils.removeFormatCPF;
+
 /**
  *
  * @author paulo.rodrigues
@@ -69,7 +71,7 @@ public class UserService {
         return userRepository.findPageable(
                 filter.getId(),
                 filter.getName(),
-                filter.getCpf(),
+                removeFormatCPF(filter.getCpf()),
                 filter.getStartDate(),
                 filter.getFinalDate(),
                 pageable);
