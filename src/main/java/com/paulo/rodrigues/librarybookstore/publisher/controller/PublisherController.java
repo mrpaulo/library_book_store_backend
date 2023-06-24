@@ -18,23 +18,19 @@
 package com.paulo.rodrigues.librarybookstore.publisher.controller;
 
 import com.paulo.rodrigues.librarybookstore.publisher.dto.PublisherDTO;
-import com.paulo.rodrigues.librarybookstore.utils.InvalidRequestException;
-import com.paulo.rodrigues.librarybookstore.utils.LibraryStoreBooksException;
+import com.paulo.rodrigues.librarybookstore.utils.*;
 import com.paulo.rodrigues.librarybookstore.publisher.filter.PublisherFilter;
 import com.paulo.rodrigues.librarybookstore.publisher.model.Publisher;
 import com.paulo.rodrigues.librarybookstore.publisher.service.PublisherService;
-import com.paulo.rodrigues.librarybookstore.utils.FormatUtils;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.paulo.rodrigues.librarybookstore.utils.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -111,6 +107,13 @@ public class PublisherController {
     public ResponseEntity<PublisherDTO> create(@RequestBody Publisher publisher) throws Exception {
         try {
            return new ResponseEntity<>(publisherService.create(publisher), HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Exception on create publisher={}, type=DataIntegrityViolationException, message={}", publisher, e.getMessage());
+            String codMessage =
+                    Objects.requireNonNull(e.getMessage()).contains("ConstraintViolationException") ?
+                    "PUBLISHER_CNPJ_DUPLICATED" :
+                    "DATA_INTEGRITY_VIOLATION";
+            throw new DataValidationException(MessageUtil.getMessage(codMessage));
         } catch (Exception e) {
             log.error("Exception on create publisher={}, message={}", publisher, e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
@@ -119,9 +122,16 @@ public class PublisherController {
     }
 
     @PutMapping(UPDATE_PATH)
-    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDTO) throws InvalidRequestException, NotFoundException {
+    public ResponseEntity<PublisherDTO> update(@PathVariable(value = "id") Long publisherId, @RequestBody PublisherDTO publisherDTO) throws InvalidRequestException, NotFoundException, DataValidationException {
         try {
             return ResponseEntity.ok(publisherService.edit(publisherId, publisherDTO));
+        } catch (DataIntegrityViolationException e) {
+            log.error("Exception on create publisher={}, type=DataIntegrityViolationException, message={}", publisherDTO, e.getMessage());
+            String codMessage =
+                    Objects.requireNonNull(e.getMessage()).contains("ConstraintViolationException") ?
+                            "PUBLISHER_CNPJ_DUPLICATED" :
+                            "DATA_INTEGRITY_VIOLATION";
+            throw new DataValidationException(MessageUtil.getMessage(codMessage));
         } catch (Exception e) {
             log.error("Exception on update publisherId={}, message={}", publisherId, e.getMessage());
             e.setStackTrace(new StackTraceElement[0]);
