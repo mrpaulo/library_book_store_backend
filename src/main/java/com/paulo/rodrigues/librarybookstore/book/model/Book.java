@@ -164,7 +164,7 @@ public class Book implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Book{");
         sb.append("id='").append(id).append('\'').append(", ");
-        if (title != null && !title.isEmpty()) {
+        if (!FormatUtils.isEmptyOrNull(title)) {
             sb.append("title='").append(title).append('\'').append(", ");
         }
         if (!authors.isEmpty()) {
@@ -190,13 +190,13 @@ public class Book implements Serializable {
                     .append(", name:'").append(subject.getName()).append('\'')
                     .append("}, ");
         }
-        if (subtitle != null && !subtitle.isEmpty()) {
+        if (!FormatUtils.isEmptyOrNull(subtitle)) {
             sb.append("subtitle='").append(subtitle).append('\'').append(", ");
         }
-        if (review != null && !review.isEmpty()) {
+        if (!FormatUtils.isEmptyOrNull(review)) {
             sb.append("review='").append(review).append('\'').append(", ");
         }
-        if (link != null && !link.isEmpty()) {
+        if (!FormatUtils.isEmptyOrNull(link)) {
             sb.append("link='").append(link).append('\'').append(", ");
         }
         if (format != null) {

@@ -14,8 +14,8 @@ RUN ./mvnw clean package -DskipTests
 # Copy the project's jar file to the application directory
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
-# Expose port 4080 to the host
-EXPOSE 4080
+# Expose port 4088 to the host
+EXPOSE 4088
 # Define the command to run the application
 CMD ["java", "-jar", "/app/app.jar"]
 

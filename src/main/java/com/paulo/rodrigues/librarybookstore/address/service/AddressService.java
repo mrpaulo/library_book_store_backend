@@ -149,7 +149,10 @@ public class AddressService {
 
     public City getCityFromDTO (CityDTO dto) {
         try {
-            return  dto != null ? cityRepository.findById(dto.getId()).get() :  null;
+            if(dto == null){
+                return null;
+            }
+            return Optional.of(cityRepository.findById(dto.getId())).get().orElse(null);
         } catch (Exception e) {
             log.error("Exception on getCityFromDTO CityDTO={}, message={}", dto, e.getMessage());
             return null;
@@ -158,7 +161,10 @@ public class AddressService {
 
     public Country getCountryFromDTO (CountryDTO dto) {
         try {
-            return  dto != null ? countryRepository.findById(dto.getId()).get() : null;
+            if(dto == null){
+                return null;
+            }
+            return Optional.of(countryRepository.findById(dto.getId())).get().orElse(null);
         } catch (Exception e) {
             log.error("Exception on getCountryFromDTO CountryDTO={}, message={}", dto, e.getMessage());
             return null;

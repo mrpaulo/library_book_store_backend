@@ -34,32 +34,37 @@ Also, this is an ongoing project, so fix bugs, improvements, and new features ar
 ## REST API Endpoints
 
 ### Authentication
-- POST /api/auth/login: Authenticate a user and return a JWT token
-- POST /api/auth/logout: Logout the app
+- POST /oauth/token: Authenticate a user and return a JWT token
+- POST /api/v1/authentications/logout: Logout the app
+- POST /oauth/check_token: check if it is a valid token
 ### Books
-- GET /api/books: Get all books
-- GET /api/books/{id}: Get a specific book by ID
-- POST /api/books: Add a new book
-- PUT /api/books/{id}: Update a book by ID
-- DELETE /api/books/{id}: Delete a book by ID
+- GET /api/v1/books: Get all books
+- GET /api/v1/books/{id}: Get a specific book by ID
+- POST /api/v1/books: Add a new book
+- POST /api/v1/books/fetch: Returns a pageable list of books
+- PUT /api/v1/books/{id}: Update a book by ID
+- DELETE /api/v1/books/{id}: Delete a book by ID
 ### Authors
-- GET /api/authors: Get all authors
-- GET /api/authors/{id}: Get a specific author by ID
-- POST /api/authors: Add a new author
-- PUT /api/authors/{id}: Update an author by ID
-- DELETE /api/authors/{id}: Delete an author by ID
+- GET /api/v1/authors: Get all authors
+- GET /api/v1/authors/{id}: Get a specific author by ID
+- POST /api/v1/authors: Add a new author
+- POST /api/v1/authors/fetch: Returns a pageable list of authors
+- PUT /api/v1/authors/{id}: Update an author by ID
+- DELETE /api/v1/authors/{id}: Delete an author by ID
 ### Publishers
-- GET /api/publishers: Get all publishers
-- GET /api/publishers/{id}: Get a specific publisher by ID
-- POST /api/publishers: Add a new publisher
-- PUT /api/publishers/{id}: Update an publisher by ID
-- DELETE /api/publishers/{id}: Delete an publisher by ID
+- GET /api/v1/publishers: Get all publishers
+- GET /api/v1/publishers/{id}: Get a specific publisher by ID
+- POST /api/v1/publishers: Add a new publisher
+- POST /api/v1/publishers/fetch: Returns a pageable list of publishers
+- PUT /api/v1/publishers/{id}: Update an publisher by ID
+- DELETE /api/v1/publishers/{id}: Delete an publisher by ID
 ### Users
-- GET /api/users: Get all users
-- GET /api/users/{id}: Get a specific user by ID
-- POST /api/users: Add a new user
-- PUT /api/users/{id}: Update a user by ID
-- DELETE /api/users/{id}: Delete a user by ID
+- GET /api/v1/users: Get all users
+- GET /api/v1/users/{id}: Get a specific user by ID
+- POST /api/v1/users: Add a new user
+- POST /api/v1/users/fetch: Returns a pageable list of users
+- PUT /api/v1/users/{id}: Update a user by ID
+- DELETE /api/v1/users/{id}: Delete a user by ID
 
 ## Testing
 To run the unit tests, run `mvn test`. To run the integration tests, run `mvn integration-test`.
